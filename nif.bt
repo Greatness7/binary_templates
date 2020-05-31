@@ -456,10 +456,10 @@ typedef enum {
     BV_BASE = -1,
     BV_SPHERE,
     BV_BOX,
-    BV_CAPSULE,
-    BV_LOZENGE,
+    BV_CAPSULE,  // TODO
+    BV_LOZENGE,  // TODO
     BV_UNION,
-    BV_HALFSPACE,
+    BV_HALFSPACE,  // TODO
 } BoundType;
 
 
@@ -483,7 +483,8 @@ typedef struct {
         switch (boundType) {
             case BV_SPHERE: NiSphereBV boundingVolume; break;
             case BV_BOX: NiBoxBV boundingVolume; break;
-            // case BV_UNION: NiUnionBV boundingVolume; break;
+            default:
+                Assert(false);  // TODO other bound types
         }
     }
 } NiUnionBV;
@@ -505,6 +506,8 @@ typedef struct {
             case BV_SPHERE: NiSphereBV boundingVolume; break;
             case BV_BOX: NiBoxBV boundingVolume; break;
             case BV_UNION: NiUnionBV boundingVolume; break;
+            default:
+                Assert(false);  // TODO other bound types
         }
     }
 } NiAVObject;
