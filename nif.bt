@@ -1351,7 +1351,7 @@ typedef struct {
 
 
 string NiBool_read(NiBool &self) {
-    return self.value ? "true" : "false";
+    return self ? "true" : "false";
 }
 
 string NiString_read(NiString &self) {
