@@ -1,8 +1,7 @@
 LittleEndian();
 
-typedef struct {
-    uint value;
-} NiBool <read=NiBool_read>;
+
+typedef uint NiBool <read=NiBool_read>;
 
 
 typedef struct {
@@ -142,22 +141,22 @@ typedef struct {
     NiObject super;
     ushort numVertices;
     NiBool hasVertices;
-    if (hasVertices.value) {
+    if (hasVertices) {
         NiPoint3 vertices[numVertices];
     }
     NiBool hasNormals;
-    if (hasNormals.value) {
+    if (hasNormals) {
         NiPoint3 normals[numVertices];
     }
     float center;
     NiPoint3 radius;
     NiBool hasVertexColors;
-    if (hasVertexColors.value) {
+    if (hasVertexColors) {
         NiColorA vertexColors[numVertices];
     }
     ushort numUVSets;
     NiBool hasUVSets;
-    if (hasUVSets.value) {
+    if (hasUVSets) {
         NiPoint2 UVSets[numUVSets * numVertices];
     }
 } NiGeometryData;
@@ -180,7 +179,7 @@ typedef struct {
     float particleRadius;
     ushort numActive;
     NiBool hasSizes;
-    if (hasSizes.value) {
+    if (hasSizes) {
         float sizes[super.super.numVertices];
     }
 } NiParticlesData;  // TODO needs confirmation
@@ -194,7 +193,7 @@ typedef struct {
 typedef struct {
     NiParticlesData super;
     NiBool hasRotations;
-    if (hasRotations.value) {
+    if (hasRotations) {
         NiQuaternion rotations[super.super.super.numVertices];
     }
 } NiRotatingParticlesData;
@@ -410,7 +409,7 @@ typedef struct {
     local uint i;
     for (i = 0; i < numTextureMaps; i++) {
         NiBool hasMap;
-        if (hasMap.value) {
+        if (hasMap) {
             if (i == 5) {  // BumpMapIndex
                 NiTexturingPropertyBumpMap bumpMap;
             } else {
@@ -500,7 +499,7 @@ typedef struct {
     uint numProperties;
     int properties[numProperties];
     NiBool hasBoundingVolume;
-    if (hasBoundingVolume.value) {
+    if (hasBoundingVolume) {
         BoundType boundType;
         switch (boundType) {
             case BV_SPHERE: NiSphereBV boundingVolume; break;
@@ -1035,19 +1034,40 @@ typedef enum {
 
 
 typedef struct {
+    float time;
+    float value;
+} NiFloatKey;
+
+
+typedef struct {
+    float time;
+    float value;
+    float inTan;
+    float outTan;
+} NiFloatBezKey;
+
+
+typedef struct {
+    float time;
+    float value;
+    float tcb[3];
+} NiFloatTCBKey;
+
+
+typedef struct {
     NiObject super;
     uint numKeys;
     if (numKeys) {
         KeyType keyType;
         switch (keyType) {
             case KEY_NO_INTERP:
-                struct { float time; float value; } keys[numKeys]; break;
+                NiFloatKey keys[numKeys]; break;
             case KEY_LIN:
-                struct { float time; float value; } keys[numKeys]; break;
+                NiFloatKey keys[numKeys]; break;
             case KEY_BEZ:
-                struct { float time; float value; float inTan; float outTan; } keys[numKeys]; break;
+                NiFloatBezKey keys[numKeys]; break;
             case KEY_TCB:
-                struct { float time; float value; float t; float c; float b; } keys[numKeys]; break;
+                NiFloatTCBKey keys[numKeys]; break;
             default:
                 Assert(false);  // invalid interpolation
         }
@@ -1056,20 +1076,9 @@ typedef struct {
 
 
 typedef struct {
-    NiObject super;
-    uint numKeys;
-    if (numKeys) {
-        KeyType keyType;
-        switch (keyType) {
-            case KEY_NO_INTERP:
-                struct { float time; NiColorA value; } keys[numKeys]; break;
-            case KEY_LIN:
-                struct { float time; NiColorA value; } keys[numKeys]; break;
-            default:
-                Assert(false);  // invalid interpolation
-        }
-    }
-} NiColorData;
+    float time;
+    NiColorA value;
+} NiColorAKey;
 
 
 typedef struct {
@@ -1079,13 +1088,50 @@ typedef struct {
         KeyType keyType;
         switch (keyType) {
             case KEY_NO_INTERP:
-                struct { float time; NiPoint3 value; } keys[numKeys]; break;
+                NiColorAKey keys[numKeys]; break;
             case KEY_LIN:
-                struct { float time; NiPoint3 value; } keys[numKeys]; break;
+                NiColorAKey keys[numKeys]; break;
+            default:
+                Assert(false);  // invalid interpolation
+        }
+    }
+} NiColorData;
+
+
+typedef struct {
+    float time;
+    NiPoint3 value;
+} NiPosKey;
+
+
+typedef struct {
+    float time;
+    NiPoint3 value;
+    NiPoint3 inTan;
+    NiPoint3 outTan;
+} NiPosBezKey;
+
+
+typedef struct {
+    float time;
+    NiPoint3 value;
+    float tcb[3];
+} NiPosTCBKey;
+
+typedef struct {
+    NiObject super;
+    uint numKeys;
+    if (numKeys) {
+        KeyType keyType;
+        switch (keyType) {
+            case KEY_NO_INTERP:
+                NiPosKey keys[numKeys]; break;
+            case KEY_LIN:
+                NiPosKey keys[numKeys]; break;
             case KEY_BEZ:
-                struct { float time; NiPoint3 value; float inTanX; float inTanY; float inTanZ; float outTanX; float outTanY; float outTanZ; } keys[numKeys]; break;
+                NiPosBezKey keys[numKeys]; break;
             case KEY_TCB:
-                struct { float time; NiPoint3 value; float t; float c; float b; } keys[numKeys]; break;
+                NiPosTCBKey keys[numKeys]; break;
             default:
                 Assert(false);  // invalid interpolation
         }
@@ -1107,19 +1153,32 @@ typedef enum {
 
 
 typedef struct {
+    float time;
+    NiQuaternion value;
+} NiRotKey;
+
+
+typedef struct {
+    float time;
+    NiQuaternion value;
+    float tcb[3];
+} NiRotTCBKey;
+
+
+typedef struct {
     NiObject super;
     uint numKeys;
     if (numKeys) {
         KeyType keyType;
         switch (keyType) {
             case KEY_NO_INTERP:
-                struct { float time; NiQuaternion value; } keys[numKeys]; break;
+                NiRotKey keys[numKeys]; break;
             case KEY_LIN:
-                struct { float time; NiQuaternion value; } keys[numKeys]; break;
+                NiRotKey keys[numKeys]; break;
             case KEY_BEZ:
-                struct { float time; NiQuaternion value; } keys[numKeys]; break;
+                NiRotKey keys[numKeys]; break;
             case KEY_TCB:
-                struct { float time; NiQuaternion value; float t; float c; float b; } keys[numKeys]; break;
+                NiRotTCBKey keys[numKeys]; break;
             case KEY_EULER:
                 AxisOrder axisOrder;
                 NiFloatData eulerData[3];
@@ -1145,13 +1204,13 @@ typedef struct {
     if (numKeys) {
         switch (keyType) {
             case KEY_NO_INTERP:
-                struct { float time; float value; } keys[numKeys]; break;
+                NiFloatKey keys[numKeys]; break;
             case KEY_LIN:
-                struct { float time; float value; } keys[numKeys]; break;
+                NiFloatKey keys[numKeys]; break;
             case KEY_BEZ:
-                struct { float time; float value; float inTan; float outTan; } keys[numKeys]; break;
+                NiFloatBezKey keys[numKeys]; break;
             case KEY_TCB:
-                struct { float time; float value; float t; float c; float b; } keys[numKeys]; break;
+                NiFloatTCBKey keys[numKeys]; break;
             default:
                 Assert(false);  // invalid interpolation
         }
@@ -1180,6 +1239,12 @@ typedef struct {
 
 
 typedef struct {
+    ushort index;
+    float weight;
+} VertexWeight;
+
+
+typedef struct {
     NiMatrix3 rotation;
     NiPoint3 translation;
     float scale;
@@ -1187,7 +1252,7 @@ typedef struct {
     float radius;
     ushort numWeights;
     if (numWeights) {
-        struct { ushort index; float weight; } weights[numWeights];
+        VertexWeight weights[numWeights];
     }
 } NiSkinDataBoneData <optimize=false>;
 
@@ -1263,10 +1328,16 @@ typedef struct {
 
 
 typedef struct {
+    float time;
+    ubyte value;
+} NiVisKey;
+
+
+typedef struct {
     NiObject super;
     uint numKeys;
     if (numKeys) {
-        struct { float time; ubyte value; } keys[numKeys];
+        NiVisKey keys[numKeys];
     }
 } NiVisData;
 
