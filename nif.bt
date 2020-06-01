@@ -62,6 +62,12 @@ typedef struct {
 
 
 typedef struct {
+    NiPoint3 normal;
+    float constant;
+} NiPlane;
+
+
+typedef struct {
     float left;
     float right;
     float top;
@@ -200,6 +206,12 @@ typedef struct {
 
 
 typedef struct {
+    ushort numVertexIndices;
+    ushort vertexIndices[numVertexIndices];
+} SharedNormals <optimize=false>;
+
+
+typedef struct {
     NiTriBasedGeomData super;
     uint numTrianglePoints;
     if (numTrianglePoints) {
@@ -207,11 +219,7 @@ typedef struct {
     }
     ushort numSharedNormals;
     if (numSharedNormals) {
-        local uint i;
-        for (i = 0; i < numSharedNormals; i++) {
-            ushort numIndices;
-            ushort indices[numIndices];
-        }
+        SharedNormals sharedNormals[numSharedNormals];
     }
 } NiTriShapeData;
 
@@ -281,8 +289,8 @@ typedef enum {
 
 typedef struct {
     NiTexture super;
-    ubyte hasExternalTexture;
-    if (hasExternalTexture) {
+    ubyte hasExternal;
+    if (hasExternal) {
         NiString fileName;
     } else {
         ubyte hasPixelData;
@@ -476,13 +484,17 @@ typedef struct {
 } NiBoxBV;
 
 
+// typedef struct {} NiUnionBV;
+
 typedef struct {
     uint numBoundingVolumes;
     local uint i;
     for (i = 0; i < numBoundingVolumes; i++) {
+        BoundType boundType;
         switch (boundType) {
             case BV_SPHERE: NiSphereBV boundingVolume; break;
             case BV_BOX: NiBoxBV boundingVolume; break;
+            case BV_UNION: struct NiUnionBV boundingVolume; break;
             default:
                 Assert(false);  // TODO other bound types
         }
@@ -659,6 +671,12 @@ typedef struct {
     NiNode super;
 } AvoidNode;
 
+
+typedef struct {
+    NiNode super;
+} BSMirroredNode;
+
+
 typedef struct {
     NiNode super;
 } RootCollisionNode;
@@ -682,6 +700,12 @@ typedef struct {
 typedef struct {
     NiNode super;
 } NiBSParticleNode;
+
+
+typedef struct {
+    NiNode super;
+    NiPlane modelPlane;
+} NiBSPNode;
 
 
 typedef struct {
@@ -788,8 +812,7 @@ typedef struct {
     NiPoint3 position;
     NiPoint3 x_axis;
     NiPoint3 y_axis;
-    NiPoint3 normal;
-    float distance;
+    NiPlane plane;
 } NiPlanarCollider;
 
 
@@ -904,6 +927,33 @@ typedef struct {
 
 
 typedef struct {
+    NiString targetName;
+    int targetController;
+} SequenceTarget <optimize=false>;
+
+
+typedef struct {
+    NiString sequenceName;
+    ubyte hasExternal;
+    if (hasExternal) {
+        NiString keyframeFile;
+    } else {
+        int unknown1;
+        int unknown2;  // link?
+    }
+    uint numTargets;
+    SequenceTarget targets[numTargets];
+} NiSequence <optimize=false>;
+
+
+typedef struct {
+    NiTimeController super;
+    uint numSequences;
+    NiSequence sequences[numSequences];
+} NiKeyframeManager;
+
+
+typedef struct {
     NiTimeController super;
     int lightColorData;
 } NiLightColorController;
@@ -988,6 +1038,11 @@ typedef struct {
 typedef struct {
     NiParticleSystemController super;
 } NiBSPArrayController;
+
+
+typedef struct {
+    NiParticleSystemController super;
+} NiBPArrayController;
 
 
 typedef enum {
@@ -1221,7 +1276,7 @@ typedef struct {
     if (numVertices) {
         NiPoint3 vertices[parentof(this).numVertices];
     }
-} NiMorphDataMorphTarget <optimize=false>;
+} MorphTarget <optimize=false>;
 
 
 typedef struct {
@@ -1229,7 +1284,7 @@ typedef struct {
     uint numTargets;
     uint numVertices;
     ubyte relativeTargets;
-    NiMorphDataMorphTarget targets[numTargets];
+    MorphTarget targets[numTargets];
 } NiMorphData;
 
 
@@ -1242,8 +1297,8 @@ typedef struct {
 
 
 typedef struct {
-    ushort index;
-    float weight;
+    ushort vertexIndex;
+    float vertexWeight;
 } VertexWeight;
 
 
@@ -1253,11 +1308,11 @@ typedef struct {
     float scale;
     NiPoint3 center;
     float radius;
-    ushort numWeights;
-    if (numWeights) {
-        VertexWeight weights[numWeights];
+    ushort numVertexWeights;
+    if (numVertexWeights) {
+        VertexWeight vertexWeights[numVertexWeights];
     }
-} NiSkinDataBoneData <optimize=false>;
+} SkinDataBoneData <optimize=false>;
 
 
 typedef struct {
@@ -1268,7 +1323,7 @@ typedef struct {
     uint numBones;
     int skinPartition;
     if (numBones) {
-        NiSkinDataBoneData boneData[numBones];
+        SkinDataBoneData boneData[numBones];
     }
 } NiSkinData;
 
@@ -1285,20 +1340,19 @@ typedef struct {
 
 
 typedef struct {
-    NiObject super;
     ushort numVertices;
     ushort numTriangles;
     ushort numBones;
     ushort numStrips;
     ushort numBonesPerVertex;
-    if (num_bones) {
+    if (numBones) {
         ushort bones[numBones];
     }
     if (numVertices) {
         ushort vertexMap[numVertices];
     }
     if (numVertices && numBonesPerVertex) {
-        float weights[numVertices * numBonesPerVertex];
+        float weights[numBonesPerVertex * numVertices];
     }
     if (numStrips) {
         ushort stripLengths[numStrips];
@@ -1311,13 +1365,20 @@ typedef struct {
             ushort triangles[stripLengthsSum];
         }
     }
-    if (numStrips == 0 || stripLengthsSum == 0) {
+    else {
         ushort triangles[numTriangles * 3];
     }
     ubyte hasPalette;
     if (hasPalette && numBonesPerVertex && numVertices) {
         ubyte bonePalette[numBonesPerVertex * numVertices];
     }
+} SkinPartitionData <optimize=false>;
+
+
+typedef struct {
+    NiObject super;
+    uint numSkinPartitions;
+    SkinPartitionData skinPartitions[numSkinPartitions];
 } NiSkinPartition;
 
 
@@ -1442,12 +1503,13 @@ for (i = 0; i < header.numObjects; i++) {
 
         case "NiNode": NiNode object; break;
         case "AvoidNode": AvoidNode object; break;
+        case "BSMirroredNode": BSMirroredNode object; break;
         case "RootCollisionNode": RootCollisionNode object; break;
         case "NiBillboardNode": NiBillboardNode object; break;
         case "NiBSAnimationNode": NiBSAnimationNode object; break;
         case "NiBSAnimationManager": NiBSAnimationManager object; break;
         case "NiBSParticleNode": NiBSParticleNode object; break;
-        // case "NiBSPNode": NiBSPNode object; break;
+        case "NiBSPNode": NiBSPNode object; break;
         case "NiCollisionSwitch": NiCollisionSwitch object; break;
         case "NiSortAdjustNode": NiSortAdjustNode object; break;
         case "NiSwitchNode": NiSwitchNode object; break;
@@ -1476,7 +1538,7 @@ for (i = 0; i < header.numObjects; i++) {
         case "NiAlphaController": NiAlphaController object; break;
         case "NiRollController": NiRollController object; break;
         case "NiKeyframeController": NiKeyframeController object; break;
-        // case "NiKeyframeManager": NiKeyframeManager object; break;
+        case "NiKeyframeManager": NiKeyframeManager object; break;
         case "NiLightColorController": NiLightColorController object; break;
         case "NiLookAtController": NiLookAtController object; break;
         case "NiMaterialColorController": NiMaterialColorController object; break;
