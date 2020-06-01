@@ -6,9 +6,7 @@ typedef uint NiBool <read=NiBool_read>;
 
 typedef struct {
     uint size;
-    if (size > 0) {
-        char value[size];
-    }
+    char value[size];
 } NiString <read=NiString_read>;
 
 
@@ -214,13 +212,9 @@ typedef struct {
 typedef struct {
     NiTriBasedGeomData super;
     uint numTrianglePoints;
-    if (numTrianglePoints) {
-        ushort triangles[numTrianglePoints];
-    }
+    ushort triangles[numTrianglePoints];
     ushort numSharedNormals;
-    if (numSharedNormals) {
-        SharedNormals sharedNormals[numSharedNormals];
-    }
+    SharedNormals sharedNormals[numSharedNormals];
 } NiTriShapeData;
 
 
@@ -234,11 +228,9 @@ typedef struct {
 typedef struct {
     NiTriBasedGeomData super;
     ushort numStrips;
-    if (numStrips) {
-        ushort stripLengths[numStrips];
-        for (i = 0; i < numStrips; i++) {
-            ushort strips[numStrips[i]];
-        }
+    ushort stripLengths[numStrips];
+    for (i = 0; i < numStrips; i++) {
+        ushort strips[numStrips[i]];
     }
 } NiTriStripsData;
 
@@ -657,13 +649,9 @@ typedef struct {
 typedef struct {
     NiAVObject super;
     uint numChildren;
-    if (numChildren) {
-        int children[numChildren];
-    }
+    int children[numChildren];
     uint numEffects;
-    if (numEffects) {
-        int effects[numEffects];
-    }
+    int effects[numEffects];
 } NiNode;
 
 
@@ -743,9 +731,7 @@ typedef struct {
     NiSwitchNode super;
     NiPoint3 LODCenter;
     uint numLODLevels;
-    if (numLODLevels) {
-        float LODLevels[numLODLevels * 2];
-    }
+    float LODLevels[numLODLevels * 2];
 } NiLODNode;
 
 
@@ -870,15 +856,11 @@ typedef struct {
     NiObject super;
     NiPixelFormat pixelFormat;
     int palette;
-    uint mipMapLevels;
+    uint numMipMapLevels;
     uint pixelStride;
-    if (mipMapLevels) {
-        uint mipMaps[mipMapLevels * 3];
-    }
+    uint mipMaps[numMipMapLevels * 3];
     uint numPixels;
-    if (numPixels) {
-        ubyte pixelData[numPixels];
-    }
+    ubyte pixelData[numPixels];
 } NiPixelData;
 
 
@@ -1025,9 +1007,7 @@ typedef struct {
     float spawnedDirectionChaos;
     ushort numParticles;
     ushort numActiveParticles;
-    if (numParticles) {
-        NiPerParticleData particles[numParticles];
-    }
+    NiPerParticleData particles[numParticles];
     int emitterModifier;
     int particleModifier;
     int particleCollider;
@@ -1051,7 +1031,7 @@ typedef enum {
 } BankDirection;
 
 
-typedef enum {
+typedef enum <ushort> {
     AXIS_X,
     AXIS_Y,
     AXIS_Z,
@@ -1273,9 +1253,7 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-    if (numVertices) {
-        NiPoint3 vertices[parentof(this).numVertices];
-    }
+    NiPoint3 vertices[parentof(this).numVertices];
 } MorphTarget <optimize=false>;
 
 
@@ -1309,9 +1287,7 @@ typedef struct {
     NiPoint3 center;
     float radius;
     ushort numVertexWeights;
-    if (numVertexWeights) {
-        VertexWeight vertexWeights[numVertexWeights];
-    }
+    VertexWeight vertexWeights[numVertexWeights];
 } SkinDataBoneData <optimize=false>;
 
 
@@ -1322,9 +1298,7 @@ typedef struct {
     float scale;
     uint numBones;
     int skinPartition;
-    if (numBones) {
-        SkinDataBoneData boneData[numBones];
-    }
+    SkinDataBoneData boneData[numBones];
 } NiSkinData;
 
 
@@ -1333,9 +1307,7 @@ typedef struct {
     int skinData;
     int root;
     uint numBones;
-    if (numBones) {
-        int bones[numBones];;
-    }
+    int bones[numBones];;
 } NiSkinInstance;
 
 
@@ -1345,15 +1317,9 @@ typedef struct {
     ushort numBones;
     ushort numStrips;
     ushort numBonesPerVertex;
-    if (numBones) {
-        ushort bones[numBones];
-    }
-    if (numVertices) {
-        ushort vertexMap[numVertices];
-    }
-    if (numVertices && numBonesPerVertex) {
-        float weights[numBonesPerVertex * numVertices];
-    }
+    ushort bones[numBones];
+    ushort vertexMap[numVertices];
+    float weights[numBonesPerVertex * numVertices];
     if (numStrips) {
         ushort stripLengths[numStrips];
         local uint stripLengthsSum = 0;
@@ -1361,15 +1327,12 @@ typedef struct {
         for (i = 0; i < numStrips; i++) {
             stripLengthsSum += stripLengths[i];
         }
-        if (stripLengthsSum) {
-            ushort triangles[stripLengthsSum];
-        }
-    }
-    else {
+        ushort triangles[stripLengthsSum];
+    } else {
         ushort triangles[numTriangles * 3];
     }
     ubyte hasPalette;
-    if (hasPalette && numBonesPerVertex && numVertices) {
+    if (hasPalette) {
         ubyte bonePalette[numBonesPerVertex * numVertices];
     }
 } SkinPartitionData <optimize=false>;
@@ -1400,9 +1363,7 @@ typedef struct {
 typedef struct {
     NiObject super;
     uint numKeys;
-    if (numKeys) {
-        NiVisKey keys[numKeys];
-    }
+    NiVisKey keys[numKeys];
 } NiVisData;
 
 
