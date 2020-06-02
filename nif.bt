@@ -1443,6 +1443,14 @@ string NiString_read(NiString &self) {
 }
 
 
+/* -- Constants -- */
+
+
+const uint syntaxColorArray[8] = {
+    cDkRed, cDkBlue, cDkGreen, cBlack, cDkYellow, cDkPurple, cDkAqua, cDkGray
+};
+
+
 /* -- Begin Parsing -- */
 
 
@@ -1450,11 +1458,13 @@ struct {
     char header[40];
     uint version <format=hex>;
     uint numObjects;
-} header;
+} header <fgcolor=cSilver>;
 
 
 local uint i;
 for (i = 0; i < header.numObjects; i++) {
+    SetForeColor(syntaxColorArray[i & 7]);
+
     NiString objectType;
     switch (objectType.value) {
         case "NiObject": NiObject object; break;
@@ -1591,4 +1601,4 @@ for (i = 0; i < header.numObjects; i++) {
 struct {
     uint numRoots;
     uint roots[numRoots];
-} footer;
+} footer <fgcolor=cSilver>;
