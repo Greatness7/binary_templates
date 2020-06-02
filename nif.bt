@@ -1368,7 +1368,7 @@ typedef struct {
 
 typedef struct {
     NiObject super;
-} NiEmitterModifier;  // TODO
+} NiEmitterModifier;  // TODO needs confirmation
 
 
 /* -- Functions -- */
