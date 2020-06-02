@@ -578,18 +578,20 @@ typedef struct {
 
 typedef struct {
     uint numBoundingVolumes;
-    local uint i;
-    for (i = 0; i < numBoundingVolumes; i++) {
-        BoundType boundType;
-        switch (boundType) {
-            case SPHERE_BV: NiSphereBV boundingVolume; break;
-            case BOX_BV: NiBoxBV boundingVolume; break;
-            case UNION_BV: struct NiUnionBV boundingVolume; break;
-            default:
-                Assert(false);  // TODO other bound types
-        }
-    }
+    struct NiBoundingVolume boundingVolumes[numBoundingVolumes];
 } NiUnionBV <optimize=false>;  // not NiObject derived
+
+
+typedef struct {
+    BoundType boundType;
+    switch (boundType) {
+        case SPHERE_BV: NiSphereBV boundingVolume; break;
+        case BOX_BV: NiBoxBV boundingVolume; break;
+        case UNION_BV: NiUnionBV boundingVolume; break;
+        default:
+            Assert(false);  // TODO other bound types
+    }
+} NiBoundingVolume <optimize=false>;  // not NiObject derived
 
 
 typedef struct {
@@ -603,14 +605,7 @@ typedef struct {
     int properties[numProperties];
     NiBool hasBoundingVolume;
     if (hasBoundingVolume) {
-        BoundType boundType;
-        switch (boundType) {
-            case SPHERE_BV: NiSphereBV boundingVolume; break;
-            case BOX_BV: NiBoxBV boundingVolume; break;
-            case UNION_BV: NiUnionBV boundingVolume; break;
-            default:
-                Assert(false);  // TODO other bound types
-        }
+        NiBoundingVolume boundingVolume;
     }
 } NiAVObject;
 
