@@ -256,7 +256,7 @@ typedef struct {
 } NiFrustum;
 
 
-/* -- NiObject Types -- */
+/* -- Main Types -- */
 
 
 typedef struct {
@@ -289,6 +289,10 @@ typedef struct {
 typedef struct {
     NiExtraData super;
 } TES3ObjectExtraData;
+
+typedef struct {
+    NiExtraData super;
+} BrickNiExtraData;
 
 
 typedef struct {
@@ -424,6 +428,16 @@ typedef struct {
 typedef struct {
     NiObjectNET super;
 } NiTexture;
+
+
+typedef struct {
+    NiTexture super;
+} NiRenderedTexture;
+
+
+typedef struct {
+    NiTexture super;
+} NiRenderedCubeMap;
 
 
 typedef struct {
@@ -611,13 +625,30 @@ typedef struct {
 
 
 typedef struct {
+    NiObject super;
+    ushort numVertices;
+    NiPoint3 vertices[numVertices];
+    NiBool hasTexture;
+    if (hasTexture) {
+        NiPoint2 texCoords[numVertices];
+    }
+    NiBool hasColors;
+    if (hasColors) {
+        NiColorA colors[numVertices];
+    }
+    uint numPropertyStates;
+    int propertyStates[numPropertyStates];
+} NiScreenPolygon;
+
+
+typedef struct {
     NiAVObject super;
     NiFrustum viewFrustum;
     NiRect viewPort;
     float lodAdjust;
     int scene;
     uint numScreenPolygons;
-    uint screenPolygons[numScreenPolygons];
+    int screenPolygons[numScreenPolygons];
 } NiCamera;
 
 
@@ -897,6 +928,16 @@ typedef struct {
     uint numPixels;
     ubyte pixelData[numPixels];
 } NiPixelData;
+
+
+typedef struct {
+    NiObject super;
+} NiRenderer;
+
+
+typedef struct {
+    NiObject super;
+} NiDX8Renderer;
 
 
 typedef struct {
@@ -1404,10 +1445,11 @@ for (i = 0; i < header.numObjects; i++) {
         case "NiAlphaAccumulator": NiAlphaAccumulator object; break;
 
         case "NiExtraData": NiExtraData object; break;
-        case "TES3ObjectExtraData": TES3ObjectExtraData object; break;
         case "NiStringExtraData": NiStringExtraData object; break;
         case "NiTextKeyExtraData": NiTextKeyExtraData object; break;
         case "NiVertWeightsExtraData": NiVertWeightsExtraData object; break;
+        case "TES3ObjectExtraData": TES3ObjectExtraData object; break;
+        case "BrickNiExtraData": BrickNiExtraData object; break;
 
         case "NiGeometryData": NiGeometryData object; break;
         case "NiTriBasedGeomData": NiTriBasedGeomData object; break;
@@ -1423,8 +1465,8 @@ for (i = 0; i < header.numObjects; i++) {
         case "NiSequenceStreamHelper": NiSequenceStreamHelper object; break;
 
         case "NiTexture": NiTexture object; break;
-        // case "NiRenderedTexture": NiRenderedTexture object; break;
-        // case "NiRenderedCubeMap": NiRenderedCubeMap object; break;
+        case "NiRenderedTexture": NiRenderedTexture object; break;
+        case "NiRenderedCubeMap": NiRenderedCubeMap object; break;
         case "NiSourceTexture": NiSourceTexture object; break;
 
         case "NiProperty": NiProperty object; break;
@@ -1489,8 +1531,8 @@ for (i = 0; i < header.numObjects; i++) {
         case "NiPixelData": NiPixelData object; break;
         // case "NiBltSource": NiBltSource object; break;
 
-        // case "NiRenderer": NiRenderer object; break;
-        // case "NiDX8Renderer": NiDX8Renderer object; break;
+        case "NiRenderer": NiRenderer object; break;
+        case "NiDX8Renderer": NiDX8Renderer object; break;
 
         case "NiTimeController": NiTimeController object; break;
         case "NiFlipController": NiFlipController object; break;
@@ -1517,7 +1559,7 @@ for (i = 0; i < header.numObjects; i++) {
         case "NiMorphData": NiMorphData object; break;
         case "NiPalette": NiPalette object; break;
         case "NiPosData": NiPosData object; break;
-        // case "NiScreenPolygon": NiScreenPolygon object; break;
+        case "NiScreenPolygon": NiScreenPolygon object; break;
         case "NiSkinData": NiSkinData object; break;
         case "NiSkinInstance": NiSkinInstance object; break;
         case "NiSkinPartition": NiSkinPartition object; break;
