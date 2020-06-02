@@ -435,27 +435,27 @@ typedef struct {
     NiString name;
     NiLink controller;  // NiTimeController
     NiLink extraData;  // NiExtraData
-} NiObjectNET <name="NiObjectNET">;
+} NiObjectNET <name="NiObjectNET", read=NiObjectNET_Read>;
 
 
 typedef struct {
     NiObjectNET super;
-} NiSequenceStreamHelper <name="NiSequenceStreamHelper">;
+} NiSequenceStreamHelper <name="NiSequenceStreamHelper", read=NiSequenceStreamHelper_Read>;
 
 
 typedef struct {
     NiObjectNET super;
-} NiTexture <name="NiTexture">;
+} NiTexture <name="NiTexture", read=NiTexture_Read>;
 
 
 typedef struct {
     NiTexture super;
-} NiRenderedTexture <name="NiRenderedTexture">;
+} NiRenderedTexture <name="NiRenderedTexture", read=NiRenderedTexture_Read>;
 
 
 typedef struct {
     NiTexture super;
-} NiRenderedCubeMap <name="NiRenderedCubeMap">;
+} NiRenderedCubeMap <name="NiRenderedCubeMap", read=NiRenderedCubeMap_Read>;
 
 
 typedef struct {
@@ -473,31 +473,31 @@ typedef struct {
     UseMipMaps useMipMaps;
     AlphaFormat alphaFormat;
     ubyte isStatic;
-} NiSourceTexture <name="NiSourceTexture">;
+} NiSourceTexture <name="NiSourceTexture", read=NiSourceTexture_Read>;
 
 
 typedef struct {
     NiObjectNET super;
     ushort flags;
-} NiProperty <name="NiProperty">;
+} NiProperty <name="NiProperty", read=NiProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
     ubyte testRef;
-} NiAlphaProperty <name="NiAlphaProperty">;
+} NiAlphaProperty <name="NiAlphaProperty", read=NiAlphaProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
-} NiDitherProperty <name="NiDitherProperty">;
+} NiDitherProperty <name="NiDitherProperty", read=NiDitherProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
     float fogDepth;
     NiColor fogColor;
-} NiFogProperty <name="NiFogProperty">;
+} NiFogProperty <name="NiFogProperty", read=NiFogProperty_Read>;
 
 
 typedef struct {
@@ -508,23 +508,23 @@ typedef struct {
     NiColor emissiveColor;
     float shine;
     float alpha;
-} NiMaterialProperty <name="NiMaterialProperty">;
+} NiMaterialProperty <name="NiMaterialProperty", read=NiMaterialProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
     uint unknown;
-} NiRendererSpecificProperty <name="NiRendererSpecificProperty">;
+} NiRendererSpecificProperty <name="NiRendererSpecificProperty", read=NiRendererSpecificProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
-} NiShadeProperty <name="NiShadeProperty">;
+} NiShadeProperty <name="NiShadeProperty", read=NiShadeProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
-} NiSpecularProperty <name="NiSpecularProperty">;
+} NiSpecularProperty <name="NiSpecularProperty", read=NiSpecularProperty_Read>;
 
 
 typedef struct {
@@ -537,7 +537,7 @@ typedef struct {
     uint passZFailAction;
     uint passAction;
     uint drawMode;
-} NiStencilProperty <name="NiStencilProperty">;
+} NiStencilProperty <name="NiStencilProperty", read=NiStencilProperty_Read>;
 
 
 typedef struct {
@@ -575,24 +575,24 @@ typedef struct {
             }
         }
     }
-} NiTexturingProperty <name="NiTexturingProperty">;
+} NiTexturingProperty <name="NiTexturingProperty", read=NiTexturingProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
     SourceVertexMode sourceVertexMode;
     LightingMode lightingMode;
-} NiVertexColorProperty <name="NiVertexColorProperty">;
+} NiVertexColorProperty <name="NiVertexColorProperty", read=NiVertexColorProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
-} NiWireframeProperty <name="NiWireframeProperty">;
+} NiWireframeProperty <name="NiWireframeProperty", read=NiWireframeProperty_Read>;
 
 
 typedef struct {
     NiProperty super;
-} NiZBufferProperty <name="NiZBufferProperty">;
+} NiZBufferProperty <name="NiZBufferProperty", read=NiZBufferProperty_Read>;
 
 
 typedef struct {
@@ -639,7 +639,7 @@ typedef struct {
     if (hasBoundingVolume) {
         NiBoundingVolume boundingVolume;
     }
-} NiAVObject <name="NiAVObject">;
+} NiAVObject <name="NiAVObject", read=NiAVObject_Read>;
 
 
 typedef struct {
@@ -667,14 +667,14 @@ typedef struct {
     NiLink sceneNode;  // NiNode
     uint numScreenPolygons;
     NiLink screenPolygons[numScreenPolygons];  // NiScreenPolygon
-} NiCamera <name="NiCamera">;
+} NiCamera <name="NiCamera", read=NiCamera_Read>;
 
 
 typedef struct {
     NiAVObject super;
     uint numAffectedNodes;
     NiLink affectedNodes[numAffectedNodes];  // NiNode
-} NiDynamicEffect <name="NiDynamicEffect">;
+} NiDynamicEffect <name="NiDynamicEffect", read=NiDynamicEffect_Read>;
 
 
 typedef struct {
@@ -692,7 +692,7 @@ typedef struct {
     ushort ps2K;
     ubyte unknown1;
     ubyte unknown2;
-} NiTextureEffect <name="NiTextureEffect">;
+} NiTextureEffect <name="NiTextureEffect", read=NiTextureEffect_Read>;
 
 
 typedef struct {
@@ -701,17 +701,17 @@ typedef struct {
     NiColor ambient_color;
     NiColor diffuse_color;
     NiColor specular_color;
-} NiLight <name="NiLight">;
+} NiLight <name="NiLight", read=NiLight_Read>;
 
 
 typedef struct {
     NiLight super;
-} NiAmbientLight <name="NiAmbientLight">;
+} NiAmbientLight <name="NiAmbientLight", read=NiAmbientLight_Read>;
 
 
 typedef struct {
     NiLight super;
-} NiDirectionalLight <name="NiDirectionalLight">;
+} NiDirectionalLight <name="NiDirectionalLight", read=NiDirectionalLight_Read>;
 
 
 typedef struct {
@@ -719,56 +719,56 @@ typedef struct {
     float constantAttenuation;
     float linearAttenuation;
     float quadraticAttenuation;
-} NiPointLight <name="NiPointLight">;
+} NiPointLight <name="NiPointLight", read=NiPointLight_Read>;
 
 
 typedef struct {
     NiPointLight super;
     float outerSpotAngle;
     float exponent;
-} NiSpotLight <name="NiSpotLight">;
+} NiSpotLight <name="NiSpotLight", read=NiSpotLight_Read>;
 
 
 typedef struct {
     NiAVObject super;
     NiLink geometryData;  // NiGeometryData
     NiLink skinInstance;  // NiSkinInstance
-} NiGeometry <name="NiGeometry">;
+} NiGeometry <name="NiGeometry", read=NiGeometry_Read>;
 
 
 typedef struct {
     NiGeometry super;
-} NiLines <name="NiLines">;
+} NiLines <name="NiLines", read=NiLines_Read>;
 
 
 typedef struct {
     NiGeometry super;
-} NiTriBasedGeom <name="NiTriBasedGeom">;
+} NiTriBasedGeom <name="NiTriBasedGeom", read=NiTriBasedGeom_Read>;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiTriShape <name="NiTriShape">;
+} NiTriShape <name="NiTriShape", read=NiTriShape_Read>;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiParticles <name="NiParticles">;
+} NiParticles <name="NiParticles", read=NiParticles_Read>;
 
 
 typedef struct {
     NiParticles super;
-} NiAutoNormalParticles <name="NiAutoNormalParticles">;
+} NiAutoNormalParticles <name="NiAutoNormalParticles", read=NiAutoNormalParticles_Read>;
 
 
 typedef struct {
     NiParticles super;
-} NiRotatingParticles <name="NiRotatingParticles">;
+} NiRotatingParticles <name="NiRotatingParticles", read=NiRotatingParticles_Read>;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiTriStrips <name="NiTriStrips">;
+} NiTriStrips <name="NiTriStrips", read=NiTriStrips_Read>;
 
 
 typedef struct {
@@ -777,7 +777,7 @@ typedef struct {
     NiLink children[numChildren];  // NiAVObject
     uint numEffects;
     NiLink effects[numEffects];  // NiDynamicEffect
-} NiNode <name="NiNode">;
+} NiNode <name="NiNode", read=NiNode_Read>;
 
 
 typedef struct {
@@ -797,7 +797,7 @@ typedef struct {
 
 typedef struct {
     NiNode super;
-} NiBillboardNode <name="NiBillboardNode">;
+} NiBillboardNode <name="NiBillboardNode", read=NiBillboardNode_Read>;
 
 
 typedef struct {
@@ -818,31 +818,31 @@ typedef struct {
 typedef struct {
     NiNode super;
     NiPlane modelPlane;
-} NiBSPNode <name="NiBSPNode">;
+} NiBSPNode <name="NiBSPNode", read=NiBSPNode_Read>;
 
 
 typedef struct {
     NiNode super;
-} NiCollisionSwitch <name="NiCollisionSwitch">;
+} NiCollisionSwitch <name="NiCollisionSwitch", read=NiCollisionSwitch_Read>;
 
 
 typedef struct {
     NiNode super;
     SortingMode sortingMode;
     NiLink accumulator;  // NiAccumulator
-} NiSortAdjustNode <name="NiSortAdjustNode">;
+} NiSortAdjustNode <name="NiSortAdjustNode", read=NiSortAdjustNode_Read>;
 
 
 typedef struct {
     NiNode super;
     uint activeIndex;
-} NiSwitchNode <name="NiSwitchNode">;
+} NiSwitchNode <name="NiSwitchNode", read=NiSwitchNode_Read>;
 
 
 typedef struct {
     NiSwitchNode super;
     float period;
-} NiFltAnimationNode <name="NiFltAnimationNode">;
+} NiFltAnimationNode <name="NiFltAnimationNode", read=NiFltAnimationNode_Read>;
 
 
 typedef struct {
@@ -850,7 +850,7 @@ typedef struct {
     NiPoint3 LODCenter;
     uint numLODLevels;
     float LODLevels[numLODLevels * 2];
-} NiLODNode <name="NiLODNode">;
+} NiLODNode <name="NiLODNode", read=NiLODNode_Read>;
 
 
 typedef struct {
@@ -1441,6 +1441,60 @@ string NiBool_Read(NiBool &self) {
 string NiString_Read(NiString &self) {
     return self.size ? self.value : "";
 }
+
+
+// Put object names into the variable window's "Value" column.
+// Template limitations make this ugl, is there a better way?
+string NiObjectNET_Read(NiObjectNET &self) { return self.name.size ? self.name.value : ""; }
+string NiSequenceStreamHelper_Read(NiSequenceStreamHelper &self) { return NiObjectNET_Read(self.super); }
+string NiTexture_Read(NiTexture &self) { return NiObjectNET_Read(self.super); }
+string NiSourceTexture_Read(NiSourceTexture &self) { return NiTexture_Read(self.super); }
+string NiRenderedTexture_Read(NiRenderedTexture &self) { return NiTexture_Read(self.super); }
+string NiRenderedCubeMap_Read(NiRenderedCubeMap &self) { return NiRenderedTexture_Read(self.super); }
+string NiProperty_Read(NiProperty &self) { return NiObjectNET_Read(self.super); }
+string NiAlphaProperty_Read(NiAlphaProperty &self) { return NiProperty_Read(self.super); }
+string NiDitherProperty_Read(NiDitherProperty &self) { return NiProperty_Read(self.super); }
+string NiFogProperty_Read(NiFogProperty &self) { return NiProperty_Read(self.super); }
+string NiMaterialProperty_Read(NiMaterialProperty &self) { return NiProperty_Read(self.super); }
+string NiRendererSpecificProperty_Read(NiRendererSpecificProperty &self) { return NiProperty_Read(self.super); }
+string NiShadeProperty_Read(NiShadeProperty &self) { return NiProperty_Read(self.super); }
+string NiSpecularProperty_Read(NiSpecularProperty &self) { return NiProperty_Read(self.super); }
+string NiStencilProperty_Read(NiStencilProperty &self) { return NiProperty_Read(self.super); }
+string NiTexturingProperty_Read(NiTexturingProperty &self) { return NiProperty_Read(self.super); }
+string NiVertexColorProperty_Read(NiVertexColorProperty &self) { return NiProperty_Read(self.super); }
+string NiWireframeProperty_Read(NiWireframeProperty &self) { return NiProperty_Read(self.super); }
+string NiZBufferProperty_Read(NiZBufferProperty &self) { return NiProperty_Read(self.super); }
+string NiAVObject_Read(NiAVObject &self) { return NiObjectNET_Read(self.super); }
+string NiCamera_Read(NiCamera &self) { return NiAVObject_Read(self.super); }
+string NiDynamicEffect_Read(NiDynamicEffect &self) { return NiAVObject_Read(self.super); }
+string NiTextureEffect_Read(NiTextureEffect &self) { return NiDynamicEffect_Read(self.super); }
+string NiLight_Read(NiLight &self) { return NiDynamicEffect_Read(self.super); }
+string NiAmbientLight_Read(NiAmbientLight &self) { return NiLight_Read(self.super); }
+string NiDirectionalLight_Read(NiDirectionalLight &self) { return NiLight_Read(self.super); }
+string NiPointLight_Read(NiPointLight &self) { return NiLight_Read(self.super); }
+string NiSpotLight_Read(NiSpotLight &self) { return NiPointLight_Read(self.super); }
+string NiGeometry_Read(NiGeometry &self) { return NiAVObject_Read(self.super); }
+string NiLines_Read(NiLines &self) { return NiGeometry_Read(self.super); }
+string NiTriBasedGeom_Read(NiTriBasedGeom &self) { return NiGeometry_Read(self.super); }
+string NiTriStrips_Read(NiTriStrips &self) { return NiTriBasedGeom_Read(self.super); }
+string NiTriShape_Read(NiTriShape &self) { return NiTriBasedGeom_Read(self.super); }
+string NiParticles_Read(NiParticles &self) { return NiTriShape_Read(self.super); }
+string NiAutoNormalParticles_Read(NiAutoNormalParticles &self) { return NiParticles_Read(self.super); }
+string NiRotatingParticles_Read(NiRotatingParticles &self) { return NiParticles_Read(self.super); }
+string NiNode_Read(NiNode &self) { return NiAVObject_Read(self.super); }
+string AvoidNode_Read(AvoidNode &self) { return NiNode_Read(self.super); }
+string RootCollisionNode_Read(RootCollisionNode &self) { return NiNode_Read(self.super); }
+string NiBillboardNode_Read(NiBillboardNode &self) { return NiNode_Read(self.super); }
+string NiBSAnimationNode_Read(NiBSAnimationNode &self) { return NiNode_Read(self.super); }
+string NiBSAnimationManager_Read(NiBSAnimationManager &self) { return NiNode_Read(self.super); }
+string NiBSParticleNode_Read(NiBSParticleNode &self) { return NiNode_Read(self.super); }
+string NiBSPNode_Read(NiBSPNode &self) { return NiNode_Read(self.super); }
+string NiCollisionSwitch_Read(NiCollisionSwitch &self) { return NiNode_Read(self.super); }
+string NiSortAdjustNode_Read(NiSortAdjustNode &self) { return NiNode_Read(self.super); }
+string NiSwitchNode_Read(NiSwitchNode &self) { return NiNode_Read(self.super); }
+string NiFltAnimationNode_Read(NiFltAnimationNode &self) { return NiSwitchNode_Read(self.super); }
+string NiLODNode_Read(NiLODNode &self) { return NiSwitchNode_Read(self.super); }
+
 
 
 /* -- Constants -- */
