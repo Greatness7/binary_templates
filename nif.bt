@@ -24,7 +24,7 @@ typedef enum {
     BINARY,
     SMOOTH,
     ALPHA_DEFAULT,
-} AlphaFormat;
+} AlphaFormat <name="AlphaFormat">;
 
 
 typedef enum {
@@ -33,7 +33,7 @@ typedef enum {
     APPLY_MODULATE,
     APPLY_HILIGHT,
     APPLY_HILIGHT2,
-} ApplyMode;
+} ApplyMode <name="ApplyMode">;
 
 
 typedef enum {
@@ -46,13 +46,13 @@ typedef enum {
     XYX,
     YZY,
     ZXZ,
-} AxisOrder;
+} AxisOrder <name="AxisOrder">;
 
 
 typedef enum {
     NEGATIVE = -1,
     POSITIVE = 1,
-} BankDirection;
+} BankDirection <name="BankDirection">;
 
 
 typedef enum {
@@ -63,7 +63,7 @@ typedef enum {
     LOZENGE_BV,
     UNION_BV,
     HALFSPACE_BV,
-} BoundType;
+} BoundType <name="BoundType">;
 
 
 typedef enum {
@@ -71,7 +71,7 @@ typedef enum {
     CLAMP_S_WRAP_T,
     WRAP_S_CLAMP_T,
     WRAP_S_WRAP_T,
-} ClampMode;
+} ClampMode <name="ClampMode">;
 
 
 typedef enum {
@@ -80,14 +80,14 @@ typedef enum {
     SPHERE_MAP,
     SPECULAR_CUBE_MAP,
     DIFFUSE_CUBE_MAP,
-} CoordGenType;
+} CoordGenType <name="CoordGenType">;
 
 
 typedef enum {
     DECAY_NONE,
     LINEAR,
     EXPONENTIAL,
-} DecayType;
+} DecayType <name="DecayType">;
 
 
 typedef enum {
@@ -97,13 +97,13 @@ typedef enum {
     FILTER_NEAREST_MIPNEAREST,
     FILTER_NEAREST_MIPLERP,
     FILTER_BILERP_MIPNEAREST,
-} FilterMode;
+} FilterMode <name="FilterMode">;
 
 
 typedef enum {
     FORCE_PLANAR,
     FORCE_SPHERICAL,
-} ForceType;
+} ForceType <name="ForceType">;
 
 
 typedef enum {
@@ -112,13 +112,13 @@ typedef enum {
     BEZKEY,
     TCBKEY,
     EULERKEY,
-} KeyType;
+} KeyType <name="KeyType">;
 
 
 typedef enum {
     LIGHTING_E,
     LIGHTING_E_A_D,
-} LightingMode;
+} LightingMode <name="LightingMode">;
 
 
 typedef enum {
@@ -132,7 +132,7 @@ typedef enum {
     RGB24NONINTERLEAVED,
     BUMP,
     BUMPLUMA,
-} PixelFormat;
+} PixelFormat <name="PixelFormat">;
 
 
 typedef enum {
@@ -143,28 +143,28 @@ typedef enum {
     BUMPMAP,
     PALETTIZED_4,
     PIX_DEFAULT,
-} PixelLayout;
+} PixelLayout <name="PixelLayout">;
 
 
 typedef enum {
     SORTING_INHERIT,
     SORTING_OFF,
     SORTING_SUBSORT,
-} SortingMode;
+} SortingMode <name="SortingMode">;
 
 
 typedef enum {
     SOURCE_IGNORE,
     SOURCE_EMISSIVE,
     SOURCE_AMB_DIFF,
-} SourceVertexMode;
+} SourceVertexMode <name="SourceVertexMode">;
 
 
 typedef enum {
     SPHERICAL,
     CYLINDRICAL,
     PLANAR,
-} SymmetryType;
+} SymmetryType <name="SymmetryType">;
 
 
 typedef enum {
@@ -172,14 +172,14 @@ typedef enum {
     PROJECTED_SHADOW,
     ENVIRONMENT_MAP,
     FOG_MAP,
-} TextureType;
+} TextureType <name="TextureType">;
 
 
 typedef enum {
     NO,
     YES,
     MIP_DEFAULT,
-} UseMipMaps;
+} UseMipMaps <name="UseMipMaps">;
 
 
 /* -- Basic Types -- */
@@ -187,13 +187,13 @@ typedef enum {
 typedef int NiLink;  // links to another object in the scene
 
 
-typedef uint NiBool <read=NiBool_read>;
+typedef uint NiBool <read=NiBool_Read>;
 
 
 typedef struct {
     uint size;
     char value[size];
-} NiString <read=NiString_read>;
+} NiString <read=NiString_Read>;
 
 
 
@@ -203,27 +203,27 @@ typedef struct {
 typedef struct {
     float x;
     float y;
-} NiPoint2;
+} NiPoint2 <name="NiPoint2">;
 
 
 typedef struct {
     float x;
     float y;
     float z;
-} NiPoint3;
+} NiPoint3 <name="NiPoint3">;
 
 
 typedef struct {
     NiPoint2 col0;
     NiPoint2 col1;
-} NiMatrix2;
+} NiMatrix2 <name="NiMatrix2">;
 
 
 typedef struct {
     NiPoint3 col0;
     NiPoint3 col1;
     NiPoint3 col2;
-} NiMatrix3;
+} NiMatrix3 <name="NiMatrix3">;
 
 
 typedef struct {
@@ -231,14 +231,14 @@ typedef struct {
     float x;
     float y;
     float z;
-} NiQuaternion;
+} NiQuaternion <name="NiQuaternion">;
 
 
 typedef struct {
     float r;
     float g;
     float b;
-} NiColor;
+} NiColor <name="NiColor">;
 
 
 typedef struct {
@@ -246,13 +246,13 @@ typedef struct {
     float g;
     float b;
     float a;
-} NiColorA;
+} NiColorA <name="NiColorA">;
 
 
 typedef struct {
     NiPoint3 normal;
     float constant;
-} NiPlane;
+} NiPlane <name="NiPlane">;
 
 
 typedef struct {
@@ -260,7 +260,7 @@ typedef struct {
     float right;
     float top;
     float bottom;
-} NiRect;
+} NiRect <name="NiRect">;
 
 
 typedef struct {
@@ -270,7 +270,7 @@ typedef struct {
     float bottom;
     float near;
     float far;
-} NiFrustum;
+} NiFrustum <name="NiFrustum">;
 
 
 /* -- Main Types -- */
@@ -278,64 +278,64 @@ typedef struct {
 
 typedef struct {
     // no fields
-} NiObject;
+} NiObject <name="NiObject">;
 
 
 typedef struct {
     NiObject super;
-} NiAccumulator;
+} NiAccumulator <name="NiAccumulator">;
 
 
 typedef struct {
     NiAccumulator super;
-} NiClusterAccumulator;
+} NiClusterAccumulator <name="NiClusterAccumulator">;
 
 
 typedef struct {
     NiClusterAccumulator super;
-} NiAlphaAccumulator;
+} NiAlphaAccumulator <name="NiAlphaAccumulator">;
 
 
 typedef struct {
     NiObject super;
     NiLink nextExtraData;  // NiExtraData
     uint bytesRemaining;
-} NiExtraData;
+} NiExtraData <name="NiExtraData">;
 
 
 typedef struct {
     NiExtraData super;
-} TES3ObjectExtraData;
+} TES3ObjectExtraData <name="TES3ObjectExtraData">;
 
 typedef struct {
     NiExtraData super;
-} BrickNiExtraData;
+} BrickNiExtraData <name="BrickNiExtraData">;
 
 
 typedef struct {
     NiExtraData super;
     NiString stringData;
-} NiStringExtraData;
+} NiStringExtraData <name="NiStringExtraData">;
 
 
 typedef struct {
     float time;
     NiString value;
-} NiTextKey;
+} NiTextKey <name="NiTextKey">;
 
 
 typedef struct {
     NiExtraData super;
     uint numTextKeys;
     NiTextKey textKeys[numTextKeys] <optimize=false>;
-} NiTextKeyExtraData;
+} NiTextKeyExtraData <name="NiTextKeyExtraData">;
 
 
 typedef struct {
     NiExtraData super;
     ushort numWeights;
     float weights[numWeights];
-} NiVertWeightsExtraData;
+} NiVertWeightsExtraData <name="NiVertWeightsExtraData">;
 
 
 typedef struct {
@@ -360,19 +360,19 @@ typedef struct {
     if (hasUVSets) {
         NiPoint2 UVSets[numUVSets * numVertices];
     }
-} NiGeometryData;
+} NiGeometryData <name="NiGeometryData">;
 
 
 typedef struct {
     NiGeometryData super;
     ubyte vertexFlags[super.numVertices];
-} NiLinesData;
+} NiLinesData <name="NiLinesData">;
 
 
 typedef struct {
     NiGeometryData super;
     ushort activeTriangles;
-} NiTriBasedGeomData;
+} NiTriBasedGeomData <name="NiTriBasedGeomData">;
 
 
 typedef struct {
@@ -383,12 +383,12 @@ typedef struct {
     if (hasSizes) {
         float sizes[super.super.numVertices];
     }
-} NiParticlesData;  // TODO needs confirmation
+} NiParticlesData <name="NiParticlesData">;  // TODO needs confirmation
 
 
 typedef struct {
     NiParticlesData super;
-} NiAutoNormalParticlesData;
+} NiAutoNormalParticlesData <name="NiAutoNormalParticlesData">;
 
 
 typedef struct {
@@ -397,7 +397,7 @@ typedef struct {
     if (hasRotations) {
         NiQuaternion rotations[super.super.super.numVertices];
     }
-} NiRotatingParticlesData;
+} NiRotatingParticlesData <name="NiRotatingParticlesData">;
 
 
 typedef struct {
@@ -409,14 +409,14 @@ typedef struct {
         ushort numVertexIndices;
         ushort vertexIndices[numVertexIndices];
     } sharedNormals[numSharedNormals] <optimize=false>;
-} NiTriShapeData;
+} NiTriShapeData <name="NiTriShapeData">;
 
 
 typedef struct {
     NiTriShapeData super;
     ushort activeVertices;
     ushort activeTriangles;
-} NiTriShapeDynamicData;
+} NiTriShapeDynamicData <name="NiTriShapeDynamicData">;
 
 
 typedef struct {
@@ -427,7 +427,7 @@ typedef struct {
     for (i = 0; i < numStrips; i++) {
         struct { ushort vertexIndices[stripLengths[i]]; } strips;
     }
-} NiTriStripsData;
+} NiTriStripsData <name="NiTriStripsData">;
 
 
 typedef struct {
@@ -435,27 +435,27 @@ typedef struct {
     NiString name;
     NiLink controller;  // NiTimeController
     NiLink extraData;  // NiExtraData
-} NiObjectNET;
+} NiObjectNET <name="NiObjectNET">;
 
 
 typedef struct {
     NiObjectNET super;
-} NiSequenceStreamHelper;
+} NiSequenceStreamHelper <name="NiSequenceStreamHelper">;
 
 
 typedef struct {
     NiObjectNET super;
-} NiTexture;
+} NiTexture <name="NiTexture">;
 
 
 typedef struct {
     NiTexture super;
-} NiRenderedTexture;
+} NiRenderedTexture <name="NiRenderedTexture">;
 
 
 typedef struct {
     NiTexture super;
-} NiRenderedCubeMap;
+} NiRenderedCubeMap <name="NiRenderedCubeMap">;
 
 
 typedef struct {
@@ -473,31 +473,31 @@ typedef struct {
     UseMipMaps useMipMaps;
     AlphaFormat alphaFormat;
     ubyte isStatic;
-} NiSourceTexture;
+} NiSourceTexture <name="NiSourceTexture">;
 
 
 typedef struct {
     NiObjectNET super;
     ushort flags;
-} NiProperty;
+} NiProperty <name="NiProperty">;
 
 
 typedef struct {
     NiProperty super;
     ubyte testRef;
-} NiAlphaProperty;
+} NiAlphaProperty <name="NiAlphaProperty">;
 
 
 typedef struct {
     NiProperty super;
-} NiDitherProperty;
+} NiDitherProperty <name="NiDitherProperty">;
 
 
 typedef struct {
     NiProperty super;
     float fogDepth;
     NiColor fogColor;
-} NiFogProperty;
+} NiFogProperty <name="NiFogProperty">;
 
 
 typedef struct {
@@ -508,23 +508,23 @@ typedef struct {
     NiColor emissiveColor;
     float shine;
     float alpha;
-} NiMaterialProperty;
+} NiMaterialProperty <name="NiMaterialProperty">;
 
 
 typedef struct {
     NiProperty super;
     uint unknown;
-} NiRendererSpecificProperty;
+} NiRendererSpecificProperty <name="NiRendererSpecificProperty">;
 
 
 typedef struct {
     NiProperty super;
-} NiShadeProperty;
+} NiShadeProperty <name="NiShadeProperty">;
 
 
 typedef struct {
     NiProperty super;
-} NiSpecularProperty;
+} NiSpecularProperty <name="NiSpecularProperty">;
 
 
 typedef struct {
@@ -537,7 +537,7 @@ typedef struct {
     uint passZFailAction;
     uint passAction;
     uint drawMode;
-} NiStencilProperty;
+} NiStencilProperty <name="NiStencilProperty">;
 
 
 typedef struct {
@@ -549,7 +549,7 @@ typedef struct {
     short ps2K;
     ubyte unknown1;
     ubyte unknown2;
-} Map;
+} Map <name="Map">;
 
 
 typedef struct {
@@ -557,7 +557,7 @@ typedef struct {
     float lumaScale;
     float lumaOffset;
     NiMatrix2 displacement;
-} BumpMap;
+} BumpMap <name="BumpMap">;
 
 
 typedef struct {
@@ -575,43 +575,43 @@ typedef struct {
             }
         }
     }
-} NiTexturingProperty;
+} NiTexturingProperty <name="NiTexturingProperty">;
 
 
 typedef struct {
     NiProperty super;
     SourceVertexMode sourceVertexMode;
     LightingMode lightingMode;
-} NiVertexColorProperty;
+} NiVertexColorProperty <name="NiVertexColorProperty">;
 
 
 typedef struct {
     NiProperty super;
-} NiWireframeProperty;
+} NiWireframeProperty <name="NiWireframeProperty">;
 
 
 typedef struct {
     NiProperty super;
-} NiZBufferProperty;
+} NiZBufferProperty <name="NiZBufferProperty">;
 
 
 typedef struct {
     NiPoint3 center;
     float radius;
-} NiSphereBV;
+} NiSphereBV <name="NiSphereBV">;
 
 
 typedef struct {
     NiPoint3 center;
     NiMatrix3 rotation;
     NiPoint3 extents;
-} NiBoxBV;
+} NiBoxBV <name="NiBoxBV">;
 
 
 typedef struct {
     uint numBoundingVolumes;
     struct NiBoundingVolume boundingVolumes[numBoundingVolumes] <optimize=false>;
-} NiUnionBV;
+} NiUnionBV <name="NiUnionBV">;
 
 
 typedef struct {
@@ -623,7 +623,7 @@ typedef struct {
         default:
             Assert(false);  // TODO other bound types
     }
-} NiBoundingVolume;
+} NiBoundingVolume <name="NiBoundingVolume">;
 
 
 typedef struct {
@@ -639,7 +639,7 @@ typedef struct {
     if (hasBoundingVolume) {
         NiBoundingVolume boundingVolume;
     }
-} NiAVObject;
+} NiAVObject <name="NiAVObject">;
 
 
 typedef struct {
@@ -656,7 +656,7 @@ typedef struct {
     }
     uint numPropertyStates;
     NiLink propertyStates[numPropertyStates];  // NiPropertyState
-} NiScreenPolygon;
+} NiScreenPolygon <name="NiScreenPolygon">;
 
 
 typedef struct {
@@ -667,14 +667,14 @@ typedef struct {
     NiLink sceneNode;  // NiNode
     uint numScreenPolygons;
     NiLink screenPolygons[numScreenPolygons];  // NiScreenPolygon
-} NiCamera;
+} NiCamera <name="NiCamera">;
 
 
 typedef struct {
     NiAVObject super;
     uint numAffectedNodes;
     NiLink affectedNodes[numAffectedNodes];  // NiNode
-} NiDynamicEffect;
+} NiDynamicEffect <name="NiDynamicEffect">;
 
 
 typedef struct {
@@ -692,7 +692,7 @@ typedef struct {
     ushort ps2K;
     ubyte unknown1;
     ubyte unknown2;
-} NiTextureEffect;
+} NiTextureEffect <name="NiTextureEffect">;
 
 
 typedef struct {
@@ -701,17 +701,17 @@ typedef struct {
     NiColor ambient_color;
     NiColor diffuse_color;
     NiColor specular_color;
-} NiLight;
+} NiLight <name="NiLight">;
 
 
 typedef struct {
     NiLight super;
-} NiAmbientLight;
+} NiAmbientLight <name="NiAmbientLight">;
 
 
 typedef struct {
     NiLight super;
-} NiDirectionalLight;
+} NiDirectionalLight <name="NiDirectionalLight">;
 
 
 typedef struct {
@@ -719,56 +719,56 @@ typedef struct {
     float constantAttenuation;
     float linearAttenuation;
     float quadraticAttenuation;
-} NiPointLight;
+} NiPointLight <name="NiPointLight">;
 
 
 typedef struct {
     NiPointLight super;
     float outerSpotAngle;
     float exponent;
-} NiSpotLight;
+} NiSpotLight <name="NiSpotLight">;
 
 
 typedef struct {
     NiAVObject super;
     NiLink geometryData;  // NiGeometryData
     NiLink skinInstance;  // NiSkinInstance
-} NiGeometry;
+} NiGeometry <name="NiGeometry">;
 
 
 typedef struct {
     NiGeometry super;
-} NiLines;
+} NiLines <name="NiLines">;
 
 
 typedef struct {
     NiGeometry super;
-} NiTriBasedGeom;
+} NiTriBasedGeom <name="NiTriBasedGeom">;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiTriShape;
+} NiTriShape <name="NiTriShape">;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiParticles;
+} NiParticles <name="NiParticles">;
 
 
 typedef struct {
     NiParticles super;
-} NiAutoNormalParticles;
+} NiAutoNormalParticles <name="NiAutoNormalParticles">;
 
 
 typedef struct {
     NiParticles super;
-} NiRotatingParticles;
+} NiRotatingParticles <name="NiRotatingParticles">;
 
 
 typedef struct {
     NiTriBasedGeom super;
-} NiTriStrips;
+} NiTriStrips <name="NiTriStrips">;
 
 
 typedef struct {
@@ -777,72 +777,72 @@ typedef struct {
     NiLink children[numChildren];  // NiAVObject
     uint numEffects;
     NiLink effects[numEffects];  // NiDynamicEffect
-} NiNode;
+} NiNode <name="NiNode">;
 
 
 typedef struct {
     NiNode super;
-} AvoidNode;  // Bethesda
+} AvoidNode <name="AvoidNode">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} BSMirroredNode;  // Bethesda
+} BSMirroredNode <name="BSMirroredNode">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} RootCollisionNode;  // Bethesda
+} RootCollisionNode <name="RootCollisionNode">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} NiBillboardNode;
+} NiBillboardNode <name="NiBillboardNode">;
 
 
 typedef struct {
     NiNode super;
-} NiBSAnimationNode;  // Bethesda
+} NiBSAnimationNode <name="NiBSAnimationNode">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} NiBSAnimationManager;  // Bethesda
+} NiBSAnimationManager <name="NiBSAnimationManager">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} NiBSParticleNode;  // Bethesda
+} NiBSParticleNode <name="NiBSParticleNode">;  // Bethesda
 
 
 typedef struct {
     NiNode super;
     NiPlane modelPlane;
-} NiBSPNode;
+} NiBSPNode <name="NiBSPNode">;
 
 
 typedef struct {
     NiNode super;
-} NiCollisionSwitch;
+} NiCollisionSwitch <name="NiCollisionSwitch">;
 
 
 typedef struct {
     NiNode super;
     SortingMode sortingMode;
     NiLink accumulator;  // NiAccumulator
-} NiSortAdjustNode;
+} NiSortAdjustNode <name="NiSortAdjustNode">;
 
 
 typedef struct {
     NiNode super;
     uint activeIndex;
-} NiSwitchNode;
+} NiSwitchNode <name="NiSwitchNode">;
 
 
 typedef struct {
     NiSwitchNode super;
     float period;
-} NiFltAnimationNode;
+} NiFltAnimationNode <name="NiFltAnimationNode">;
 
 
 typedef struct {
@@ -850,14 +850,14 @@ typedef struct {
     NiPoint3 LODCenter;
     uint numLODLevels;
     float LODLevels[numLODLevels * 2];
-} NiLODNode;
+} NiLODNode <name="NiLODNode">;
 
 
 typedef struct {
     NiObject super;
     NiLink nextModifier;  // NiParticleModifier
     NiLink controller;  // NiTimeCintroller
-} NiParticleModifier;
+} NiParticleModifier <name="NiParticleModifier">;
 
 
 typedef struct {
@@ -867,7 +867,7 @@ typedef struct {
     ForceType forceType;
     NiPoint3 position;
     NiPoint3 direction;
-} NiGravity;
+} NiGravity <name="NiGravity">;
 
 
 typedef struct {
@@ -880,13 +880,13 @@ typedef struct {
     SymmetryType symmetryType;
     NiPoint3 position;
     NiPoint3 direction;
-} NiParticleBomb;
+} NiParticleBomb <name="NiParticleBomb">;
 
 
 typedef struct {
     NiParticleModifier super;
     float bounce;
-} NiParticleCollider;
+} NiParticleCollider <name="NiParticleCollider">;
 
 
 typedef struct {
@@ -897,27 +897,27 @@ typedef struct {
     NiPoint3 x_axis;
     NiPoint3 y_axis;
     NiPlane plane;
-} NiPlanarCollider;
+} NiPlanarCollider <name="NiPlanarCollider">;
 
 
 typedef struct {
     NiParticleCollider super;
     float radius;
     NiPoint3 position;
-} NiSphericalCollider;
+} NiSphericalCollider <name="NiSphericalCollider">;
 
 
 typedef struct {
     NiParticleModifier super;
     NiLink colorData;  // NiColorData
-} NiParticleColorModifier;
+} NiParticleColorModifier <name="NiParticleColorModifier">;
 
 
 typedef struct {
     NiParticleModifier super;
     float growTime;
     float fadeTime;
-} NiParticleGrowFade;
+} NiParticleGrowFade <name="NiParticleGrowFade">;
 
 
 typedef struct {
@@ -925,7 +925,7 @@ typedef struct {
     ubyte randomInitialAxis;
     NiPoint3 initialAxis;
     float rotationSpeed;
-} NiParticleRotation;
+} NiParticleRotation <name="NiParticleRotation">;
 
 
 typedef struct {
@@ -933,7 +933,7 @@ typedef struct {
     uint colorMasks[4];
     uint bitsPerPixel;
     ubyte oldFastCompare[8];
-} NiPixelFormat;
+} NiPixelFormat <name="NiPixelFormat">;
 
 
 typedef struct {
@@ -945,17 +945,17 @@ typedef struct {
     uint mipMaps[numMipMapLevels * 3];
     uint numPixels;
     ubyte pixelData[numPixels];
-} NiPixelData;
+} NiPixelData <name="NiPixelData">;
 
 
 typedef struct {
     NiObject super;
-} NiRenderer;
+} NiRenderer <name="NiRenderer">;
 
 
 typedef struct {
     NiObject super;
-} NiDX8Renderer;
+} NiDX8Renderer <name="NiDX8Renderer">;
 
 
 typedef struct {
@@ -967,7 +967,7 @@ typedef struct {
     float startTime;
     float stopTime;
     NiLink target;  // NiObjectNET
-} NiTimeController;
+} NiTimeController <name="NiTimeController">;
 
 
 typedef struct {
@@ -977,29 +977,29 @@ typedef struct {
     float secsPerFrame;
     uint numTextures;
     NiLink textures[numTextures];  // NiTexture
-} NiFlipController;
+} NiFlipController <name="NiFlipController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink floatData;  // NiFloatData
-} NiFloatController;
+} NiFloatController <name="NiFloatController">;
 
 
 typedef struct {
     NiFloatController super;
-} NiAlphaController;
+} NiAlphaController <name="NiAlphaController">;
 
 
 typedef struct {
     NiFloatController super;
-} NiRollController;
+} NiRollController <name="NiRollController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink keyframeData;  // NiKeyframeData
-} NiKeyframeController;
+} NiKeyframeController <name="NiKeyframeController">;
 
 
 typedef struct {
@@ -1016,44 +1016,44 @@ typedef struct {
         NiString targetName;
         NiLink targetController;  // NiTimeController
     } targets[numTargets] <optimize=false>;
-} NiSequence;
+} NiSequence <name="NiSequence">;
 
 
 typedef struct {
     NiTimeController super;
     uint numSequences;
     NiSequence sequences[numSequences] <optimize=false>;
-} NiKeyframeManager;
+} NiKeyframeManager <name="NiKeyframeManager">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink lightColorData;  // NiColorData
-} NiLightColorController;
+} NiLightColorController <name="NiLightColorController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink lookAt;  // NiAVObject
-} NiLookAtController;
+} NiLookAtController <name="NiLookAtController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink materialColorData;  // NiColorData
-} NiMaterialColorController;
+} NiMaterialColorController <name="NiMaterialColorController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink morpherData;  // NiMorphData
-} NiMorpherController;
+} NiMorpherController <name="NiMorpherController">;
 
 
 typedef struct {
     NiMorpherController super;
     ubyte alwaysUpdate;
-} NiGeomMorpherController;
+} NiGeomMorpherController <name="NiGeomMorpherController">;
 
 
 typedef struct {
@@ -1064,7 +1064,7 @@ typedef struct {
     float last_update;
     ushort generation;
     ushort index;
-} NiPerParticleData;
+} NiPerParticleData <name="NiPerParticleData">;
 
 
 typedef struct {
@@ -1102,12 +1102,12 @@ typedef struct {
     NiLink particleModifier;  // NiParticleModifier
     NiLink particleCollider;  // NiParticleCollider
     ubyte computeDynamicBoundingVolume;
-} NiParticleSystemController;
+} NiParticleSystemController <name="NiParticleSystemController">;
 
 
 typedef struct {
     NiParticleSystemController super;
-} NiBSPArrayController;
+} NiBSPArrayController <name="NiBSPArrayController">;
 
 
 typedef struct {
@@ -1118,26 +1118,26 @@ typedef struct {
     ushort followAxis;
     NiLink pathData;  // NiPosData
     NiLink percentageData;  // NiFloatData
-} NiPathController;
+} NiPathController <name="NiPathController">;
 
 
 typedef struct {
     NiTimeController super;
     ushort textureSet;
     NiLink UVData;  // NiUVData
-} NiUVController;
+} NiUVController <name="NiUVController">;
 
 
 typedef struct {
     NiTimeController super;
     NiLink visData;  // NiVisData
-} NiVisController;
+} NiVisController <name="NiVisController">;
 
 
 typedef struct {
     float time;
     float value;
-} NiFloatKey;
+} NiFloatKey <name="NiFloatKey">;
 
 
 typedef struct {
@@ -1145,14 +1145,14 @@ typedef struct {
     float value;
     float inTan;
     float outTan;
-} NiBezFloatKey;
+} NiBezFloatKey <name="NiBezFloatKey">;
 
 
 typedef struct {
     float time;
     float value;
     float tcb[3];
-} NiTCBFloatKey;
+} NiTCBFloatKey <name="NiTCBFloatKey">;
 
 
 typedef struct {
@@ -1173,13 +1173,13 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-} NiFloatData;
+} NiFloatData <name="NiFloatData">;
 
 
 typedef struct {
     float time;
     NiColorA value;
-} NiColorAKey;
+} NiColorAKey <name="NiColorAKey">;
 
 
 typedef struct {
@@ -1196,13 +1196,13 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-} NiColorData;
+} NiColorData <name="NiColorData">;
 
 
 typedef struct {
     float time;
     NiPoint3 value;
-} NiPosKey;
+} NiPosKey <name="NiPosKey">;
 
 
 typedef struct {
@@ -1210,14 +1210,14 @@ typedef struct {
     NiPoint3 value;
     NiPoint3 inTan;
     NiPoint3 outTan;
-} NiBezPosKey;
+} NiBezPosKey <name="NiBezPosKey">;
 
 
 typedef struct {
     float time;
     NiPoint3 value;
     float tcb[3];
-} NiTCBPosKey;
+} NiTCBPosKey <name="NiTCBPosKey">;
 
 
 typedef struct {
@@ -1238,32 +1238,32 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-} NiPosData;
+} NiPosData <name="NiPosData">;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
-} NiRotKey;
+} NiRotKey <name="NiRotKey">;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
-} NiBezRotKey;
+} NiBezRotKey <name="NiBezRotKey">;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
     float tcb[3];
-} NiTCBRotKey;
+} NiTCBRotKey <name="NiTCBRotKey">;
 
 
 typedef struct {
     AxisOrder axisOrder;
     NiFloatData eulerData[3];
-} NiEulerRotKey;
+} NiEulerRotKey <name="NiEulerRotKey">;
 
 
 typedef struct {
@@ -1286,7 +1286,7 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-} NiRotData;
+} NiRotData <name="NiRotData">;
 
 
 typedef struct {
@@ -1294,7 +1294,7 @@ typedef struct {
     NiRotData rotations;
     NiPosData translations;
     NiFloatData scales;
-} NiKeyframeData;
+} NiKeyframeData <name="NiKeyframeData">;
 
 
 typedef struct {
@@ -1315,7 +1315,7 @@ typedef struct {
         }
     }
     NiPoint3 vertices[parentof(this).numVertices];
-} MorphTarget;
+} MorphTarget <name="MorphTarget">;
 
 
 typedef struct {
@@ -1324,7 +1324,7 @@ typedef struct {
     uint numVertices;
     ubyte relativeTargets;
     MorphTarget targets[numTargets] <optimize=false>;
-} NiMorphData;
+} NiMorphData <name="NiMorphData">;
 
 
 typedef struct {
@@ -1332,7 +1332,7 @@ typedef struct {
     ubyte hasAlpha;
     uint numPalettes;
     ubyte palettes[numPalettes * 4];
-} NiPalette;
+} NiPalette <name="NiPalette">;
 
 
 typedef struct {
@@ -1346,7 +1346,7 @@ typedef struct {
         ushort vertexIndex;
         float vertexWeight;
     } vertexWeights[numVertexWeights];
-} BoneData;
+} BoneData <name="BoneData">;
 
 
 typedef struct {
@@ -1357,7 +1357,7 @@ typedef struct {
     uint numBones;
     NiLink skinPartition;  // NiSkinPartition
     BoneData boneData[numBones] <optimize=false>;
-} NiSkinData;
+} NiSkinData <name="NiSkinData">;
 
 
 typedef struct {
@@ -1366,7 +1366,7 @@ typedef struct {
     NiLink rootParent;  // NiAVObject
     uint numBones;
     NiLink bones[numBones];;  // NiAVObject
-} NiSkinInstance;
+} NiSkinInstance <name="NiSkinInstance">;
 
 
 typedef struct {
@@ -1393,14 +1393,14 @@ typedef struct {
     if (hasPalette) {
         ubyte bonePalette[numBonesPerVertex * numVertices];
     }
-} Partition;
+} Partition <name="Partition">;
 
 
 typedef struct {
     NiObject super;
     uint numSkinPartitions;
     Partition skinPartitions[numSkinPartitions] <optimize=false>;
-} NiSkinPartition;
+} NiSkinPartition <name="NiSkinPartition">;
 
 
 typedef struct {
@@ -1409,36 +1409,36 @@ typedef struct {
     NiFloatData offset_v;
     NiFloatData tiling_u;
     NiFloatData tiling_v;
-} NiUVData;
+} NiUVData <name="NiUVData">;
 
 
 typedef struct {
     float time;
     ubyte value;
-} NiVisKey;
+} NiVisKey <name="NiVisKey">;
 
 
 typedef struct {
     NiObject super;
     uint numKeys;
     NiVisKey keys[numKeys];
-} NiVisData;
+} NiVisData <name="NiVisData">;
 
 
 typedef struct {
     NiObject super;
-} NiEmitterModifier;  // TODO needs confirmation
+} NiEmitterModifier <name="NiEmitterModifier">;  // TODO needs confirmation
 
 
 /* -- Functions -- */
 
 
-string NiBool_read(NiBool &self) {
+string NiBool_Read(NiBool &self) {
     return self ? "true" : "false";
 }
 
 
-string NiString_read(NiString &self) {
+string NiString_Read(NiString &self) {
     return self.size ? self.value : "";
 }
 
@@ -1446,7 +1446,7 @@ string NiString_read(NiString &self) {
 /* -- Constants -- */
 
 
-const uint syntaxColorArray[8] = {
+const uint foregroundColors[8] = {
     cDkRed, cDkBlue, cDkGreen, cBlack, cDkYellow, cDkPurple, cDkAqua, cDkGray
 };
 
@@ -1463,137 +1463,137 @@ struct {
 
 local uint i;
 for (i = 0; i < header.numObjects; i++) {
-    SetForeColor(syntaxColorArray[i & 7]);
+    SetForeColor(foregroundColors[i & 7]);
 
-    NiString objectType;
-    switch (objectType.value) {
-        case "NiObject": NiObject object; break;
+    NiString type <hidden=true>;  // hidden just to make variables list pretty
+    switch (type.value) {
+        case "NiObject": NiObject _; break;
 
-        case "NiAccumulator": NiAccumulator object; break;
-        case "NiClusterAccumulator": NiClusterAccumulator object; break;
-        case "NiAlphaAccumulator": NiAlphaAccumulator object; break;
+        case "NiAccumulator": NiAccumulator _; break;
+        case "NiClusterAccumulator": NiClusterAccumulator _; break;
+        case "NiAlphaAccumulator": NiAlphaAccumulator _; break;
 
-        case "NiExtraData": NiExtraData object; break;
-        case "NiStringExtraData": NiStringExtraData object; break;
-        case "NiTextKeyExtraData": NiTextKeyExtraData object; break;
-        case "NiVertWeightsExtraData": NiVertWeightsExtraData object; break;
-        case "TES3ObjectExtraData": TES3ObjectExtraData object; break;
-        case "BrickNiExtraData": BrickNiExtraData object; break;
+        case "NiExtraData": NiExtraData _; break;
+        case "NiStringExtraData": NiStringExtraData _; break;
+        case "NiTextKeyExtraData": NiTextKeyExtraData _; break;
+        case "NiVertWeightsExtraData": NiVertWeightsExtraData _; break;
+        case "TES3ObjectExtraData": TES3ObjectExtraData _; break;
+        case "BrickNiExtraData": BrickNiExtraData _; break;
 
-        case "NiGeometryData": NiGeometryData object; break;
-        case "NiTriBasedGeomData": NiTriBasedGeomData object; break;
-        case "NiLinesData": NiLinesData object; break;
-        case "NiParticlesData": NiParticlesData object; break;
-        case "NiAutoNormalParticlesData": NiAutoNormalParticlesData object; break;
-        case "NiRotatingParticlesData": NiRotatingParticlesData object; break;
-        case "NiTriShapeData": NiTriShapeData object; break;
-        case "NiTriShapeDynamicData": NiTriShapeDynamicData object; break;
-        case "NiTriStripsData": NiTriStripsData object; break;
+        case "NiGeometryData": NiGeometryData _; break;
+        case "NiTriBasedGeomData": NiTriBasedGeomData _; break;
+        case "NiLinesData": NiLinesData _; break;
+        case "NiParticlesData": NiParticlesData _; break;
+        case "NiAutoNormalParticlesData": NiAutoNormalParticlesData _; break;
+        case "NiRotatingParticlesData": NiRotatingParticlesData _; break;
+        case "NiTriShapeData": NiTriShapeData _; break;
+        case "NiTriShapeDynamicData": NiTriShapeDynamicData _; break;
+        case "NiTriStripsData": NiTriStripsData _; break;
 
-        case "NiObjectNET": NiObjectNET object; break;
-        case "NiSequenceStreamHelper": NiSequenceStreamHelper object; break;
+        case "NiObjectNET": NiObjectNET _; break;
+        case "NiSequenceStreamHelper": NiSequenceStreamHelper _; break;
 
-        case "NiTexture": NiTexture object; break;
-        case "NiRenderedTexture": NiRenderedTexture object; break;
-        case "NiRenderedCubeMap": NiRenderedCubeMap object; break;
-        case "NiSourceTexture": NiSourceTexture object; break;
+        case "NiTexture": NiTexture _; break;
+        case "NiRenderedTexture": NiRenderedTexture _; break;
+        case "NiRenderedCubeMap": NiRenderedCubeMap _; break;
+        case "NiSourceTexture": NiSourceTexture _; break;
 
-        case "NiProperty": NiProperty object; break;
-        case "NiAlphaProperty": NiAlphaProperty object; break;
-        case "NiDitherProperty": NiDitherProperty object; break;
-        case "NiFogProperty": NiFogProperty object; break;
-        case "NiMaterialProperty": NiMaterialProperty object; break;
-        case "NiRendererSpecificProperty": NiRendererSpecificProperty object; break;
-        case "NiShadeProperty": NiShadeProperty object; break;
-        case "NiSpecularProperty": NiSpecularProperty object; break;
-        case "NiStencilProperty": NiStencilProperty object; break;
-        case "NiTexturingProperty": NiTexturingProperty object; break;
-        case "NiVertexColorProperty": NiVertexColorProperty object; break;
-        case "NiWireframeProperty": NiWireframeProperty object; break;
-        case "NiZBufferProperty": NiZBufferProperty object; break;
+        case "NiProperty": NiProperty _; break;
+        case "NiAlphaProperty": NiAlphaProperty _; break;
+        case "NiDitherProperty": NiDitherProperty _; break;
+        case "NiFogProperty": NiFogProperty _; break;
+        case "NiMaterialProperty": NiMaterialProperty _; break;
+        case "NiRendererSpecificProperty": NiRendererSpecificProperty _; break;
+        case "NiShadeProperty": NiShadeProperty _; break;
+        case "NiSpecularProperty": NiSpecularProperty _; break;
+        case "NiStencilProperty": NiStencilProperty _; break;
+        case "NiTexturingProperty": NiTexturingProperty _; break;
+        case "NiVertexColorProperty": NiVertexColorProperty _; break;
+        case "NiWireframeProperty": NiWireframeProperty _; break;
+        case "NiZBufferProperty": NiZBufferProperty _; break;
 
-        case "NiAVObject": NiAVObject object; break;
-        case "NiCamera": NiCamera object; break;
+        case "NiAVObject": NiAVObject _; break;
+        case "NiCamera": NiCamera _; break;
 
-        case "NiDynamicEffect": NiDynamicEffect object; break;
-        case "NiTextureEffect": NiTextureEffect object; break;
-        case "NiLight": NiLight object; break;
-        case "NiAmbientLight": NiAmbientLight object; break;
-        case "NiDirectionalLight": NiDirectionalLight object; break;
-        case "NiPointLight": NiPointLight object; break;
-        case "NiSpotLight": NiSpotLight object; break;
+        case "NiDynamicEffect": NiDynamicEffect _; break;
+        case "NiTextureEffect": NiTextureEffect _; break;
+        case "NiLight": NiLight _; break;
+        case "NiAmbientLight": NiAmbientLight _; break;
+        case "NiDirectionalLight": NiDirectionalLight _; break;
+        case "NiPointLight": NiPointLight _; break;
+        case "NiSpotLight": NiSpotLight _; break;
 
-        case "NiGeometry": NiGeometry object; break;
-        case "NiLines": NiLines object; break;
-        case "NiTriBasedGeomData": NiTriBasedGeomData object; break;
-        case "NiTriShape": NiTriShape object; break;
-        case "NiParticles": NiParticles object; break;
-        case "NiAutoNormalParticles": NiAutoNormalParticles object; break;
-        case "NiRotatingParticles": NiRotatingParticles object; break;
-        case "NiTriStrips": NiTriStrips object; break;
+        case "NiGeometry": NiGeometry _; break;
+        case "NiLines": NiLines _; break;
+        case "NiTriBasedGeomData": NiTriBasedGeomData _; break;
+        case "NiTriShape": NiTriShape _; break;
+        case "NiParticles": NiParticles _; break;
+        case "NiAutoNormalParticles": NiAutoNormalParticles _; break;
+        case "NiRotatingParticles": NiRotatingParticles _; break;
+        case "NiTriStrips": NiTriStrips _; break;
 
-        case "NiNode": NiNode object; break;
-        case "AvoidNode": AvoidNode object; break;
-        case "BSMirroredNode": BSMirroredNode object; break;
-        case "RootCollisionNode": RootCollisionNode object; break;
-        case "NiBillboardNode": NiBillboardNode object; break;
-        case "NiBSAnimationNode": NiBSAnimationNode object; break;
-        case "NiBSAnimationManager": NiBSAnimationManager object; break;
-        case "NiBSParticleNode": NiBSParticleNode object; break;
-        case "NiBSPNode": NiBSPNode object; break;
-        case "NiCollisionSwitch": NiCollisionSwitch object; break;
-        case "NiSortAdjustNode": NiSortAdjustNode object; break;
-        case "NiSwitchNode": NiSwitchNode object; break;
-        case "NiFltAnimationNode": NiFltAnimationNode object; break;
-        case "NiLODNode": NiLODNode object; break;
+        case "NiNode": NiNode _; break;
+        case "AvoidNode": AvoidNode _; break;
+        case "BSMirroredNode": BSMirroredNode _; break;
+        case "RootCollisionNode": RootCollisionNode _; break;
+        case "NiBillboardNode": NiBillboardNode _; break;
+        case "NiBSAnimationNode": NiBSAnimationNode _; break;
+        case "NiBSAnimationManager": NiBSAnimationManager _; break;
+        case "NiBSParticleNode": NiBSParticleNode _; break;
+        case "NiBSPNode": NiBSPNode _; break;
+        case "NiCollisionSwitch": NiCollisionSwitch _; break;
+        case "NiSortAdjustNode": NiSortAdjustNode _; break;
+        case "NiSwitchNode": NiSwitchNode _; break;
+        case "NiFltAnimationNode": NiFltAnimationNode _; break;
+        case "NiLODNode": NiLODNode _; break;
 
-        case "NiParticleModifier": NiParticleModifier object; break;
-        case "NiGravity": NiGravity object; break;
-        case "NiParticleBomb": NiParticleBomb object; break;
-        case "NiParticleCollider": NiParticleCollider object; break;
-        case "NiPlanarCollider": NiPlanarCollider object; break;
-        case "NiSphericalCollider": NiSphericalCollider object; break;
-        case "NiParticleColorModifier": NiParticleColorModifier object; break;
-        case "NiParticleGrowFade": NiParticleGrowFade object; break;
-        case "NiParticleRotation": NiParticleRotation object; break;
+        case "NiParticleModifier": NiParticleModifier _; break;
+        case "NiGravity": NiGravity _; break;
+        case "NiParticleBomb": NiParticleBomb _; break;
+        case "NiParticleCollider": NiParticleCollider _; break;
+        case "NiPlanarCollider": NiPlanarCollider _; break;
+        case "NiSphericalCollider": NiSphericalCollider _; break;
+        case "NiParticleColorModifier": NiParticleColorModifier _; break;
+        case "NiParticleGrowFade": NiParticleGrowFade _; break;
+        case "NiParticleRotation": NiParticleRotation _; break;
 
-        case "NiPixelData": NiPixelData object; break;
-        // case "NiBltSource": NiBltSource object; break;
+        case "NiPixelData": NiPixelData _; break;
+        // case "NiBltSource": NiBltSource _; break;
 
-        case "NiRenderer": NiRenderer object; break;
-        case "NiDX8Renderer": NiDX8Renderer object; break;
+        case "NiRenderer": NiRenderer _; break;
+        case "NiDX8Renderer": NiDX8Renderer _; break;
 
-        case "NiTimeController": NiTimeController object; break;
-        case "NiFlipController": NiFlipController object; break;
-        case "NiFloatController": NiFloatController object; break;
-        case "NiAlphaController": NiAlphaController object; break;
-        case "NiRollController": NiRollController object; break;
-        case "NiKeyframeController": NiKeyframeController object; break;
-        case "NiKeyframeManager": NiKeyframeManager object; break;
-        case "NiLightColorController": NiLightColorController object; break;
-        case "NiLookAtController": NiLookAtController object; break;
-        case "NiMaterialColorController": NiMaterialColorController object; break;
-        case "NiMorpherController": NiMorpherController object; break;
-        case "NiGeomMorpherController": NiGeomMorpherController object; break;
-        case "NiParticleSystemController": NiParticleSystemController object; break;
-        case "NiBSPArrayController": NiBSPArrayController object; break;
-        case "NiPathController": NiPathController object; break;
-        case "NiUVController": NiUVController object; break;
-        case "NiVisController": NiVisController object; break;
+        case "NiTimeController": NiTimeController _; break;
+        case "NiFlipController": NiFlipController _; break;
+        case "NiFloatController": NiFloatController _; break;
+        case "NiAlphaController": NiAlphaController _; break;
+        case "NiRollController": NiRollController _; break;
+        case "NiKeyframeController": NiKeyframeController _; break;
+        case "NiKeyframeManager": NiKeyframeManager _; break;
+        case "NiLightColorController": NiLightColorController _; break;
+        case "NiLookAtController": NiLookAtController _; break;
+        case "NiMaterialColorController": NiMaterialColorController _; break;
+        case "NiMorpherController": NiMorpherController _; break;
+        case "NiGeomMorpherController": NiGeomMorpherController _; break;
+        case "NiParticleSystemController": NiParticleSystemController _; break;
+        case "NiBSPArrayController": NiBSPArrayController _; break;
+        case "NiPathController": NiPathController _; break;
+        case "NiUVController": NiUVController _; break;
+        case "NiVisController": NiVisController _; break;
 
-        case "NiColorData": NiColorData object; break;
-        case "NiEmitterModifier": NiEmitterModifier object; break;
-        case "NiFloatData": NiFloatData object; break;
-        case "NiKeyframeData": NiKeyframeData object; break;
-        case "NiMorphData": NiMorphData object; break;
-        case "NiPalette": NiPalette object; break;
-        case "NiPosData": NiPosData object; break;
-        case "NiScreenPolygon": NiScreenPolygon object; break;
-        case "NiSkinData": NiSkinData object; break;
-        case "NiSkinInstance": NiSkinInstance object; break;
-        case "NiSkinPartition": NiSkinPartition object; break;
-        case "NiUVData": NiUVData object; break;
-        case "NiVisData": NiVisData object; break;
+        case "NiColorData": NiColorData _; break;
+        case "NiEmitterModifier": NiEmitterModifier _; break;
+        case "NiFloatData": NiFloatData _; break;
+        case "NiKeyframeData": NiKeyframeData _; break;
+        case "NiMorphData": NiMorphData _; break;
+        case "NiPalette": NiPalette _; break;
+        case "NiPosData": NiPosData _; break;
+        case "NiScreenPolygon": NiScreenPolygon _; break;
+        case "NiSkinData": NiSkinData _; break;
+        case "NiSkinInstance": NiSkinInstance _; break;
+        case "NiSkinPartition": NiSkinPartition _; break;
+        case "NiUVData": NiUVData _; break;
+        case "NiVisData": NiVisData _; break;
     }
 }
 
