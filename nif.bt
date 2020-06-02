@@ -169,6 +169,8 @@ typedef enum {
 
 /* -- Basic Types -- */
 
+typedef int NiLink;  // links to another object in the scene
+
 
 typedef uint NiBool <read=NiBool_read>;
 
@@ -281,7 +283,7 @@ typedef struct {
 
 typedef struct {
     NiObject super;
-    int nextExtraData;
+    NiLink nextExtraData;  // NiExtraData
     uint bytesRemaining;
 } NiExtraData;
 
@@ -416,8 +418,8 @@ typedef struct {
 typedef struct {
     NiObject super;
     NiString name;
-    int controller;
-    int extra_data;
+    NiLink controller;  // NiTimeController
+    NiLink extraData;  // NiExtraData
 } NiObjectNET;
 
 
@@ -449,7 +451,7 @@ typedef struct {
     } else {
         ubyte hasPixelData;
         if (hasPixelData) {
-            int pixelData;
+            NiLink pixelData;  // NiPixelData
         }
     }
     PixelLayout pixelLayout;
@@ -496,7 +498,7 @@ typedef struct {
 
 typedef struct {
     NiProperty super;
-    int unknown;
+    uint unknown;
 } NiRendererSpecificProperty;
 
 
@@ -524,7 +526,7 @@ typedef struct {
 
 
 typedef struct {
-    int source;
+    NiLink sourceTexture;  // NiSourceTexture
     ClampMode clampMode;
     FilterMode filterMode;
     uint uvSet;
@@ -617,7 +619,7 @@ typedef struct {
     float scale;
     NiPoint3 velocity;
     uint numProperties;
-    int properties[numProperties];
+    NiLink properties[numProperties];  // NiProperty
     NiBool hasBoundingVolume;
     if (hasBoundingVolume) {
         NiBoundingVolume boundingVolume;
@@ -638,7 +640,7 @@ typedef struct {
         NiColorA colors[numVertices];
     }
     uint numPropertyStates;
-    int propertyStates[numPropertyStates];
+    NiLink propertyStates[numPropertyStates];  // NiPropertyState
 } NiScreenPolygon;
 
 
@@ -647,16 +649,16 @@ typedef struct {
     NiFrustum viewFrustum;
     NiRect viewPort;
     float lodAdjust;
-    int scene;
+    NiLink sceneNode;  // NiNode
     uint numScreenPolygons;
-    int screenPolygons[numScreenPolygons];
+    NiLink screenPolygons[numScreenPolygons];  // NiScreenPolygon
 } NiCamera;
 
 
 typedef struct {
     NiAVObject super;
     uint numAffectedNodes;
-    int affectedNodes[numAffectedNodes];
+    NiLink affectedNodes[numAffectedNodes];  // NiNode
 } NiDynamicEffect;
 
 
@@ -668,7 +670,7 @@ typedef struct {
     ClampMode textureClamping;
     TextureType textureType;
     CoordGenType coordinateGenerationType;
-    int sourceTexture;
+    NiLink sourceTexture;  // NiSourceTexture
     ubyte clippingPlaneEnable;
     NiRect clippingPlane;
     ushort ps2L;
@@ -714,8 +716,8 @@ typedef struct {
 
 typedef struct {
     NiAVObject super;
-    int geometryData;
-    int skinInstance;
+    NiLink geometryData;  // NiGeometryData
+    NiLink skinInstance;  // NiSkinInstance
 } NiGeometry;
 
 
@@ -757,9 +759,9 @@ typedef struct {
 typedef struct {
     NiAVObject super;
     uint numChildren;
-    int children[numChildren];
+    NiLink children[numChildren];  // NiAVObject
     uint numEffects;
-    int effects[numEffects];
+    NiLink effects[numEffects];  // NiDynamicEffect
 } NiNode;
 
 
@@ -812,7 +814,7 @@ typedef struct {
 typedef struct {
     NiNode super;
     SortingMode sortingMode;
-    int subSorter;
+    NiLink accumulator;  // NiAccumulator
 } NiSortAdjustNode;
 
 
@@ -838,8 +840,8 @@ typedef struct {
 
 typedef struct {
     NiObject super;
-    int nextModifier;
-    int controller;
+    NiLink nextModifier;  // NiParticleModifier
+    NiLink controller;  // NiTimeCintroller
 } NiParticleModifier;
 
 
@@ -892,7 +894,7 @@ typedef struct {
 
 typedef struct {
     NiParticleModifier super;
-    int colorData;
+    NiLink colorData;  // NiColorData
 } NiParticleColorModifier;
 
 
@@ -922,7 +924,7 @@ typedef struct {
 typedef struct {
     NiObject super;
     NiPixelFormat pixelFormat;
-    int palette;
+    NiLink palette;  // NiPalette
     uint numMipMapLevels;
     uint pixelStride;
     uint mipMaps[numMipMapLevels * 3];
@@ -943,13 +945,13 @@ typedef struct {
 
 typedef struct {
     NiObject super;
-    int nextController;
+    NiLink nextController;  // NiTimeController
     ushort flags;
     float frequency;
     float phase;
     float startTime;
     float stopTime;
-    int target;
+    NiLink target;  // NiObjectNET
 } NiTimeController;
 
 
@@ -959,13 +961,13 @@ typedef struct {
     float unknown;
     float secsPerFrame;
     uint numTextures;
-    int textures[numTextures];
+    NiLink textures[numTextures];  // NiTexture
 } NiFlipController;
 
 
 typedef struct {
     NiTimeController super;
-    int floatData;
+    NiLink floatData;  // NiFloatData
 } NiFloatController;
 
 
@@ -981,7 +983,7 @@ typedef struct {
 
 typedef struct {
     NiTimeController super;
-    int keyframeData;
+    NiLink keyframeData;  // NiKeyframeData
 } NiKeyframeController;
 
 
@@ -992,12 +994,12 @@ typedef struct {
         NiString keyframeFile;
     } else {
         int unknown1;
-        int unknown2;  // link?
+        NiLink unknown2;
     }
     uint numTargets;
     struct {
         NiString targetName;
-        int targetController;
+        NiLink targetController;  // NiTimeController
     } targets[numTargets] <optimize=false>;
 } NiSequence;
 
@@ -1011,25 +1013,25 @@ typedef struct {
 
 typedef struct {
     NiTimeController super;
-    int lightColorData;
+    NiLink lightColorData;  // NiColorData
 } NiLightColorController;
 
 
 typedef struct {
     NiTimeController super;
-    int lookAt;
+    NiLink lookAt;  // NiAVObject
 } NiLookAtController;
 
 
 typedef struct {
     NiTimeController super;
-    int materialColorData;
+    NiLink materialColorData;  // NiColorData
 } NiMaterialColorController;
 
 
 typedef struct {
     NiTimeController super;
-    int morpherData;
+    NiLink morpherData;  // NiMorphData
 } NiMorpherController;
 
 
@@ -1072,7 +1074,7 @@ typedef struct {
     float emitterWidth;
     float emitterHeight;
     float emitterDepth;
-    int emitter;
+    NiLink emitter;  // NiAVObject
     ushort spawnGenerations;
     float spawnPercentage;
     ushort spawnMultiplier;
@@ -1081,9 +1083,9 @@ typedef struct {
     ushort numParticles;
     ushort numActiveParticles;
     NiPerParticleData particles[numParticles];
-    int emitterModifier;
-    int particleModifier;
-    int particleCollider;
+    NiLink emitterModifier;  //  NiEmitterModifier
+    NiLink particleModifier;  // NiParticleModifier
+    NiLink particleCollider;  // NiParticleCollider
     ubyte computeDynamicBoundingVolume;
 } NiParticleSystemController;
 
@@ -1099,21 +1101,21 @@ typedef struct {
     float maxBankAngle;
     float smoothing;
     ushort followAxis;
-    int pathData;
-    int percentageData;
+    NiLink pathData;  // NiPosData
+    NiLink percentageData;  // NiFloatData
 } NiPathController;
 
 
 typedef struct {
     NiTimeController super;
     ushort textureSet;
-    int UVData;
+    NiLink UVData;  // NiUVData
 } NiUVController;
 
 
 typedef struct {
     NiTimeController super;
-    int visData;
+    NiLink visData;  // NiVisData
 } NiVisController;
 
 
@@ -1338,17 +1340,17 @@ typedef struct {
     NiPoint3 translation;
     float scale;
     uint numBones;
-    int skinPartition;
+    NiLink skinPartition;  // NiSkinPartition
     BoneData boneData[numBones] <optimize=false>;
 } NiSkinData;
 
 
 typedef struct {
     NiObject super;
-    int skinData;
-    int root;
+    NiLink skinData;  // NiSkinData
+    NiLink rootParent;  // NiAVObject
     uint numBones;
-    int bones[numBones];;
+    NiLink bones[numBones];;  // NiAVObject
 } NiSkinInstance;
 
 
@@ -1419,6 +1421,7 @@ typedef struct {
 string NiBool_read(NiBool &self) {
     return self ? "true" : "false";
 }
+
 
 string NiString_read(NiString &self) {
     return self.size ? self.value : "";
