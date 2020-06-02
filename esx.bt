@@ -1,0 +1,621 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: esx.bt
+//   Authors: Greatness7, NullCascade
+//   Version: in-dev
+//   Purpose: Providing aided binary reading of ESP, ESM, and ESS files for Morrowind.
+//  Category: Games
+// File Mask: 
+//  ID Bytes: 
+//   History: See GIT.
+//------------------------------------------------
+
+LittleEndian();
+
+/*
+
+	Core types are defined first, and are the scaffolding for everything else. Local variables
+	allow overriding the display name and value, as well as the comment. Two areas of
+	statements can be extended to include more data types:
+
+	First, just below in the Subrecord definition, new record types can be defined. These all
+	point to a factory function that determines how the individual subrecords load what they
+	need.
+
+	Below the core type definitions are individual record definitions. These define a switch
+	statement for individual subrecords (or whatever other logic is neccessary).
+
+ */
+
+//
+// Core types.
+//
+
+// Subrecord
+typedef struct {
+	char tag[4];
+	uint32 size;
+
+	// Local variables for display overrides.
+	local string displayName = tag;
+	local string displayValue = "";
+	local string comment = "";
+
+	switch (parentof(this).tag) {
+		//! Expand this table to add more record types.
+		case "TES3": SubrecordFactory_TES3(this); break;
+		case "GMST": SubrecordFactory_GMST(this); break;
+		case "GLOB": SubrecordFactory_GLOB(this); break;
+		case "CLAS": SubrecordFactory_CLAS(this); break;
+		case "FACT": SubrecordFactory_FACT(this); break;
+		case "RACE": SubrecordFactory_RACE(this); break;
+		case "SOUN": SubrecordFactory_SOUN(this); break;
+		case "SKIL": SubrecordFactory_SKIL(this); break;
+		case "MGEF": SubrecordFactory_MGEF(this); break;
+		default: byte undefined[size];
+	}
+} Subrecord <name=Subrecord_GetDisplayName, read=Subrecord_Read, comment=Subrecord_GetComment>;
+
+string Subrecord_GetDisplayName(Subrecord& sr) {
+	return sr.displayName;
+}
+
+int Subrecord_GetSize(Subrecord& sr) {
+	return 8 + ReadUInt(startof(sr)+4);
+}
+
+string Subrecord_Read(Subrecord& sr) {
+	return sr.displayValue;
+}
+
+string Subrecord_GetComment(Subrecord& sr) {
+	return sr.comment;
+}
+
+// Record
+typedef struct {
+	char tag[4];
+	uint32 size;
+	uint32 header1;
+	uint32 flags;
+
+	// Local variables for display overrides.
+	local string displayName = tag;
+	local string displayValue = "";
+	local string comment = "";
+
+	// Read subrecords
+	while (FTell() < startof(this) + 16 + size) {
+		Subrecord subrecord;
+	}
+} Record <name=Record_GetDisplayName, read=Record_Read, comment=Record_GetComment, size=Record_GetSize, optimize=false>;
+
+string Record_GetDisplayName(Record& r) {
+	return r.displayName;
+}
+
+int Record_GetSize(Record& r) {
+	return 16 + ReadUInt(startof(r)+4);
+}
+
+string Record_Read(Record& r) {
+	return r.displayValue;
+}
+
+string Record_GetComment(Record& r) {
+	return r.comment;
+}
+
+//
+// Record: TES3
+//
+
+typedef enum <uint> {
+	ESP = 0,
+	ESM = 1,
+	ESS = 32,
+} ESFileType;
+
+void SubrecordFactory_TES3_HEDR(Subrecord& sr) {
+	float version <comment="Should always be 1.2">;
+	ESFileType fileType;
+	char companyName[32];
+	char description[256];
+	uint recordCount;
+
+	parentof(sr).comment = description;
+}
+
+void SubrecordFactory_TES3(Subrecord& sr) {
+	switch (sr.tag) {
+		case "HEDR": SubrecordFactory_TES3_HEDR(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: GMST (Game Setting)
+//
+
+void GMST_NAME(Subrecord& sr) {
+	char name[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = name;
+	parentof(sr).displayName = "Game Setting: " + name;
+}
+
+void GMST_STRV(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Value";
+	sr.displayValue = value;
+	parentof(sr).displayValue = value;
+}
+
+void GMST_INTV(Subrecord& sr) {
+	int value;
+	sr.displayName = "Value";
+	SPrintf(sr.displayValue, "%d", value);
+	parentof(sr).displayValue = sr.displayValue;
+}
+
+void GMST_FLTV(Subrecord& sr) {
+	float value;
+	sr.displayName = "Value";
+	SPrintf(sr.displayValue, "%.4f", value);
+	parentof(sr).displayValue = sr.displayValue;
+}
+
+void SubrecordFactory_GMST(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": GMST_NAME(sr); break;
+		case "STRV": GMST_STRV(sr); break;
+		case "INTV": GMST_INTV(sr); break;
+		case "FLTV": GMST_FLTV(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: GLOB (Global Variable)
+//
+
+void GLOB_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Global Variable: " + value;
+}
+
+void GLOB_FNAM(Subrecord& sr) {
+	char value;
+	sr.displayName = "Type";
+	sr.displayValue = value;
+}
+
+void GLOB_FLTV(Subrecord& sr) {
+	float value;
+	sr.displayName = "Value";
+	SPrintf(sr.displayValue, "%.4f", value);
+	parentof(sr).displayValue = sr.displayValue;
+}
+
+void SubrecordFactory_GLOB(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": GLOB_NAME(sr); break;
+		case "FNAM": GLOB_FNAM(sr); break;
+		case "FLTV": GLOB_FLTV(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: CLAS (Class)
+//
+
+typedef enum {
+	ATTRIBUTE_NONE = -1,
+	ATTRIBUTE_STRENGTH,
+	ATTRIBUTE_INTELLIGENCE,
+	ATTRIBUTE_WILLPOWER,
+	ATTRIBUTE_AGILITY,
+	ATTRIBUTE_SPEED,
+	ATTRIBUTE_ENDURANCE,
+	ATTRIBUTE_PERSONALITY,
+	ATTRIBUTE_LUCK,
+} Attribute;
+
+typedef enum {
+	SPECIALIZATION_NONE = -1,
+	SPECIALIZATION_COMBAT,
+	SPECIALIZATION_MAGIC,
+	SPECIALIZATION_STEALTH,
+} Specialization;
+
+typedef enum {
+	SKILL_NONE = -1,
+	SKILL_BLOCK,
+	SKILL_ARMORER,
+	SKILL_MEDIUM_ARMOR,
+	SKILL_HEAVY_ARMOR,
+	SKILL_BLUNT_WEAPON,
+	SKILL_LONG_BLADE,
+	SKILL_AXE,
+	SKILL_SPEAR,
+	SKILL_ATHLETICS,
+	SKILL_ENCHANT,
+	SKILL_DESTRUCTION,
+	SKILL_ALTERATION,
+	SKILL_ILLUSION,
+	SKILL_CONJURATION,
+	SKILL_MYSTICISM,
+	SKILL_RESTORATION,
+	SKILL_ALCHEMY,
+	SKILL_UNARMORED,
+	SKILL_SECURITY,
+	SKILL_SNEAK,
+	SKILL_ACROBATICS,
+	SKILL_LIGHT_ARMOR,
+	SKILL_SHORT_BLADE,
+	SKILL_MARKSMAN,
+	SKILL_MERCANTILE,
+	SKILL_SPEECHCRAFT,
+	SKILL_HAND_TO_HAND,
+} Skill;
+
+void CLAS_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Class: " + value;
+}
+
+void CLAS_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void CLAS_CLDT(Subrecord& sr) {
+	Attribute attributeId1;
+	Attribute attributeId2;
+	Specialization specialization;
+	Skill minor1;
+	Skill major1;
+	Skill minor2;
+	Skill major2;
+	Skill minor3;
+	Skill major3;
+	Skill minor4;
+	Skill major4;
+	Skill minor5;
+	Skill major5;
+	uint classFlags;
+	uint autoCalcFlags;
+	sr.displayName = "Class Data";
+}
+
+void CLAS_DESC(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Description";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_CLAS(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": CLAS_NAME(sr); break;
+		case "FNAM": CLAS_FNAM(sr); break;
+		case "CLDT": CLAS_CLDT(sr); break;
+		case "DESC": CLAS_DESC(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: FACT (Faction)
+//
+
+void FACT_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Faction: " + value;
+}
+
+void FACT_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void FACT_RNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Rank Name";
+	sr.displayValue = value;
+}
+
+void FACT_FADT(Subrecord& sr) {
+	Attribute attributeId1;
+	Attribute attributeId2;
+	struct {
+		int reqAttributes[2];
+		int requiredSkills[2];
+		int factionReputation;
+	} rankData[10] <name="Rank Data">;
+	Skill skills[7];
+	uint flags;
+	sr.displayName = "Faction Data";
+}
+
+void FACT_ANAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Reaction Faction";
+	sr.displayValue = value;
+}
+
+void FACT_INTV(Subrecord& sr) {
+	int value;
+	sr.displayName = "Reaction Adjustment";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void SubrecordFactory_FACT(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": FACT_NAME(sr); break;
+		case "FNAM": FACT_FNAM(sr); break;
+		case "RNAM": FACT_RNAM(sr); break;
+		case "FADT": FACT_FADT(sr); break;
+		case "ANAM": FACT_ANAM(sr); break;
+		case "INTV": FACT_INTV(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: RACE (Race)
+//
+
+void RACE_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Race: " + value;
+}
+
+void RACE_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void RACE_RADT(Subrecord& sr) {
+	struct {
+		Skill skill;
+		int bonus;
+	} skillBonuses[7];
+	int strength[2];
+	int intelligence[2];
+	int willpower[2];
+	int agility[2];
+	int speed[2];
+	int endurance[2];
+	int personality[2];
+	int luck[2];
+	float height[2];
+	float weight[2];
+	uint flags;
+}
+
+void RACE_NPCS(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Special Power/Ability";
+	sr.displayValue = value;
+}
+
+void RACE_DESC(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Description";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_RACE(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": RACE_NAME(sr); break;
+		case "FNAM": RACE_FNAM(sr); break;
+		case "RADT": RACE_RADT(sr); break;
+		case "NPCS": RACE_NPCS(sr); break;
+		case "DESC": RACE_DESC(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: SOUN (Sound)
+//
+
+void SOUN_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Sound: " + value;
+}
+
+void SOUN_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Filename";
+	sr.displayValue = value;
+	sr.comment = "Relative to Data Files\\Sounds\\";
+}
+
+void SOUN_DATA(Subrecord& sr) {
+	ubyte volume <comment="0=0.00, 255=1.00">;
+	ubyte rangeMin;
+	ubyte rangeMax;
+	sr.displayName = "Sound Data";
+}
+
+void SubrecordFactory_SOUN(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": SOUN_NAME(sr); break;
+		case "FNAM": SOUN_FNAM(sr); break;
+		case "DATA": SOUN_DATA(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: SKIL (Skill)
+//
+
+void SKIL_INDX(Subrecord& sr) {
+	int value;
+	sr.displayName = "ID";
+	SPrintf(sr.displayValue, "%d", value);
+	parentof(sr).displayName = "Skill: " + sr.displayValue;
+}
+
+void SKIL_SKDT(Subrecord& sr) {
+	Attribute attribute;
+	Specialization specialization;
+	float experienceValues[4];
+	sr.displayName = "Skill Data";
+}
+
+void SKIL_DESC(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Description";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_SKIL(Subrecord& sr) {
+	switch (sr.tag) {
+		case "INDX": SKIL_INDX(sr); break;
+		case "SKDT": SKIL_SKDT(sr); break;
+		case "DESC": SKIL_DESC(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: MGEF (Magic Effect)
+//
+
+typedef enum {
+    SCHOOL_ALTERATION,
+    SCHOOL_CONJURATION,
+    SCHOOL_DESTRUCTION,
+    SCHOOL_ILLUSION,
+    SCHOOL_MYSTICISM,
+    SCHOOL_RESTORATION,
+} SpellSchool;
+
+void MGEF_INDX(Subrecord& sr) {
+	int value;
+	sr.displayName = "ID";
+	SPrintf(sr.displayValue, "%d", value);
+	parentof(sr).displayName = "Magic Effect: " + sr.displayValue;
+}
+
+void MGEF_MEDT(Subrecord& sr) {
+	SpellSchool school;
+	float baseCost;
+	uint flags;
+	int rgb[3];
+	float speed;
+	float sizeIncrease;
+	float sizeCap;
+	sr.displayName = "EFfect Data";
+}
+
+void MGEF_ITEX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Icon";
+	sr.displayValue = value;
+}
+
+void MGEF_PTEX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Particle Texture";
+	sr.displayValue = value;
+}
+
+void MGEF_CVFX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Casting Visual";
+	sr.displayValue = value;
+}
+
+void MGEF_BVFX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Bolt Visual";
+	sr.displayValue = value;
+}
+
+void MGEF_HVFX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Hit Visual";
+	sr.displayValue = value;
+}
+
+void MGEF_AVFX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Area Visual";
+	sr.displayValue = value;
+}
+
+void MGEF_DESC(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Description";
+	sr.displayValue = value;
+}
+
+void MGEF_CSND(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Cast Sound";
+	sr.displayValue = value;
+}
+
+void MGEF_BSND(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Bolt Sound";
+	sr.displayValue = value;
+}
+
+void MGEF_HSND(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Hit Sound";
+	sr.displayValue = value;
+}
+
+void MGEF_ASND(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Area Sound";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_MGEF(Subrecord& sr) {
+	switch (sr.tag) {
+		case "INDX": MGEF_INDX(sr); break;
+		case "MEDT": MGEF_MEDT(sr); break;
+		case "ITEX": MGEF_ITEX(sr); break;
+		case "PTEX": MGEF_PTEX(sr); break;
+		case "CVFX": MGEF_CVFX(sr); break;
+		case "BVFX": MGEF_BVFX(sr); break;
+		case "HVFX": MGEF_HVFX(sr); break;
+		case "AVFX": MGEF_AVFX(sr); break;
+		case "DESC": MGEF_DESC(sr); break;
+		case "CSND": MGEF_CSND(sr); break;
+		case "BSND": MGEF_BSND(sr); break;
+		case "HSND": MGEF_HSND(sr); break;
+		case "ASND": MGEF_ASND(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Begin actual reading.
+//
+
+while (!FEof()) {
+	Record record;
+}
