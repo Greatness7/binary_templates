@@ -1,3 +1,18 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: nif.bt
+//   Authors: Greatness7
+//   Version: 1.0
+//   Purpose: Parse Morrowind NetImmerse Files.
+//  Category: Game
+// File Mask: *.nif; *.kf
+//  ID Bytes: 4E 65 74 49 6D 6D 65 72 73 65 20 46 69 6C 65 20 46 6F 72 6D 61 74 2C 20 56 65 72 73 69 6F 6E 20 34 2E 30 2E 30 2E 32 0A
+//   History:
+//   1.0   Initial release.
+//------------------------------------------------
+
+
 LittleEndian();
 
 
