@@ -24,7 +24,7 @@ typedef enum {
     BINARY,
     SMOOTH,
     ALPHA_DEFAULT,
-} AlphaFormat <name="AlphaFormat">;
+} AlphaFormat;
 
 
 typedef enum {
@@ -33,7 +33,7 @@ typedef enum {
     APPLY_MODULATE,
     APPLY_HILIGHT,
     APPLY_HILIGHT2,
-} ApplyMode <name="ApplyMode">;
+} ApplyMode;
 
 
 typedef enum {
@@ -46,13 +46,13 @@ typedef enum {
     XYX,
     YZY,
     ZXZ,
-} AxisOrder <name="AxisOrder">;
+} AxisOrder;
 
 
 typedef enum {
     NEGATIVE = -1,
     POSITIVE = 1,
-} BankDirection <name="BankDirection">;
+} BankDirection;
 
 
 typedef enum {
@@ -63,7 +63,7 @@ typedef enum {
     LOZENGE_BV,
     UNION_BV,
     HALFSPACE_BV,
-} BoundType <name="BoundType">;
+} BoundType;
 
 
 typedef enum {
@@ -71,7 +71,7 @@ typedef enum {
     CLAMP_S_WRAP_T,
     WRAP_S_CLAMP_T,
     WRAP_S_WRAP_T,
-} ClampMode <name="ClampMode">;
+} ClampMode;
 
 
 typedef enum {
@@ -80,14 +80,14 @@ typedef enum {
     SPHERE_MAP,
     SPECULAR_CUBE_MAP,
     DIFFUSE_CUBE_MAP,
-} CoordGenType <name="CoordGenType">;
+} CoordGenType;
 
 
 typedef enum {
     DECAY_NONE,
     LINEAR,
     EXPONENTIAL,
-} DecayType <name="DecayType">;
+} DecayType;
 
 
 typedef enum {
@@ -97,13 +97,13 @@ typedef enum {
     FILTER_NEAREST_MIPNEAREST,
     FILTER_NEAREST_MIPLERP,
     FILTER_BILERP_MIPNEAREST,
-} FilterMode <name="FilterMode">;
+} FilterMode;
 
 
 typedef enum {
     FORCE_PLANAR,
     FORCE_SPHERICAL,
-} ForceType <name="ForceType">;
+} ForceType;
 
 
 typedef enum {
@@ -112,13 +112,13 @@ typedef enum {
     BEZKEY,
     TCBKEY,
     EULERKEY,
-} KeyType <name="KeyType">;
+} KeyType;
 
 
 typedef enum {
     LIGHTING_E,
     LIGHTING_E_A_D,
-} LightingMode <name="LightingMode">;
+} LightingMode;
 
 
 typedef enum {
@@ -132,7 +132,7 @@ typedef enum {
     RGB24NONINTERLEAVED,
     BUMP,
     BUMPLUMA,
-} PixelFormat <name="PixelFormat">;
+} PixelFormat;
 
 
 typedef enum {
@@ -143,28 +143,28 @@ typedef enum {
     BUMPMAP,
     PALETTIZED_4,
     PIX_DEFAULT,
-} PixelLayout <name="PixelLayout">;
+} PixelLayout;
 
 
 typedef enum {
     SORTING_INHERIT,
     SORTING_OFF,
     SORTING_SUBSORT,
-} SortingMode <name="SortingMode">;
+} SortingMode;
 
 
 typedef enum {
     SOURCE_IGNORE,
     SOURCE_EMISSIVE,
     SOURCE_AMB_DIFF,
-} SourceVertexMode <name="SourceVertexMode">;
+} SourceVertexMode;
 
 
 typedef enum {
     SPHERICAL,
     CYLINDRICAL,
     PLANAR,
-} SymmetryType <name="SymmetryType">;
+} SymmetryType;
 
 
 typedef enum {
@@ -172,24 +172,29 @@ typedef enum {
     PROJECTED_SHADOW,
     ENVIRONMENT_MAP,
     FOG_MAP,
-} TextureType <name="TextureType">;
+} TextureType;
 
 
 typedef enum {
     NO,
     YES,
     MIP_DEFAULT,
-} UseMipMaps <name="UseMipMaps">;
+} UseMipMaps;
 
 
 /* -- Basic Types -- */
 
-typedef int NiLink;  // links to another object in the scene
+
+// index of another object in the scene or -1 for none
+typedef int NiLink;
 
 
+
+// technically a memory address, but used as a boolean
 typedef uint NiBool <read=NiBool_Read>;
 
 
+// nif strings always come with a uint prefix for size
 typedef struct {
     uint size;
     char value[size];
@@ -203,27 +208,27 @@ typedef struct {
 typedef struct {
     float x;
     float y;
-} NiPoint2 <name="NiPoint2">;
+} NiPoint2;
 
 
 typedef struct {
     float x;
     float y;
     float z;
-} NiPoint3 <name="NiPoint3">;
+} NiPoint3;
 
 
 typedef struct {
     NiPoint2 col0;
     NiPoint2 col1;
-} NiMatrix2 <name="NiMatrix2">;
+} NiMatrix2;
 
 
 typedef struct {
     NiPoint3 col0;
     NiPoint3 col1;
     NiPoint3 col2;
-} NiMatrix3 <name="NiMatrix3">;
+} NiMatrix3;
 
 
 typedef struct {
@@ -231,14 +236,14 @@ typedef struct {
     float x;
     float y;
     float z;
-} NiQuaternion <name="NiQuaternion">;
+} NiQuaternion;
 
 
 typedef struct {
     float r;
     float g;
     float b;
-} NiColor <name="NiColor">;
+} NiColor;
 
 
 typedef struct {
@@ -246,13 +251,13 @@ typedef struct {
     float g;
     float b;
     float a;
-} NiColorA <name="NiColorA">;
+} NiColorA;
 
 
 typedef struct {
     NiPoint3 normal;
     float constant;
-} NiPlane <name="NiPlane">;
+} NiPlane;
 
 
 typedef struct {
@@ -260,7 +265,7 @@ typedef struct {
     float right;
     float top;
     float bottom;
-} NiRect <name="NiRect">;
+} NiRect;
 
 
 typedef struct {
@@ -270,7 +275,7 @@ typedef struct {
     float bottom;
     float near;
     float far;
-} NiFrustum <name="NiFrustum">;
+} NiFrustum;
 
 
 /* -- Main Types -- */
@@ -307,6 +312,7 @@ typedef struct {
     NiExtraData super;
 } TES3ObjectExtraData <name="TES3ObjectExtraData">;
 
+
 typedef struct {
     NiExtraData super;
 } BrickNiExtraData <name="BrickNiExtraData">;
@@ -321,7 +327,7 @@ typedef struct {
 typedef struct {
     float time;
     NiString value;
-} NiTextKey <name="NiTextKey">;
+} NiTextKey;
 
 
 typedef struct {
@@ -549,7 +555,7 @@ typedef struct {
     short ps2K;
     ubyte unknown1;
     ubyte unknown2;
-} Map <name="Map">;
+} Map;
 
 
 typedef struct {
@@ -557,7 +563,7 @@ typedef struct {
     float lumaScale;
     float lumaOffset;
     NiMatrix2 displacement;
-} BumpMap <name="BumpMap">;
+} BumpMap;
 
 
 typedef struct {
@@ -598,20 +604,20 @@ typedef struct {
 typedef struct {
     NiPoint3 center;
     float radius;
-} NiSphereBV <name="NiSphereBV">;
+} NiSphereBV;
 
 
 typedef struct {
     NiPoint3 center;
     NiMatrix3 rotation;
     NiPoint3 extents;
-} NiBoxBV <name="NiBoxBV">;
+} NiBoxBV;
 
 
 typedef struct {
     uint numBoundingVolumes;
     struct NiBoundingVolume boundingVolumes[numBoundingVolumes] <optimize=false>;
-} NiUnionBV <name="NiUnionBV">;
+} NiUnionBV;
 
 
 typedef struct {
@@ -623,7 +629,7 @@ typedef struct {
         default:
             Assert(false);  // TODO other bound types
     }
-} NiBoundingVolume <name="NiBoundingVolume">;
+} NiBoundingVolume;
 
 
 typedef struct {
@@ -782,17 +788,17 @@ typedef struct {
 
 typedef struct {
     NiNode super;
-} AvoidNode <name="AvoidNode">;  // Bethesda
+} AvoidNode <name="AvoidNode", read=AvoidNode_Read>;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} BSMirroredNode <name="BSMirroredNode">;  // Bethesda
+} BSMirroredNode <name="BSMirroredNode", read=BSMirroredNode_Read>;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} RootCollisionNode <name="RootCollisionNode">;  // Bethesda
+} RootCollisionNode <name="RootCollisionNode", read=RootCollisionNode_Read>;  // Bethesda
 
 
 typedef struct {
@@ -802,17 +808,17 @@ typedef struct {
 
 typedef struct {
     NiNode super;
-} NiBSAnimationNode <name="NiBSAnimationNode">;  // Bethesda
+} NiBSAnimationNode <name="NiBSAnimationNode", read=NiBSAnimationNode_Read>;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} NiBSAnimationManager <name="NiBSAnimationManager">;  // Bethesda
+} NiBSAnimationManager <name="NiBSAnimationManager", read=NiBSAnimationManager_Read>;  // Bethesda
 
 
 typedef struct {
     NiNode super;
-} NiBSParticleNode <name="NiBSParticleNode">;  // Bethesda
+} NiBSParticleNode <name="NiBSParticleNode", read=NiBSParticleNode_Read>;  // Bethesda
 
 
 typedef struct {
@@ -933,7 +939,7 @@ typedef struct {
     uint colorMasks[4];
     uint bitsPerPixel;
     ubyte oldFastCompare[8];
-} NiPixelFormat <name="NiPixelFormat">;
+} NiPixelFormat;
 
 
 typedef struct {
@@ -1016,7 +1022,7 @@ typedef struct {
         NiString targetName;
         NiLink targetController;  // NiTimeController
     } targets[numTargets] <optimize=false>;
-} NiSequence <name="NiSequence">;
+} NiSequence;
 
 
 typedef struct {
@@ -1064,7 +1070,7 @@ typedef struct {
     float last_update;
     ushort generation;
     ushort index;
-} NiPerParticleData <name="NiPerParticleData">;
+} NiPerParticleData;
 
 
 typedef struct {
@@ -1137,7 +1143,7 @@ typedef struct {
 typedef struct {
     float time;
     float value;
-} NiFloatKey <name="NiFloatKey">;
+} NiFloatKey;
 
 
 typedef struct {
@@ -1145,14 +1151,14 @@ typedef struct {
     float value;
     float inTan;
     float outTan;
-} NiBezFloatKey <name="NiBezFloatKey">;
+} NiBezFloatKey;
 
 
 typedef struct {
     float time;
     float value;
     float tcb[3];
-} NiTCBFloatKey <name="NiTCBFloatKey">;
+} NiTCBFloatKey;
 
 
 typedef struct {
@@ -1179,7 +1185,7 @@ typedef struct {
 typedef struct {
     float time;
     NiColorA value;
-} NiColorAKey <name="NiColorAKey">;
+} NiColorAKey;
 
 
 typedef struct {
@@ -1202,7 +1208,7 @@ typedef struct {
 typedef struct {
     float time;
     NiPoint3 value;
-} NiPosKey <name="NiPosKey">;
+} NiPosKey;
 
 
 typedef struct {
@@ -1210,14 +1216,14 @@ typedef struct {
     NiPoint3 value;
     NiPoint3 inTan;
     NiPoint3 outTan;
-} NiBezPosKey <name="NiBezPosKey">;
+} NiBezPosKey;
 
 
 typedef struct {
     float time;
     NiPoint3 value;
     float tcb[3];
-} NiTCBPosKey <name="NiTCBPosKey">;
+} NiTCBPosKey;
 
 
 typedef struct {
@@ -1244,26 +1250,26 @@ typedef struct {
 typedef struct {
     float time;
     NiQuaternion value;
-} NiRotKey <name="NiRotKey">;
+} NiRotKey;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
-} NiBezRotKey <name="NiBezRotKey">;
+} NiBezRotKey;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
     float tcb[3];
-} NiTCBRotKey <name="NiTCBRotKey">;
+} NiTCBRotKey;
 
 
 typedef struct {
     AxisOrder axisOrder;
     NiFloatData eulerData[3];
-} NiEulerRotKey <name="NiEulerRotKey">;
+} NiEulerRotKey;
 
 
 typedef struct {
@@ -1286,7 +1292,7 @@ typedef struct {
                 Assert(false);  // invalid interpolation
         }
     }
-} NiRotData <name="NiRotData">;
+} NiRotData;
 
 
 typedef struct {
@@ -1315,7 +1321,7 @@ typedef struct {
         }
     }
     NiPoint3 vertices[parentof(this).numVertices];
-} MorphTarget <name="MorphTarget">;
+} MorphTarget;
 
 
 typedef struct {
@@ -1346,7 +1352,7 @@ typedef struct {
         ushort vertexIndex;
         float vertexWeight;
     } vertexWeights[numVertexWeights];
-} BoneData <name="BoneData">;
+} BoneData;
 
 
 typedef struct {
@@ -1393,7 +1399,7 @@ typedef struct {
     if (hasPalette) {
         ubyte bonePalette[numBonesPerVertex * numVertices];
     }
-} Partition <name="Partition">;
+} Partition;
 
 
 typedef struct {
@@ -1415,7 +1421,7 @@ typedef struct {
 typedef struct {
     float time;
     ubyte value;
-} NiVisKey <name="NiVisKey">;
+} NiVisKey;
 
 
 typedef struct {
@@ -1494,7 +1500,6 @@ string NiSortAdjustNode_Read(NiSortAdjustNode &self) { return NiNode_Read(self.s
 string NiSwitchNode_Read(NiSwitchNode &self) { return NiNode_Read(self.super); }
 string NiFltAnimationNode_Read(NiFltAnimationNode &self) { return NiSwitchNode_Read(self.super); }
 string NiLODNode_Read(NiLODNode &self) { return NiSwitchNode_Read(self.super); }
-
 
 
 /* -- Constants -- */
@@ -1579,7 +1584,7 @@ for (i = 0; i < header.numObjects; i++) {
 
         case "NiGeometry": NiGeometry _; break;
         case "NiLines": NiLines _; break;
-        case "NiTriBasedGeomData": NiTriBasedGeomData _; break;
+        case "NiTriBasedGeom": NiTriBasedGeom _; break;
         case "NiTriShape": NiTriShape _; break;
         case "NiParticles": NiParticles _; break;
         case "NiAutoNormalParticles": NiAutoNormalParticles _; break;
