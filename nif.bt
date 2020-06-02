@@ -406,8 +406,9 @@ typedef struct {
     NiTriBasedGeomData super;
     ushort numStrips;
     ushort stripLengths[numStrips];
+    local uint i;
     for (i = 0; i < numStrips; i++) {
-        ushort strips[numStrips[i]];
+        struct { ushort vertexIndices[stripLengths[i]]; } strips;
     }
 } NiTriStripsData;
 
