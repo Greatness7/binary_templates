@@ -304,13 +304,13 @@ typedef struct {
 typedef struct {
     float time;
     NiString value;
-} NiTextKey <optimize=false>;  // not NiObject derived
+} NiTextKey;
 
 
 typedef struct {
     NiExtraData super;
     uint numTextKeys;
-    NiTextKey textKeys[numTextKeys];
+    NiTextKey textKeys[numTextKeys] <optimize=false>;
 } NiTextKeyExtraData;
 
 
@@ -532,15 +532,15 @@ typedef struct {
     short ps2K;
     ubyte unknown1;
     ubyte unknown2;
-} NiTexturingProperty_Map;  // not NiObject derived
+} Map;
 
 
 typedef struct {
-    NiTexturingProperty_Map super;
+    Map super;
     float lumaScale;
     float lumaOffset;
     NiMatrix2 displacement;
-} NiTexturingProperty_BumpMap;  // not NiObject derived
+} BumpMap;
 
 
 typedef struct {
@@ -552,9 +552,9 @@ typedef struct {
         NiBool hasMap;
         if (hasMap) {
             if (i == 5) {  // BumpMapIndex
-                NiTexturingProperty_BumpMap bumpMap;
+                BumpMap bumpMap;
             } else {
-                NiTexturingProperty_Map map;
+                Map map;
             }
         }
     }
@@ -581,20 +581,20 @@ typedef struct {
 typedef struct {
     NiPoint3 center;
     float radius;
-} NiSphereBV;  // not NiObject derived
+} NiSphereBV;
 
 
 typedef struct {
     NiPoint3 center;
     NiMatrix3 rotation;
     NiPoint3 extents;
-} NiBoxBV;  // not NiObject derived
+} NiBoxBV;
 
 
 typedef struct {
     uint numBoundingVolumes;
-    struct NiBoundingVolume boundingVolumes[numBoundingVolumes];
-} NiUnionBV <optimize=false>;  // not NiObject derived
+    struct NiBoundingVolume boundingVolumes[numBoundingVolumes] <optimize=false>;
+} NiUnionBV;
 
 
 typedef struct {
@@ -606,7 +606,7 @@ typedef struct {
         default:
             Assert(false);  // TODO other bound types
     }
-} NiBoundingVolume <optimize=false>;  // not NiObject derived
+} NiBoundingVolume;
 
 
 typedef struct {
@@ -916,7 +916,7 @@ typedef struct {
     uint colorMasks[4];
     uint bitsPerPixel;
     ubyte oldFastCompare[8];
-} NiPixelFormat;  // not NiObject derived
+} NiPixelFormat;
 
 
 typedef struct {
@@ -999,13 +999,13 @@ typedef struct {
         NiString targetName;
         int targetController;
     } targets[numTargets] <optimize=false>;
-} NiSequence <optimize=false>;  // not NiObject derived
+} NiSequence;
 
 
 typedef struct {
     NiTimeController super;
     uint numSequences;
-    NiSequence sequences[numSequences];
+    NiSequence sequences[numSequences] <optimize=false>;
 } NiKeyframeManager;
 
 
@@ -1047,7 +1047,7 @@ typedef struct {
     float last_update;
     ushort generation;
     ushort index;
-} NiPerParticleData;  // not NiObject derived
+} NiPerParticleData;
 
 
 typedef struct {
@@ -1120,7 +1120,7 @@ typedef struct {
 typedef struct {
     float time;
     float value;
-} NiFloatKey;  // not NiObject derived
+} NiFloatKey;
 
 
 typedef struct {
@@ -1128,14 +1128,14 @@ typedef struct {
     float value;
     float inTan;
     float outTan;
-} NiBezFloatKey;  // not NiObject derived
+} NiBezFloatKey;
 
 
 typedef struct {
     float time;
     float value;
     float tcb[3];
-} NiTCBFloatKey;  // not NiObject derived
+} NiTCBFloatKey;
 
 
 typedef struct {
@@ -1162,7 +1162,7 @@ typedef struct {
 typedef struct {
     float time;
     NiColorA value;
-} NiColorAKey;  // not NiObject derived
+} NiColorAKey;
 
 
 typedef struct {
@@ -1185,7 +1185,7 @@ typedef struct {
 typedef struct {
     float time;
     NiPoint3 value;
-} NiPosKey;  // not NiObject derived
+} NiPosKey;
 
 
 typedef struct {
@@ -1193,14 +1193,14 @@ typedef struct {
     NiPoint3 value;
     NiPoint3 inTan;
     NiPoint3 outTan;
-} NiBezPosKey;  // not NiObject derived
+} NiBezPosKey;
 
 
 typedef struct {
     float time;
     NiPoint3 value;
     float tcb[3];
-} NiTCBPosKey;  // not NiObject derived
+} NiTCBPosKey;
 
 
 typedef struct {
@@ -1227,26 +1227,26 @@ typedef struct {
 typedef struct {
     float time;
     NiQuaternion value;
-} NiRotKey;  // not NiObject derived
+} NiRotKey;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
-} NiBezRotKey;  // not NiObject derived
+} NiBezRotKey;
 
 
 typedef struct {
     float time;
     NiQuaternion value;
     float tcb[3];
-} NiTCBRotKey;  // not NiObject derived
+} NiTCBRotKey;
 
 
 typedef struct {
     AxisOrder axisOrder;
     NiFloatData eulerData[3];
-} NiEulerRotKey;  // not NiObject derived
+} NiEulerRotKey;
 
 
 typedef struct {
@@ -1298,7 +1298,7 @@ typedef struct {
         }
     }
     NiPoint3 vertices[parentof(this).numVertices];
-} NiMorphData_MorphTarget <optimize=false>;  // not NiObject derived
+} MorphTarget;
 
 
 typedef struct {
@@ -1306,7 +1306,7 @@ typedef struct {
     uint numTargets;
     uint numVertices;
     ubyte relativeTargets;
-    NiMorphData_MorphTarget targets[numTargets];
+    MorphTarget targets[numTargets] <optimize=false>;
 } NiMorphData;
 
 
@@ -1329,7 +1329,7 @@ typedef struct {
         ushort vertexIndex;
         float vertexWeight;
     } vertexWeights[numVertexWeights];
-} NiSkinData_BoneData <optimize=false>;  // not NiObject derived
+} BoneData;
 
 
 typedef struct {
@@ -1339,7 +1339,7 @@ typedef struct {
     float scale;
     uint numBones;
     int skinPartition;
-    NiSkinData_BoneData boneData[numBones];
+    BoneData boneData[numBones] <optimize=false>;
 } NiSkinData;
 
 
@@ -1376,13 +1376,13 @@ typedef struct {
     if (hasPalette) {
         ubyte bonePalette[numBonesPerVertex * numVertices];
     }
-} NiSkinPartition_SkinPartition <optimize=false>;  // not NiObject derived
+} Partition;
 
 
 typedef struct {
     NiObject super;
     uint numSkinPartitions;
-    NiSkinPartition_SkinPartition skinPartitions[numSkinPartitions];
+    Partition skinPartitions[numSkinPartitions] <optimize=false>;
 } NiSkinPartition;
 
 
@@ -1398,7 +1398,7 @@ typedef struct {
 typedef struct {
     float time;
     ubyte value;
-} NiVisKey;  // not NiObject derived
+} NiVisKey;
 
 
 typedef struct {
