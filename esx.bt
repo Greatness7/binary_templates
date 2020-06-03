@@ -6,8 +6,8 @@
 //   Version: in-dev
 //   Purpose: Providing aided binary reading of ESP, ESM, and ESS files for Morrowind.
 //  Category: Games
-// File Mask: 
-//  ID Bytes: 
+// File Mask:
+//  ID Bytes:
 //   History: See GIT.
 //------------------------------------------------
 
@@ -514,12 +514,12 @@ void SubrecordFactory_SKIL(Subrecord& sr) {
 //
 
 typedef enum {
-    SCHOOL_ALTERATION,
-    SCHOOL_CONJURATION,
-    SCHOOL_DESTRUCTION,
-    SCHOOL_ILLUSION,
-    SCHOOL_MYSTICISM,
-    SCHOOL_RESTORATION,
+	SCHOOL_ALTERATION,
+	SCHOOL_CONJURATION,
+	SCHOOL_DESTRUCTION,
+	SCHOOL_ILLUSION,
+	SCHOOL_MYSTICISM,
+	SCHOOL_RESTORATION,
 } SpellSchool;
 
 void MGEF_INDX(Subrecord& sr) {
@@ -685,13 +685,13 @@ void REGN_FNAM(Subrecord& sr) {
 
 void REGN_WEAT(Subrecord& sr) {
 	ubyte chanceClear;
-    ubyte chanceCloudy;
-    ubyte chanceFoggy;
-    ubyte chanceOvercast;
-    ubyte chanceRain;
-    ubyte chanceThunder;
-    ubyte chanceAsh;
-    ubyte chanceBlight;
+	ubyte chanceCloudy;
+	ubyte chanceFoggy;
+	ubyte chanceOvercast;
+	ubyte chanceRain;
+	ubyte chanceThunder;
+	ubyte chanceAsh;
+	ubyte chanceBlight;
 	sr.displayName = "Weather Chances";
 }
 
@@ -703,16 +703,16 @@ void REGN_BNAM(Subrecord& sr) {
 
 void REGN_CNAM(Subrecord& sr) {
 	ubyte red;
-    ubyte green;
-    ubyte blue;
-    ubyte alpha <comment="Potentially unused">;
+	ubyte green;
+	ubyte blue;
+	ubyte alpha <comment="Potentially unused">;
 	sr.displayName = "Map Color";
 	SPrintf(sr.displayValue, "(%d,%d,%d)", red, green, blue);
 }
 
 void REGN_SNAM(Subrecord& sr) {
 	char soundId[32];
-    ubyte chance;
+	ubyte chance;
 	sr.displayName = "Sound";
 	SPrintf(sr.displayValue, "%s (%d)", soundId, chance);
 }
@@ -749,19 +749,19 @@ void BSGN_FNAM(Subrecord& sr) {
 void BSGN_TNAM(Subrecord& sr) {
 	char value[sr.size];
 	sr.displayName = "Texture";
-    sr.displayValue = value;
+	sr.displayValue = value;
 }
 
 void BSGN_DESC(Subrecord& sr) {
 	char value[sr.size];
 	sr.displayName = "Description";
-    sr.displayValue = value;
+	sr.displayValue = value;
 }
 
 void BSGN_NPCS(Subrecord& sr) {
 	char value[sr.size];
 	sr.displayName = "Special Power/Ability";
-    sr.displayValue = value;
+	sr.displayValue = value;
 }
 
 void SubrecordFactory_BSGN(Subrecord& sr) {
@@ -788,7 +788,7 @@ void LTEX_NAME(Subrecord& sr) {
 
 void LTEX_INTV(Subrecord& sr) {
 	int value;
-    SPrintf(sr.displayValue, "%d", value);
+	SPrintf(sr.displayValue, "%d", value);
 }
 
 void LTEX_DATA(Subrecord& sr) {
