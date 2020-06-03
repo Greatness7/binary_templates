@@ -518,7 +518,6 @@ typedef struct {
 
 typedef struct {
     NiProperty super;
-    uint unknown;
 } NiRendererSpecificProperty <name="NiRendererSpecificProperty", read=NiRendererSpecificProperty_Read>;
 
 
