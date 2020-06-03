@@ -53,6 +53,13 @@ typedef struct {
 		case "SOUN": SubrecordFactory_SOUN(this); break;
 		case "SKIL": SubrecordFactory_SKIL(this); break;
 		case "MGEF": SubrecordFactory_MGEF(this); break;
+		case "SCPT": SubrecordFactory_SCPT(this); break;
+		case "REGN": SubrecordFactory_REGN(this); break;
+		case "BSGN": SubrecordFactory_BSGN(this); break;
+		case "LTEX": SubrecordFactory_LTEX(this); break;
+		case "STAT": SubrecordFactory_STAT(this); break;
+		case "DOOR": SubrecordFactory_DOOR(this); break;
+		case "MISC": SubrecordFactory_MISC(this); break;
 		default: byte undefined[size];
 	}
 } Subrecord <name=Subrecord_GetDisplayName, read=Subrecord_Read, comment=Subrecord_GetComment>;
@@ -106,6 +113,12 @@ string Record_Read(Record& r) {
 string Record_GetComment(Record& r) {
 	return r.comment;
 }
+
+//
+// Utility functions/types.
+//
+
+
 
 //
 // Record: TES3
@@ -608,6 +621,326 @@ void SubrecordFactory_MGEF(Subrecord& sr) {
 		case "BSND": MGEF_BSND(sr); break;
 		case "HSND": MGEF_HSND(sr); break;
 		case "ASND": MGEF_ASND(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: SCPT (Script)
+//
+
+void SCPT_SCHD(Subrecord& sr) {
+	char id[32];
+	uint numShorts;
+	uint numLongs;
+	uint numFloats;
+	uint scriptDataSize;
+	uint localVarSize;
+	sr.displayName = "Script Data";
+	sr.displayValue = id;
+	parentof(sr).displayName = "Script: " + sr.displayValue;
+}
+
+void SCPT_SCVR(Subrecord& sr) {
+	char elements[sr.size];
+	sr.displayName = "Script Variables";
+}
+
+void SCPT_SCDT(Subrecord& sr) {
+	byte value[sr.size];
+	sr.displayName = "Compiled Script";
+}
+
+void SCPT_SCTX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Script Text";
+}
+
+void SubrecordFactory_SCPT(Subrecord& sr) {
+	switch (sr.tag) {
+		case "SCHD": SCPT_SCHD(sr); break;
+		case "SCVR": SCPT_SCVR(sr); break;
+		case "SCDT": SCPT_SCDT(sr); break;
+		case "SCTX": SCPT_SCTX(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: REGN (Region)
+//
+
+void REGN_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Region: " + sr.displayValue;
+}
+
+void REGN_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void REGN_WEAT(Subrecord& sr) {
+	ubyte chanceClear;
+    ubyte chanceCloudy;
+    ubyte chanceFoggy;
+    ubyte chanceOvercast;
+    ubyte chanceRain;
+    ubyte chanceThunder;
+    ubyte chanceAsh;
+    ubyte chanceBlight;
+	sr.displayName = "Weather Chances";
+}
+
+void REGN_BNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Sleep Encounter";
+	sr.displayValue = value;
+}
+
+void REGN_CNAM(Subrecord& sr) {
+	ubyte red;
+    ubyte green;
+    ubyte blue;
+    ubyte alpha <comment="Potentially unused">;
+	sr.displayName = "Map Color";
+	SPrintf(sr.displayValue, "(%d,%d,%d)", red, green, blue);
+}
+
+void REGN_SNAM(Subrecord& sr) {
+	char soundId[32];
+    ubyte chance;
+	sr.displayName = "Sound";
+	SPrintf(sr.displayValue, "%s (%d)", soundId, chance);
+}
+
+void SubrecordFactory_REGN(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": REGN_NAME(sr); break;
+		case "FNAM": REGN_FNAM(sr); break;
+		case "WEAT": REGN_WEAT(sr); break;
+		case "BNAM": REGN_BNAM(sr); break;
+		case "CNAM": REGN_CNAM(sr); break;
+		case "SNAM": REGN_SNAM(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: BSGN (Birthsign)
+//
+
+void BSGN_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Birthsign: " + sr.displayValue;
+}
+
+void BSGN_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void BSGN_TNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Texture";
+    sr.displayValue = value;
+}
+
+void BSGN_DESC(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Description";
+    sr.displayValue = value;
+}
+
+void BSGN_NPCS(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Special Power/Ability";
+    sr.displayValue = value;
+}
+
+void SubrecordFactory_BSGN(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": BSGN_NAME(sr); break;
+		case "FNAM": BSGN_FNAM(sr); break;
+		case "TNAM": BSGN_TNAM(sr); break;
+		case "DESC": BSGN_DESC(sr); break;
+		case "NPCS": BSGN_NPCS(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: LTEX (Land Texture)
+//
+
+void LTEX_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Land Texture: " + sr.displayValue;
+}
+
+void LTEX_INTV(Subrecord& sr) {
+	int value;
+    SPrintf(sr.displayValue, "%d", value);
+}
+
+void LTEX_DATA(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Texture";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_LTEX(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": LTEX_NAME(sr); break;
+		case "INTV": LTEX_INTV(sr); break;
+		case "DATA": LTEX_DATA(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: STAT (Static Object)
+//
+
+void STAT_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Static: " + sr.displayValue;
+}
+
+void STAT_MODL(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Model";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_STAT(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": STAT_NAME(sr); break;
+		case "MODL": STAT_MODL(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: DOOR (Door Object)
+//
+
+void DOOR_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Door: " + sr.displayValue;
+}
+
+void DOOR_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void DOOR_MODL(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Model";
+	sr.displayValue = value;
+}
+
+void DOOR_SCIP(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Script";
+	sr.displayValue = value;
+}
+
+void DOOR_SNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Open Sound";
+	sr.displayValue = value;
+}
+
+void DOOR_ANAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Close Sound";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_DOOR(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": DOOR_NAME(sr); break;
+		case "FNAM": DOOR_FNAM(sr); break;
+		case "MODL": DOOR_MODL(sr); break;
+		case "SCIP": DOOR_SCIP(sr); break;
+		case "SNAM": DOOR_SNAM(sr); break;
+		case "ANAM": DOOR_ANAM(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: MISC (Miscellaneous Object)
+//
+
+void MISC_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Misc. Item: " + sr.displayValue;
+}
+
+void MISC_MODL(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Model";
+	sr.displayValue = value;
+}
+
+void MISC_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Name";
+	sr.displayValue = value;
+}
+
+void MISC_MCDT(Subrecord& sr) {
+	float weight;
+	int value;
+	uint flags;
+	sr.displayName = "Data";
+}
+
+void MISC_ITEX(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Inventory Icon";
+	sr.displayValue = value;
+}
+
+void MISC_ENAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Enchantment";
+	sr.displayValue = value;
+}
+
+void MISC_SCRI(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Script";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_MISC(Subrecord& sr) {
+	switch (sr.tag) {
+		case "NAME": MISC_NAME(sr); break;
+		case "MODL": MISC_MODL(sr); break;
+		case "FNAM": MISC_FNAM(sr); break;
+		case "MCDT": MISC_MCDT(sr); break;
+		case "ITEX": MISC_ITEX(sr); break;
+		case "ENAM": MISC_ENAM(sr); break;
+		case "SCRI": MISC_SCRI(sr); break;
 		default: byte undefined[sr.size];
 	}
 }
