@@ -60,6 +60,33 @@ typedef struct {
 		case "STAT": SubrecordFactory_STAT(this); break;
 		case "DOOR": SubrecordFactory_DOOR(this); break;
 		case "MISC": SubrecordFactory_MISC(this); break;
+		// case "WEAP": SubrecordFactory_WEAP(this); break;
+		// case "CONT": SubrecordFactory_CONT(this); break;
+		// case "SPEL": SubrecordFactory_SPEL(this); break;
+		// case "CREA": SubrecordFactory_CREA(this); break;
+		// case "BODY": SubrecordFactory_BODY(this); break;
+		// case "LIGH": SubrecordFactory_LIGH(this); break;
+		// case "ENCH": SubrecordFactory_ENCH(this); break;
+		// case "NPC_": SubrecordFactory_NPC_(this); break;
+		// case "ARMO": SubrecordFactory_ARMO(this); break;
+		// case "CLOT": SubrecordFactory_CLOT(this); break;
+		// case "REPA": SubrecordFactory_REPA(this); break;
+		// case "ACTI": SubrecordFactory_ACTI(this); break;
+		// case "APPA": SubrecordFactory_APPA(this); break;
+		// case "LOCK": SubrecordFactory_LOCK(this); break;
+		// case "PROB": SubrecordFactory_PROB(this); break;
+		// case "INGR": SubrecordFactory_INGR(this); break;
+		// case "BOOK": SubrecordFactory_BOOK(this); break;
+		// case "ALCH": SubrecordFactory_ALCH(this); break;
+		// case "LEVI": SubrecordFactory_LEVI(this); break;
+		// case "LEVC": SubrecordFactory_LEVC(this); break;
+		// case "CELL": SubrecordFactory_CELL(this); break;
+		// case "LAND": SubrecordFactory_LAND(this); break;
+		// case "PGRD": SubrecordFactory_PGRD(this); break;
+		// case "SNDG": SubrecordFactory_SNDG(this); break;
+		// case "DIAL": SubrecordFactory_DIAL(this); break;
+		// case "INFO": SubrecordFactory_INFO(this); break;
+		case "SSCR": SubrecordFactory_SSCR(this); break;
 		default: byte undefined[size];
 	}
 } Subrecord <name=Subrecord_GetDisplayName, read=Subrecord_Read, comment=Subrecord_GetComment>;
@@ -941,6 +968,31 @@ void SubrecordFactory_MISC(Subrecord& sr) {
 		case "ITEX": MISC_ITEX(sr); break;
 		case "ENAM": MISC_ENAM(sr); break;
 		case "SCRI": MISC_SCRI(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: SSCR (Start Script)
+//
+
+void SSCR_DATA(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "ID";
+	parentof(sr).displayName = "Start Script: " + value;
+}
+
+void SSCR_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "Script ID";
+	sr.displayValue = value;
+	parentof(sr).displayValue = value;
+}
+
+void SubrecordFactory_SSCR(Subrecord& sr) {
+	switch (sr.tag) {
+		case "DATA": SSCR_DATA(sr); break;
+		case "NAME": SSCR_NAME(sr); break;
 		default: byte undefined[sr.size];
 	}
 }
