@@ -44,22 +44,22 @@ typedef struct {
 
 	switch (parentof(this).tag) {
 		//! Expand this table to add more record types.
-		case "TES3": SubrecordFactory_TES3(this); break;
-		case "GMST": SubrecordFactory_GMST(this); break;
-		case "GLOB": SubrecordFactory_GLOB(this); break;
-		case "CLAS": SubrecordFactory_CLAS(this); break;
-		case "FACT": SubrecordFactory_FACT(this); break;
-		case "RACE": SubrecordFactory_RACE(this); break;
-		case "SOUN": SubrecordFactory_SOUN(this); break;
-		case "SKIL": SubrecordFactory_SKIL(this); break;
-		case "MGEF": SubrecordFactory_MGEF(this); break;
-		case "SCPT": SubrecordFactory_SCPT(this); break;
-		case "REGN": SubrecordFactory_REGN(this); break;
-		case "BSGN": SubrecordFactory_BSGN(this); break;
-		case "LTEX": SubrecordFactory_LTEX(this); break;
-		case "STAT": SubrecordFactory_STAT(this); break;
-		case "DOOR": SubrecordFactory_DOOR(this); break;
-		case "MISC": SubrecordFactory_MISC(this); break;
+		case "TES3": SubrecordFactory_TES3(this); break;  //
+		case "GMST": SubrecordFactory_GMST(this); break;  // Game Setting
+		case "GLOB": SubrecordFactory_GLOB(this); break;  // Global Variable
+		case "CLAS": SubrecordFactory_CLAS(this); break;  // Class
+		case "FACT": SubrecordFactory_FACT(this); break;  // Faction
+		case "RACE": SubrecordFactory_RACE(this); break;  // Race
+		case "SOUN": SubrecordFactory_SOUN(this); break;  // Sound
+		case "SKIL": SubrecordFactory_SKIL(this); break;  // Skill
+		case "MGEF": SubrecordFactory_MGEF(this); break;  // Magic Effect
+		case "SCPT": SubrecordFactory_SCPT(this); break;  // Script
+		case "REGN": SubrecordFactory_REGN(this); break;  // Region
+		case "BSGN": SubrecordFactory_BSGN(this); break;  // Birthsign
+		case "LTEX": SubrecordFactory_LTEX(this); break;  // Land Texture
+		case "STAT": SubrecordFactory_STAT(this); break;  // Static
+		case "DOOR": SubrecordFactory_DOOR(this); break;  // Door
+		case "MISC": SubrecordFactory_MISC(this); break;  // Misc. Item
 		// case "WEAP": SubrecordFactory_WEAP(this); break;
 		// case "CONT": SubrecordFactory_CONT(this); break;
 		// case "SPEL": SubrecordFactory_SPEL(this); break;
@@ -85,8 +85,8 @@ typedef struct {
 		// case "PGRD": SubrecordFactory_PGRD(this); break;
 		// case "SNDG": SubrecordFactory_SNDG(this); break;
 		// case "DIAL": SubrecordFactory_DIAL(this); break;
-		// case "INFO": SubrecordFactory_INFO(this); break;
-		case "SSCR": SubrecordFactory_SSCR(this); break;
+		case "INFO": SubrecordFactory_INFO(this); break;  // Dialogue Info
+		case "SSCR": SubrecordFactory_SSCR(this); break;  // Start Script
 		default: byte undefined[size];
 	}
 } Subrecord <name=Subrecord_GetDisplayName, read=Subrecord_Read, comment=Subrecord_GetComment>;
@@ -968,6 +968,286 @@ void SubrecordFactory_MISC(Subrecord& sr) {
 		case "ITEX": MISC_ITEX(sr); break;
 		case "ENAM": MISC_ENAM(sr); break;
 		case "SCRI": MISC_SCRI(sr); break;
+		default: byte undefined[sr.size];
+	}
+}
+
+//
+// Record: INFO (Dialogue Info)
+//
+
+typedef enum <byte> {
+	SEX_ANY = -1,
+	SEX_MALE,
+	SEX_FEMALE,
+} Sex;
+
+typedef enum {
+	TYPE_TOPIC,
+	TYPE_VOICE,
+	TYPE_GREETING,
+	TYPE_PERSUASION,
+	TYPE_JOURNAL,
+} DialogueType;
+
+typedef enum <char> {
+	VAR_NONE = '0',
+	VAR_FUNCTION = '1',
+	VAR_GLOBAL = '2',
+	VAR_LOCAL = '3',
+	VAR_JOURNAL = '4',
+	VAR_ITEM = '5',
+	VAR_DEAD = '6',
+	VAR_NOT_ID = '7',
+	VAR_NOT_FACTION = '8',
+	VAR_NOT_CLASS = '9',
+	VAR_NOT_RACE = 'A',
+	VAR_NOT_CELL = 'B',
+	VAR_NOT_LOCAL = 'C',
+} DialogueVarType;
+
+typedef enum <ushort> {
+	FUNC_REACTION_LOW = 12336,            // '00',
+	FUNC_REACTION_HIGH = 12592,           // '01',
+	FUNC_RANK_REQUIREMENT = 12848,        // '02',
+	FUNC_REPUTATION = 13104,              // '03',
+	FUNC_HEALTH_PERCENT = 13360,          // '04',
+	FUNC_PC_REPUTATION = 13616,           // '05',
+	FUNC_PC_LEVEL = 13872,                // '06',
+	FUNC_PC_HEALTH_PERCENT = 14128,       // '07',
+	FUNC_PC_MAGICKA = 14384,              // '08',
+	FUNC_PC_FATIGUE = 14640,              // '09',
+	FUNC_PC_STRENGTH = 12337,             // '10',
+	FUNC_PC_BLOCK = 12593,                // '11',
+	FUNC_PC_ARMORER = 12849,              // '12',
+	FUNC_PC_MEDIUM_ARMOR = 13105,         // '13',
+	FUNC_PC_HEAVY_ARMOR = 13361,          // '14',
+	FUNC_PC_BLUNT_WEAPON = 13617,         // '15',
+	FUNC_PC_LONG_BLADE = 13873,           // '16',
+	FUNC_PC_AXE = 14129,                  // '17',
+	FUNC_PC_SPEAR = 14385,                // '18',
+	FUNC_PC_ATHLETICS = 14641,            // '19',
+	FUNC_PC_ENCHANT = 12338,              // '20',
+	FUNC_PC_DESTRUCTION = 12594,          // '21',
+	FUNC_PC_ALTERATION = 12850,           // '22',
+	FUNC_PC_ILLUSION = 13106,             // '23',
+	FUNC_PC_CONJURATION = 13362,          // '24',
+	FUNC_PC_MYSTICISM = 13618,            // '25',
+	FUNC_PC_RESTORATION = 13874,          // '26',
+	FUNC_PC_ALCHEMY = 14130,              // '27',
+	FUNC_PC_UNARMORED = 14386,            // '28',
+	FUNC_PC_SECURITY = 14642,             // '29',
+	FUNC_PC_SNEAK = 12339,                // '30',
+	FUNC_PC_ACROBATICS = 12595,           // '31',
+	FUNC_PC_LIGHT_ARMOR = 12851,          // '32',
+	FUNC_PC_SHORT_BLADE = 13107,          // '33',
+	FUNC_PC_MARKSMAN = 13363,             // '34',
+	FUNC_PC_MERCANTILE = 13619,           // '35',
+	FUNC_PC_SPEECHCRAFT = 13875,          // '36',
+	FUNC_PC_HAND_TO_HAND = 14131,         // '37',
+	FUNC_PC_SEX = 14387,                  // '38',
+	FUNC_PC_EXPELLED = 14643,             // '39',
+	FUNC_PC_COMMON_DISEASE = 12340,       // '40',
+	FUNC_PC_BLIGHT_DISEASE = 12596,       // '41',
+	FUNC_PC_CLOTHING_MODIFIER = 12852,    // '42',
+	FUNC_PC_CRIME_LEVEL = 13108,          // '43',
+	FUNC_SAME_SEX = 13364,                // '44',
+	FUNC_SAME_RACE = 13620,               // '45',
+	FUNC_SAME_FACTION = 13876,            // '46',
+	FUNC_FACTION_RANK_DIFFERENCE = 14132, // '47',
+	FUNC_DETECTED = 14388,                // '48',
+	FUNC_ALARMED = 14644,                 // '49',
+	FUNC_CHOICE = 12341,                  // '50',
+	FUNC_PC_INTELLIGENCE = 12597,         // '51',
+	FUNC_PC_WILLPOWER = 12853,            // '52',
+	FUNC_PC_AGILITY = 13109,              // '53',
+	FUNC_PC_SPEED = 13365,                // '54',
+	FUNC_PC_ENDURANCE = 13621,            // '55',
+	FUNC_PC_PERSONALITY = 13877,          // '56',
+	FUNC_PC_LUCK = 14133,                 // '57',
+	FUNC_PC_CORPRUS = 14389,              // '58',
+	FUNC_WEATHER = 14645,                 // '59',
+	FUNC_PC_VAMPIRE = 12342,              // '60',
+	FUNC_LEVEL = 12598,                   // '61',
+	FUNC_ATTACKED = 12854,                // '62',
+	FUNC_TALKED_TO_PC = 13110,            // '63',
+	FUNC_PC_HEALTH = 13366,               // '64',
+	FUNC_CREATURE_TARGET = 13622,         // '65',
+	FUNC_FRIEND_HIT = 13878,              // '66',
+	FUNC_FIGHT = 14134,                   // '67',
+	FUNC_HELLO = 14390,                   // '68',
+	FUNC_ALARM = 14646,                   // '69',
+	FUNC_FLEE = 12343,                    // '70',
+	FUNC_SHOULD_ATTACK = 12599,           // '71',
+	FUNC_WEREWOLF = 12855,                // '72',
+	FUNC_WEREWOLF_KILLS = 13111,          // '73',
+	FUNC_NOT_CLASS = 22595,               // 'CX',
+	FUNC_DEAD_TYPE = 22596,               // 'DX',
+	FUNC_NOT_FACTION = 22598,             // 'FX',
+	FUNC_ITEM_TYPE = 22601,               // 'IX',
+	FUNC_JOURNAL_TYPE = 22602,            // 'JX',
+	FUNC_NOT_CELL = 22604,                // 'LX',
+	FUNC_NOT_RACE = 22610,                // 'RX',
+	FUNC_NOT_ID_TYPE = 22616,             // 'XX',
+	FUNC_GLOBAL = 22630,                  // 'fX',
+	FUNC_PCGOLD = 22636,                  // 'lX',
+	FUNC_COMPARE_GLOBAL = 22578,          // '2X',
+	FUNC_COMPARE_LOCAL = 22579,           // '3X',
+	FUNC_VARIABLE_COMPARE = 22643,        // 'sX',
+} DialogueVarFunc;
+
+typedef enum <char> {
+	COMP_EQUAL = '0',
+	COMP_NOT_EQUAL = '1',
+	COMP_GREATER = '2',
+	COMP_GREATER_EQUAL = '3',
+	COMP_LESS = '4',
+	COMP_LESS_EQUAL = '5',
+} DialogueVarComp;
+
+void INFO_INAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "thisID";
+	sr.displayValue = value;
+	parentof(sr).displayName = "Dialogue Info: " + value;
+}
+
+void INFO_PNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "prevID";
+	sr.displayValue = value;
+}
+
+void INFO_NNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "nextID";
+	sr.displayValue = value;
+}
+
+void INFO_DATA(Subrecord& sr) {
+	DialogueType type;
+	int disposition;
+	byte speakerRank;
+	Sex speakerSex;
+	byte playerRank;
+	byte padding;
+	sr.displayName = "data";
+}
+
+void INFO_ONAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "speaker";
+	sr.displayValue = value;
+}
+
+void INFO_RNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "speakerRace";
+	sr.displayValue = value;
+}
+
+void INFO_CNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "speakerClass";
+	sr.displayValue = value;
+}
+
+void INFO_FNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "speakerFaction";
+	sr.displayValue = value;
+}
+
+void INFO_ANAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "speakerCell";
+	sr.displayValue = value;
+}
+
+void INFO_DNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "playerFaction";
+	sr.displayValue = value;
+}
+
+void INFO_NAME(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "text";
+	sr.displayValue = value;
+}
+
+void INFO_SNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "soundPath";
+	sr.displayValue = value;
+}
+
+void INFO_QSTN(Subrecord& sr) {
+	ubyte value;
+	sr.displayName = "isQuestName";
+	sr.displayValue = value ? "true" : "false";
+}
+
+void INFO_QSTF(Subrecord& sr) {
+	ubyte value;
+	sr.displayName = "isQuestFinished";
+	sr.displayValue = value ? "true" : "false";
+}
+
+void INFO_QSTR(Subrecord& sr) {
+	ubyte value;
+	sr.displayName = "isQuestRestart";
+	sr.displayValue = value ? "true" : "false";
+}
+
+void INFO_SCVR(Subrecord& sr) {
+	char index;
+	DialogueVarType type;
+	DialogueVarFunc function;
+	DialogueVarComp compare;
+	char variableName[sr.size - 5];  // remaining bytes
+	sr.displayName = "variableInfo";
+}
+
+void INFO_FLTV(Subrecord& sr) {
+	float value;
+	sr.displayName = "variableValue";
+	SPrintf(sr.displayValue, "%.4f", value);
+}
+
+void INFO_INTV(Subrecord& sr) {
+	int value;
+	sr.displayName = "variableValue";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void INFO_BNAM(Subrecord& sr) {
+	char value[sr.size];
+	sr.displayName = "scriptText";
+	sr.displayValue = value;
+}
+
+void SubrecordFactory_INFO(Subrecord& sr) {
+	switch (sr.tag) {
+		case "INAM": INFO_INAM(sr); break;
+		case "PNAM": INFO_PNAM(sr); break;
+		case "NNAM": INFO_NNAM(sr); break;
+		case "DATA": INFO_DATA(sr); break;
+		case "ONAM": INFO_ONAM(sr); break;
+		case "RNAM": INFO_RNAM(sr); break;
+		case "CNAM": INFO_CNAM(sr); break;
+		case "FNAM": INFO_FNAM(sr); break;
+		case "ANAM": INFO_ANAM(sr); break;
+		case "DNAM": INFO_DNAM(sr); break;
+		case "NAME": INFO_NAME(sr); break;
+		case "SNAM": INFO_SNAM(sr); break;
+		case "QSTN": INFO_QSTN(sr); break;
+		case "QSTF": INFO_QSTF(sr); break;
+		case "QSTR": INFO_QSTR(sr); break;
+		case "SCVR": INFO_SCVR(sr); break;
+		case "FLTV": INFO_FLTV(sr); break;
+		case "INTV": INFO_INTV(sr); break;
+		case "BNAM": INFO_BNAM(sr); break;
 		default: byte undefined[sr.size];
 	}
 }
