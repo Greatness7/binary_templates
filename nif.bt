@@ -977,7 +977,7 @@ typedef struct {
 typedef struct {
 	NiTimeController super;
 	uint affectedMap;
-	float unknown;
+	float flipStartTime;
 	float secsPerFrame;
 	uint numTextures;
 	NiLink textures[numTextures] <comment="NiTexture">;
