@@ -459,7 +459,7 @@ typedef struct {
 
 
 typedef struct {
-	NiTexture super;
+	NiRenderedTexture super;
 } NiRenderedCubeMap <name="NiRenderedCubeMap", read=NiRenderedCubeMap_Read>;
 
 
@@ -1102,7 +1102,7 @@ typedef struct {
 	ushort numParticles;
 	ushort numActiveParticles;
 	NiPerParticleData particles[numParticles];
-	NiLink emitterModifier;  //  NiEmitterModifier
+	NiLink emitterModifier <comment="NiEmitterModifier">;
 	NiLink particleModifier <comment="NiParticleModifier">;
 	NiLink particleCollider <comment="NiParticleCollider">;
 	ubyte computeDynamicBoundingVolume;
