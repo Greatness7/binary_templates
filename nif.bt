@@ -8,8 +8,7 @@
 //  Category: Game
 // File Mask: *.nif; *.kf
 //  ID Bytes: 4E 65 74 49 6D 6D 65 72 73 65 20 46 69 6C 65 20 46 6F 72 6D 61 74 2C 20 56 65 72 73 69 6F 6E 20 34 2E 30 2E 30 2E 32 0A 02 00 00 04
-//   History:
-//   1.0   Initial release.
+//   History: See GIT.
 //------------------------------------------------
 
 
@@ -691,7 +690,7 @@ typedef struct {
 	CoordGenType coordinateGenerationType;
 	NiLink sourceTexture <comment="NiSourceTexture">;
 	ubyte clippingPlaneEnable;
-	NiRect clippingPlane;
+	NiPlane clippingPlane;
 	ushort ps2L;
 	ushort ps2K;
 	ubyte unknown1;
@@ -953,6 +952,19 @@ typedef struct {
 
 
 typedef struct {
+    ubyte hasExternal;
+    if (hasExternal) {
+        NiString fileName;
+    } else {
+        ubyte hasPixelData;
+        if (hasPixelData) {
+            NiLink pixelData <comment="NiPixelData">;
+        }
+    }
+} NiBltSource <name="NiBltSource">;
+
+
+typedef struct {
 	NiObject super;
 } NiRenderer <name="NiRenderer">;
 
@@ -1010,7 +1022,7 @@ typedef struct {
 	NiString sequenceName;
 	ubyte hasExternal;
 	if (hasExternal) {
-		NiString keyframeFile;
+		NiString fileName;
 	} else {
 		int unknown1;
 		NiLink unknown2;
@@ -1615,7 +1627,7 @@ for (i = 0; i < header.numObjects; i++) {
 		case "NiParticleRotation": NiParticleRotation _; break;
 
 		case "NiPixelData": NiPixelData _; break;
-		// case "NiBltSource": NiBltSource _; break;
+		case "NiBltSource": NiBltSource _; break;
 
 		case "NiRenderer": NiRenderer _; break;
 		case "NiDX8Renderer": NiDX8Renderer _; break;
