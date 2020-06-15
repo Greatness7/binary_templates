@@ -814,7 +814,7 @@ typedef struct {
 
 
 typedef struct {
-	NiNode super;
+	NiBSAnimationNode super;
 } NiBSParticleNode <name="NiBSParticleNode", read=NiBSParticleNode_Read>;  // Bethesda
 
 
@@ -1501,9 +1501,9 @@ string NiNode_Read(NiNode &self) { return NiAVObject_Read(self.super); }
 string AvoidNode_Read(AvoidNode &self) { return NiNode_Read(self.super); }
 string RootCollisionNode_Read(RootCollisionNode &self) { return NiNode_Read(self.super); }
 string NiBillboardNode_Read(NiBillboardNode &self) { return NiNode_Read(self.super); }
-string NiBSAnimationNode_Read(NiBSAnimationNode &self) { return NiNode_Read(self.super); }
 string NiBSAnimationManager_Read(NiBSAnimationManager &self) { return NiNode_Read(self.super); }
-string NiBSParticleNode_Read(NiBSParticleNode &self) { return NiNode_Read(self.super); }
+string NiBSAnimationNode_Read(NiBSAnimationNode &self) { return NiNode_Read(self.super); }
+string NiBSParticleNode_Read(NiBSParticleNode &self) { return NiBSAnimationNode_Read(self.super); }
 string NiBSPNode_Read(NiBSPNode &self) { return NiNode_Read(self.super); }
 string NiCollisionSwitch_Read(NiCollisionSwitch &self) { return NiNode_Read(self.super); }
 string NiSortAdjustNode_Read(NiSortAdjustNode &self) { return NiNode_Read(self.super); }
