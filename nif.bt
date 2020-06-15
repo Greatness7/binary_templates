@@ -20,8 +20,8 @@ LittleEndian();
 
 typedef enum {
 	ALPHA_NONE,
-	BINARY,
-	SMOOTH,
+	ALPHA_BINARY,
+	ALPHA_SMOOTH,
 	ALPHA_DEFAULT,
 } AlphaFormat;
 
@@ -36,32 +36,32 @@ typedef enum {
 
 
 typedef enum {
-	XYZ,
-	XZY,
-	YZX,
-	YXZ,
-	ZXY,
-	ZYX,
-	XYX,
-	YZY,
-	ZXZ,
+	AXIS_XYZ,
+	AXIS_XZY,
+	AXIS_YZX,
+	AXIS_YXZ,
+	AXIS_ZXY,
+	AXIS_ZYX,
+	AXIS_XYX,
+	AXIS_YZY,
+	AXIS_ZXZ,
 } AxisOrder;
 
 
 typedef enum {
-	NEGATIVE = -1,
-	POSITIVE = 1,
+	DIR_NEGATIVE = -1,
+	DIR_POSITIVE = 1,
 } BankDirection;
 
 
 typedef enum {
-	BASE_BV = -1,
-	SPHERE_BV,
-	BOX_BV,
-	CAPSULE_BV,
-	LOZENGE_BV,
-	UNION_BV,
-	HALFSPACE_BV,
+	BV_BASE = -1,
+	BV_SPHERE,
+	BV_BOX,
+	BV_CAPSULE,
+	BV_LOZENGE,
+	BV_UNION,
+	BV_HALFSPACE,
 } BoundType;
 
 
@@ -74,18 +74,18 @@ typedef enum {
 
 
 typedef enum {
-	WORLD_PARALLEL,
-	WORLD_PERSPECTIVE,
-	SPHERE_MAP,
-	SPECULAR_CUBE_MAP,
-	DIFFUSE_CUBE_MAP,
+	CG_WORLD_PARALLEL,
+	CG_WORLD_PERSPECTIVE,
+	CG_SPHERE_MAP,
+	CG_SPECULAR_CUBE_MAP,
+	CG_DIFFUSE_CUBE_MAP,
 } CoordGenType;
 
 
 typedef enum {
 	DECAY_NONE,
-	LINEAR,
-	EXPONENTIAL,
+	DECAY_LINEAR,
+	DECAY_EXPONENTIAL,
 } DecayType;
 
 
@@ -106,11 +106,11 @@ typedef enum {
 
 
 typedef enum {
-	NOINTERP,
-	LINKEY,
-	BEZKEY,
-	TCBKEY,
-	EULERKEY,
+	KEY_NOINTERP,
+	KEY_LIN,
+	KEY_BEZ,
+	KEY_TCB,
+	KEY_EULER,
 } KeyType;
 
 
@@ -121,27 +121,27 @@ typedef enum {
 
 
 typedef enum {
-	RGB,
-	RGBA,
-	PAL,
-	PALALPHA,
-	COMPRESS1,
-	COMPRESS3,
-	COMPRESS5,
-	RGB24NONINTERLEAVED,
-	BUMP,
-	BUMPLUMA,
+	FORMAT_RGB,
+	FORMAT_RGBA,
+	FORMAT_PAL,
+	FORMAT_PALALPHA,
+	FORMAT_COMPRESS1,
+	FORMAT_COMPRESS3,
+	FORMAT_COMPRESS5,
+	FORMAT_RGB24NONINTERLEAVED,
+	FORMAT_BUMP,
+	FORMAT_BUMPLUMA,
 } PixelFormat;
 
 
 typedef enum {
-	PALETTIZED_8,
-	HIGH_COLOR_16,
-	TRUE_COLOR_32,
-	COMPRESSED,
-	BUMPMAP,
-	PALETTIZED_4,
-	PIX_DEFAULT,
+	LAYOUT_PALETTIZED_8,
+	LAYOUT_HIGH_COLOR_16,
+	LAYOUT_TRUE_COLOR_32,
+	LAYOUT_COMPRESSED,
+	LAYOUT_BUMPMAP,
+	LAYOUT_PALETTIZED_4,
+	LAYOUT_DEFAULT,
 } PixelLayout;
 
 
@@ -160,23 +160,23 @@ typedef enum {
 
 
 typedef enum {
-	SPHERICAL,
-	CYLINDRICAL,
-	PLANAR,
+	SYM_SPHERICAL,
+	SYM_CYLINDRICAL,
+	SYM_PLANAR,
 } SymmetryType;
 
 
 typedef enum {
 	PROJECTED_LIGHT,
 	PROJECTED_SHADOW,
-	ENVIRONMENT_MAP,
-	FOG_MAP,
+	MAP_ENVIRONMENT,
+	MAP_FOG,
 } TextureType;
 
 
 typedef enum {
-	NO,
-	YES,
+	MIP_NO,
+	MIP_YES,
 	MIP_DEFAULT,
 } UseMipMaps;
 
@@ -620,9 +620,9 @@ typedef struct {
 typedef struct {
 	BoundType boundType;
 	switch (boundType) {
-		case SPHERE_BV: NiSphereBV boundingVolume; break;
-		case BOX_BV: NiBoxBV boundingVolume; break;
-		case UNION_BV: NiUnionBV boundingVolume; break;
+		case BV_SPHERE: NiSphereBV boundingVolume; break;
+		case BV_BOX: NiBoxBV boundingVolume; break;
+		case BV_UNION: NiUnionBV boundingVolume; break;
 		default:
 			Assert(false);  // TODO other bound types
 	}
@@ -1123,7 +1123,7 @@ typedef struct {
 
 typedef struct {
 	NiParticleSystemController super;
-} NiBSPArrayController <name="NiBSPArrayController">;
+} NiBSPArrayController <name="NiBSPArrayController">;  // Bethesda
 
 
 typedef struct {
@@ -1177,13 +1177,13 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case NOINTERP:
+			case KEY_NOINTERP:
 				NiFloatKey keys[numKeys]; break;
-			case LINKEY:
+			case KEY_LIN:
 				NiFloatKey keys[numKeys]; break;
-			case BEZKEY:
+			case KEY_BEZ:
 				NiBezFloatKey keys[numKeys]; break;
-			case TCBKEY:
+			case KEY_TCB:
 				NiTCBFloatKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
@@ -1204,9 +1204,9 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case NOINTERP:
+			case KEY_NOINTERP:
 				NiColorAKey keys[numKeys]; break;
-			case LINKEY:
+			case KEY_LIN:
 				NiColorAKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
@@ -1242,13 +1242,13 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case NOINTERP:
+			case KEY_NOINTERP:
 				NiPosKey keys[numKeys]; break;
-			case LINKEY:
+			case KEY_LIN:
 				NiPosKey keys[numKeys]; break;
-			case BEZKEY:
+			case KEY_BEZ:
 				NiBezPosKey keys[numKeys]; break;
-			case TCBKEY:
+			case KEY_TCB:
 				NiTCBPosKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
@@ -1288,15 +1288,15 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case NOINTERP:
+			case KEY_NOINTERP:
 				NiRotKey keys[numKeys]; break;
-			case LINKEY:
+			case KEY_LIN:
 				NiRotKey keys[numKeys]; break;
-			case BEZKEY:
+			case KEY_BEZ:
 				NiBezRotKey keys[numKeys]; break;
-			case TCBKEY:
+			case KEY_TCB:
 				NiTCBRotKey keys[numKeys]; break;
-			case EULERKEY:
+			case KEY_EULER:
 				NiEulerRotKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
@@ -1318,13 +1318,13 @@ typedef struct {
 	KeyType keyType;
 	if (numKeys) {
 		switch (keyType) {
-			case NOINTERP:
+			case KEY_NOINTERP:
 				NiFloatKey keys[numKeys]; break;
-			case LINKEY:
+			case KEY_LIN:
 				NiFloatKey keys[numKeys]; break;
-			case BEZKEY:
+			case KEY_BEZ:
 				NiBezFloatKey keys[numKeys]; break;
-			case TCBKEY:
+			case KEY_TCB:
 				NiTCBFloatKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
