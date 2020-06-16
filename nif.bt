@@ -438,8 +438,8 @@ typedef struct {
 typedef struct {
 	NiObject super;
 	NiString name;
-	NiLink controller <comment="NiTimeController">;
 	NiLink extraData <comment="NiExtraData">;
+	NiLink controller <comment="NiTimeController">;
 } NiObjectNET <name="NiObjectNET", read=NiObjectNET_Read>;
 
 
