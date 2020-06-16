@@ -380,14 +380,15 @@ typedef struct {
 
 
 typedef struct {
-	NiTriBasedGeomData super;
+	NiGeometryData super;
+	ushort numParticles;
 	float particleRadius;
 	ushort numActive;
 	NiBool hasSizes;
 	if (hasSizes) {
-		float sizes[super.super.numVertices];
+		float sizes[super.numVertices];
 	}
-} NiParticlesData <name="NiParticlesData">;  // TODO needs confirmation
+} NiParticlesData <name="NiParticlesData">;
 
 
 typedef struct {
@@ -755,7 +756,7 @@ typedef struct {
 
 
 typedef struct {
-	NiTriBasedGeom super;
+	NiGeometry super;
 } NiParticles <name="NiParticles", read=NiParticles_Read>;
 
 
@@ -1494,7 +1495,7 @@ string NiLines_Read(NiLines &self) { return NiGeometry_Read(self.super); }
 string NiTriBasedGeom_Read(NiTriBasedGeom &self) { return NiGeometry_Read(self.super); }
 string NiTriStrips_Read(NiTriStrips &self) { return NiTriBasedGeom_Read(self.super); }
 string NiTriShape_Read(NiTriShape &self) { return NiTriBasedGeom_Read(self.super); }
-string NiParticles_Read(NiParticles &self) { return NiTriBasedGeom_Read(self.super); }
+string NiParticles_Read(NiParticles &self) { return NiGeometry_Read(self.super); }
 string NiAutoNormalParticles_Read(NiAutoNormalParticles &self) { return NiParticles_Read(self.super); }
 string NiRotatingParticles_Read(NiRotatingParticles &self) { return NiParticles_Read(self.super); }
 string NiNode_Read(NiNode &self) { return NiAVObject_Read(self.super); }
