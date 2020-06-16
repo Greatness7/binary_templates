@@ -196,7 +196,7 @@ typedef uint NiBool <read=NiBool_Read>;
 typedef struct {
 	uint size;
 	char value[size];
-} NiString <read=NiString_Read>;
+} NiString <read=NiString_Read, open=suppress>;
 
 
 
@@ -853,7 +853,7 @@ typedef struct {
 	NiSwitchNode super;
 	NiPoint3 LODCenter;
 	uint numLODLevels;
-	float LODLevels[numLODLevels * 2];
+	struct { float near; float far; } LODLevels[numLODLevels];
 } NiLODNode <name="NiLODNode", read=NiLODNode_Read>;
 
 
@@ -953,15 +953,15 @@ typedef struct {
 
 
 typedef struct {
-    ubyte hasExternal;
-    if (hasExternal) {
-        NiString fileName;
-    } else {
-        ubyte hasPixelData;
-        if (hasPixelData) {
-            NiLink pixelData <comment="NiPixelData">;
-        }
-    }
+	ubyte hasExternal;
+	if (hasExternal) {
+		NiString fileName;
+	} else {
+		ubyte hasPixelData;
+		if (hasPixelData) {
+			NiLink pixelData <comment="NiPixelData">;
+		}
+	}
 } NiBltSource <name="NiBltSource">;
 
 
@@ -1525,7 +1525,7 @@ const uint foregroundColors[8] = {
 
 
 struct {
-	char header[40];
+	char header[40] <open=suppress>;
 	uint version <format=hex>;
 	uint numObjects;
 } header <fgcolor=cSilver>;
