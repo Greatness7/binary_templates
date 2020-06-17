@@ -400,7 +400,7 @@ typedef struct {
 	NiParticlesData super;
 	NiBool hasRotations;
 	if (hasRotations) {
-		NiQuaternion rotations[super.super.super.numVertices];
+		NiQuaternion rotations[super.super.numVertices];
 	}
 } NiRotatingParticlesData <name="NiRotatingParticlesData">;
 
