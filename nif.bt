@@ -1045,7 +1045,7 @@ typedef struct {
 
 typedef struct {
 	NiTimeController super;
-	NiLink lightColorData <comment="NiColorData">;
+	NiLink lightColorData <comment="NiPosData">;
 } NiLightColorController <name="NiLightColorController">;
 
 
@@ -1057,7 +1057,7 @@ typedef struct {
 
 typedef struct {
 	NiTimeController super;
-	NiLink materialColorData <comment="NiColorData">;
+	NiLink materialColorData <comment="NiPosData">;
 } NiMaterialColorController <name="NiMaterialColorController">;
 
 
@@ -1178,8 +1178,6 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case KEY_NOINTERP:
-				NiFloatKey keys[numKeys]; break;
 			case KEY_LIN:
 				NiFloatKey keys[numKeys]; break;
 			case KEY_BEZ:
@@ -1205,10 +1203,10 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case KEY_NOINTERP:
-				NiColorAKey keys[numKeys]; break;
 			case KEY_LIN:
 				NiColorAKey keys[numKeys]; break;
+            case KEY_BEZ:
+                NiColorAKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
 		}
@@ -1279,7 +1277,7 @@ typedef struct {
 
 typedef struct {
 	AxisOrder axisOrder;
-	NiFloatData eulerData[3];
+	NiFloatData eulerData[3] <optimize=false>;
 } NiEulerRotKey;
 
 
@@ -1289,8 +1287,6 @@ typedef struct {
 	if (numKeys) {
 		KeyType keyType;
 		switch (keyType) {
-			case KEY_NOINTERP:
-				NiRotKey keys[numKeys]; break;
 			case KEY_LIN:
 				NiRotKey keys[numKeys]; break;
 			case KEY_BEZ:
@@ -1298,7 +1294,7 @@ typedef struct {
 			case KEY_TCB:
 				NiTCBRotKey keys[numKeys]; break;
 			case KEY_EULER:
-				NiEulerRotKey keys[numKeys]; break;
+				NiEulerRotKey keys[numKeys] <optimize=false>; break;
 			default:
 				Assert(false);  // invalid interpolation
 		}
@@ -1319,8 +1315,6 @@ typedef struct {
 	KeyType keyType;
 	if (numKeys) {
 		switch (keyType) {
-			case KEY_NOINTERP:
-				NiFloatKey keys[numKeys]; break;
 			case KEY_LIN:
 				NiFloatKey keys[numKeys]; break;
 			case KEY_BEZ:
