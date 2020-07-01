@@ -953,6 +953,7 @@ typedef struct {
 
 
 typedef struct {
+    NiObject super;
 	ubyte hasExternal;
 	if (hasExternal) {
 		NiString fileName;
@@ -1384,22 +1385,22 @@ typedef struct {
 	ushort numVertices;
 	ushort numTriangles;
 	ushort numBones;
-	ushort numStrips;
+	ushort numStripLengths;
 	ushort numBonesPerVertex;
 	ushort bones[numBones];
-	ushort vertexMap[numVertices];
+	ushort vertices[numVertices];
 	float weights[numBonesPerVertex * numVertices];
-	if (numStrips) {
+    if (numTriangles) {
+        ushort triangles[numTriangles * 3];
+	} else if (numStrips) {
 		ushort stripLengths[numStrips];
 		local uint stripLengthsSum = 0;
 		local uint i = 0;
 		for (i = 0; i < numStrips; i++) {
 			stripLengthsSum += stripLengths[i];
 		}
-		ushort triangles[stripLengthsSum];
-	} else {
-		ushort triangles[numTriangles * 3];
-	}
+		ushort strips[stripLengthsSum];
+    }
 	ubyte hasPalette;
 	if (hasPalette) {
 		ubyte bonePalette[numBonesPerVertex * numVertices];
@@ -1494,6 +1495,7 @@ string NiAutoNormalParticles_Read(NiAutoNormalParticles &self) { return NiPartic
 string NiRotatingParticles_Read(NiRotatingParticles &self) { return NiParticles_Read(self.super); }
 string NiNode_Read(NiNode &self) { return NiAVObject_Read(self.super); }
 string AvoidNode_Read(AvoidNode &self) { return NiNode_Read(self.super); }
+string BSMirroredNode_Read(BSMirroredNode &self) { return NiNode_Read(self.super); }
 string RootCollisionNode_Read(RootCollisionNode &self) { return NiNode_Read(self.super); }
 string NiBillboardNode_Read(NiBillboardNode &self) { return NiNode_Read(self.super); }
 string NiBSAnimationManager_Read(NiBSAnimationManager &self) { return NiNode_Read(self.super); }
