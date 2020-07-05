@@ -551,8 +551,8 @@ typedef struct {
 	uint uvSet;
 	short ps2L;
 	short ps2K;
-	ubyte unknown1;
-	ubyte unknown2;
+	byte unknown_byte;
+	byte unknown_byte;
 } Map;
 
 
@@ -694,8 +694,8 @@ typedef struct {
 	NiPlane clippingPlane;
 	ushort ps2L;
 	ushort ps2K;
-	ubyte unknown1;
-	ubyte unknown2;
+	byte unknown_byte;
+	byte unknown_byte;
 } NiTextureEffect <name="NiTextureEffect", read=NiTextureEffect_Read>;
 
 
@@ -1026,14 +1026,14 @@ typedef struct {
 	if (hasExternal) {
 		NiString fileName;
 	} else {
-		int unknown1;
-		NiLink unknown2;
+		int unknown_int;
+		NiLink unknown_link;
 	}
 	uint numTargets;
 	struct {
-		NiString targetName;
-		NiLink targetController <comment="NiTimeController">;
-	} targets[numTargets] <optimize=false>;
+		NiString name;
+		NiLink controller <comment="NiKeyframeController">;
+	} nameControllerPair[numTargets] <optimize=false>;
 } NiSequence;
 
 
