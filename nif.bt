@@ -406,9 +406,14 @@ typedef struct {
 
 
 typedef struct {
+	ushort vertexIndices[3];
+} Triangle <read=Triangle_Read>;
+
+
+typedef struct {
 	NiTriBasedGeomData super;
 	uint numTrianglePoints;
-	ushort triangles[numTrianglePoints];
+	Triangle triangles[numTrianglePoints / 3];
 	ushort numSharedNormals;
 	struct {
 		ushort numVertexIndices;
@@ -953,7 +958,7 @@ typedef struct {
 
 
 typedef struct {
-    NiObject super;
+	NiObject super;
 	ubyte hasExternal;
 	if (hasExternal) {
 		NiString fileName;
@@ -1206,8 +1211,8 @@ typedef struct {
 		switch (keyType) {
 			case KEY_LIN:
 				NiColorAKey keys[numKeys]; break;
-            case KEY_BEZ:
-                NiColorAKey keys[numKeys]; break;
+			case KEY_BEZ:
+				NiColorAKey keys[numKeys]; break;
 			default:
 				Assert(false);  // invalid interpolation
 		}
@@ -1390,9 +1395,10 @@ typedef struct {
 	ushort bones[numBones];
 	ushort vertices[numVertices];
 	float weights[numBonesPerVertex * numVertices];
-    if (numTriangles) {
-        ushort triangles[numTriangles * 3];
-	} else if (numStrips) {
+	if (numTriangles) {
+		Triangle triangles[numTriangles];
+	}
+	if (numStrips) {
 		ushort stripLengths[numStrips];
 		local uint stripLengthsSum = 0;
 		local uint i = 0;
@@ -1400,7 +1406,7 @@ typedef struct {
 			stripLengthsSum += stripLengths[i];
 		}
 		ushort strips[stripLengthsSum];
-    }
+	}
 	ubyte hasPalette;
 	if (hasPalette) {
 		ubyte bonePalette[numBonesPerVertex * numVertices];
@@ -1452,6 +1458,12 @@ string NiBool_Read(NiBool &self) {
 
 string NiString_Read(NiString &self) {
 	return self.size ? self.value : "";
+}
+
+string Triangle_Read(Triangle &self) {
+	string s;
+	SPrintf(s, "%d %d %d", self.vertexIndices[0], self.vertexIndices[1], self.vertexIndices[2]);
+	return s;
 }
 
 
