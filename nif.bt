@@ -612,7 +612,7 @@ typedef struct {
 
 typedef struct {
 	NiPoint3 center;
-	NiMatrix3 rotation;
+	NiPoint3 axes[3];
 	NiPoint3 extents;
 } NiBoxBV;
 
