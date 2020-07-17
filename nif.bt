@@ -1398,8 +1398,8 @@ typedef struct {
 	if (numTriangles) {
 		Triangle triangles[numTriangles];
 	}
-	if (numStrips) {
-		ushort stripLengths[numStrips];
+	if (numStripLengths) {
+		ushort stripLengths[numStripLengths];
 		local uint stripLengthsSum = 0;
 		local uint i = 0;
 		for (i = 0; i < numStrips; i++) {
