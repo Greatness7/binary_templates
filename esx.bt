@@ -6,254 +6,113 @@
 //   Version: in-dev
 //   Purpose: Providing aided binary reading of ESP, ESM, and ESS files for Morrowind.
 //  Category: Games
-// File Mask:
+// File Mask: *.esp; *.esm
 //  ID Bytes:
 //   History: See GIT.
 //------------------------------------------------
 
 LittleEndian();
 
-/*
 
-	Core types are defined first, and are the scaffolding for everything else. Local variables
-	allow overriding the display name and value, as well as the comment. Two areas of
-	statements can be extended to include more data types:
+/* -- Core Types -- */
 
-	First, just below in the Subrecord definition, new record types can be defined. These all
-	point to a factory function that determines how the individual subrecords load what they
-	need.
 
-	Below the core type definitions are individual record definitions. These define a switch
-	statement for individual subrecords (or whatever other logic is neccessary).
-
- */
-
-//
-// Core types.
-//
-
-// Subrecord
 typedef struct {
 	char tag[4];
-	uint32 size;
+	uint size;
+} SubRecordHeader <hidden=true>;
+
+typedef struct {
+	char tag[4] <hidden=true>;
+	uint size <hidden=true>;
+	uint flags;
+	uint flags;
+} RecordHeader <name=RecordHeader_Name>;
+
+typedef struct {
+	SubRecordHeader header;
 
 	// Local variables for display overrides.
-	local string displayName = tag;
-	local string displayValue = "";
-	local string comment = "";
+	local string displayName, displayValue;
 
-	switch (parentof(this).tag) {
+	switch (parentof(this).header.tag) {
 		//! Expand this table to add more record types.
-		case "TES3": SubrecordFactory_TES3(this); break;  //
-		case "GMST": SubrecordFactory_GMST(this); break;  // Game Setting
-		case "GLOB": SubrecordFactory_GLOB(this); break;  // Global Variable
-		case "CLAS": SubrecordFactory_CLAS(this); break;  // Class
-		case "FACT": SubrecordFactory_FACT(this); break;  // Faction
-		case "RACE": SubrecordFactory_RACE(this); break;  // Race
-		case "SOUN": SubrecordFactory_SOUN(this); break;  // Sound
-		case "SKIL": SubrecordFactory_SKIL(this); break;  // Skill
-		case "MGEF": SubrecordFactory_MGEF(this); break;  // Magic Effect
-		case "SCPT": SubrecordFactory_SCPT(this); break;  // Script
-		case "REGN": SubrecordFactory_REGN(this); break;  // Region
-		case "BSGN": SubrecordFactory_BSGN(this); break;  // Birthsign
-		case "LTEX": SubrecordFactory_LTEX(this); break;  // Land Texture
-		case "STAT": SubrecordFactory_STAT(this); break;  // Static
-		case "DOOR": SubrecordFactory_DOOR(this); break;  // Door
-		case "MISC": SubrecordFactory_MISC(this); break;  // Misc. Item
-		// case "WEAP": SubrecordFactory_WEAP(this); break;
-		// case "CONT": SubrecordFactory_CONT(this); break;
-		// case "SPEL": SubrecordFactory_SPEL(this); break;
-		// case "CREA": SubrecordFactory_CREA(this); break;
-		// case "BODY": SubrecordFactory_BODY(this); break;
-		// case "LIGH": SubrecordFactory_LIGH(this); break;
-		// case "ENCH": SubrecordFactory_ENCH(this); break;
-		// case "NPC_": SubrecordFactory_NPC_(this); break;
-		// case "ARMO": SubrecordFactory_ARMO(this); break;
-		// case "CLOT": SubrecordFactory_CLOT(this); break;
-		// case "REPA": SubrecordFactory_REPA(this); break;
-		// case "ACTI": SubrecordFactory_ACTI(this); break;
-		// case "APPA": SubrecordFactory_APPA(this); break;
-		// case "LOCK": SubrecordFactory_LOCK(this); break;
-		// case "PROB": SubrecordFactory_PROB(this); break;
-		// case "INGR": SubrecordFactory_INGR(this); break;
-		// case "BOOK": SubrecordFactory_BOOK(this); break;
-		// case "ALCH": SubrecordFactory_ALCH(this); break;
-		// case "LEVI": SubrecordFactory_LEVI(this); break;
-		// case "LEVC": SubrecordFactory_LEVC(this); break;
-		// case "CELL": SubrecordFactory_CELL(this); break;
-		// case "LAND": SubrecordFactory_LAND(this); break;
-		// case "PGRD": SubrecordFactory_PGRD(this); break;
-		// case "SNDG": SubrecordFactory_SNDG(this); break;
-		// case "DIAL": SubrecordFactory_DIAL(this); break;
-		case "INFO": SubrecordFactory_INFO(this); break;  // Dialogue Info
-		case "SSCR": SubrecordFactory_SSCR(this); break;  // Start Script
-		default: byte undefined[size];
+		case "TES3": TES3(this); break;
+		case "GMST": GMST(this); break;
+		case "GLOB": GLOB(this); break;
+		case "CLAS": CLAS(this); break;
+		case "FACT": FACT(this); break;
+		case "RACE": RACE(this); break;
+		case "SOUN": SOUN(this); break;
+		case "SKIL": SKIL(this); break;
+		case "MGEF": MGEF(this); break;
+		case "SCPT": SCPT(this); break;
+		case "SSCR": SSCR(this); break;
+		case "REGN": REGN(this); break;
+		case "BSGN": BSGN(this); break;
+		case "LTEX": LTEX(this); break;
+		case "SPEL": SPEL(this); break;
+		case "ACTI": ACTI(this); break;
+		case "ALCH": ALCH(this); break;
+		case "APPA": APPA(this); break;
+		case "ARMO": ARMO(this); break;
+		case "BODY": BODY(this); break;
+		case "BOOK": BOOK(this); break;
+		case "CLOT": CLOT(this); break;
+		case "CONT": CONT(this); break;
+		case "CREA": CREA(this); break;
+		case "DOOR": DOOR(this); break;
+		case "ENCH": ENCH(this); break;
+		case "INGR": INGR(this); break;
+		case "LEVC": LEVC(this); break;
+		case "LEVI": LEVI(this); break;
+		case "LIGH": LIGH(this); break;
+		case "LOCK": LOCK(this); break;
+		case "MISC": MISC(this); break;
+		case "NPC_": NPC_(this); break;
+		case "PROB": PROB(this); break;
+		case "REPA": REPA(this); break;
+		case "STAT": STAT(this); break;
+		case "WEAP": WEAP(this); break;
+		case "CELL": CELL(this); break;
+		case "LAND": LAND(this); break;
+		case "PGRD": PGRD(this); break;
+		case "SNDG": SNDG(this); break;
+		case "DIAL": DIAL(this); break;
+		case "INFO": INFO(this); break;
+		default:
+			displayName = header.tag + " (?)";
+			byte undefined[size];
 	}
-} Subrecord <name=Subrecord_GetDisplayName, read=Subrecord_Read, comment=Subrecord_GetComment>;
+} SubRecord <name=SubRecord_Name, read=SubRecord_Read, size=SubRecord_Size>;
 
-string Subrecord_GetDisplayName(Subrecord& sr) {
-	return sr.displayName;
-}
-
-int Subrecord_GetSize(Subrecord& sr) {
-	return 8 + ReadUInt(startof(sr)+4);
-}
-
-string Subrecord_Read(Subrecord& sr) {
-	return sr.displayValue;
-}
-
-string Subrecord_GetComment(Subrecord& sr) {
-	return sr.comment;
-}
-
-// Record
 typedef struct {
-	char tag[4];
-	uint32 size;
-	uint32 header1;
-	uint32 flags;
+	RecordHeader header;
 
-	// Local variables for display overrides.
-	local string displayName = tag;
-	local string displayValue = "";
-	local string comment = "";
-
-	// Read subrecords
-	while (FTell() < startof(this) + 16 + size) {
-		Subrecord subrecord;
+	// Read subrecords.
+	local int64 endPos = FTell() + header.size;
+	while (FTell() < endPos) {
+		SubRecord subrecord;
 	}
-} Record <name=Record_GetDisplayName, read=Record_Read, comment=Record_GetComment, size=Record_GetSize, optimize=false>;
-
-string Record_GetDisplayName(Record& r) {
-	return r.displayName;
-}
-
-int Record_GetSize(Record& r) {
-	return 16 + ReadUInt(startof(r)+4);
-}
-
-string Record_Read(Record& r) {
-	return r.displayValue;
-}
-
-string Record_GetComment(Record& r) {
-	return r.comment;
-}
-
-//
-// Utility functions/types.
-//
+} Record <name=Record_Name, read=Record_Read, size=Record_Size>;
 
 
+/* -- Enums -- */
 
-//
-// Record: TES3
-//
 
-typedef enum <uint> {
+typedef enum <int> {
 	ESP = 0,
 	ESM = 1,
 	ESS = 32,
 } ESFileType;
 
-void SubrecordFactory_TES3_HEDR(Subrecord& sr) {
-	float version <comment="Should always be 1.2">;
-	ESFileType fileType;
-	char companyName[32];
-	char description[256];
-	uint recordCount;
+typedef enum <char> {
+	GLOBAL_SHORT = 's',
+	GLOBAL_LONG = 'l',
+	GLOBAL_FLOAT = 'f',
+} GlobalType;
 
-	parentof(sr).comment = description;
-}
-
-void SubrecordFactory_TES3(Subrecord& sr) {
-	switch (sr.tag) {
-		case "HEDR": SubrecordFactory_TES3_HEDR(sr); break;
-		default: byte undefined[sr.size];
-	}
-}
-
-//
-// Record: GMST (Game Setting)
-//
-
-void GMST_NAME(Subrecord& sr) {
-	char name[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = name;
-	parentof(sr).displayName = "Game Setting: " + name;
-}
-
-void GMST_STRV(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Value";
-	sr.displayValue = value;
-	parentof(sr).displayValue = value;
-}
-
-void GMST_INTV(Subrecord& sr) {
-	int value;
-	sr.displayName = "Value";
-	SPrintf(sr.displayValue, "%d", value);
-	parentof(sr).displayValue = sr.displayValue;
-}
-
-void GMST_FLTV(Subrecord& sr) {
-	float value;
-	sr.displayName = "Value";
-	SPrintf(sr.displayValue, "%.4f", value);
-	parentof(sr).displayValue = sr.displayValue;
-}
-
-void SubrecordFactory_GMST(Subrecord& sr) {
-	switch (sr.tag) {
-		case "NAME": GMST_NAME(sr); break;
-		case "STRV": GMST_STRV(sr); break;
-		case "INTV": GMST_INTV(sr); break;
-		case "FLTV": GMST_FLTV(sr); break;
-		default: byte undefined[sr.size];
-	}
-}
-
-//
-// Record: GLOB (Global Variable)
-//
-
-void GLOB_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Global Variable: " + value;
-}
-
-void GLOB_FNAM(Subrecord& sr) {
-	char value;
-	sr.displayName = "Type";
-	sr.displayValue = value;
-}
-
-void GLOB_FLTV(Subrecord& sr) {
-	float value;
-	sr.displayName = "Value";
-	SPrintf(sr.displayValue, "%.4f", value);
-	parentof(sr).displayValue = sr.displayValue;
-}
-
-void SubrecordFactory_GLOB(Subrecord& sr) {
-	switch (sr.tag) {
-		case "NAME": GLOB_NAME(sr); break;
-		case "FNAM": GLOB_FNAM(sr); break;
-		case "FLTV": GLOB_FLTV(sr); break;
-		default: byte undefined[sr.size];
-	}
-}
-
-//
-// Record: CLAS (Class)
-//
-
-typedef enum {
+typedef enum <int> {
 	ATTRIBUTE_NONE = -1,
 	ATTRIBUTE_STRENGTH,
 	ATTRIBUTE_INTELLIGENCE,
@@ -265,14 +124,14 @@ typedef enum {
 	ATTRIBUTE_LUCK,
 } Attribute;
 
-typedef enum {
-	SPECIALIZATION_NONE = -1,
-	SPECIALIZATION_COMBAT,
-	SPECIALIZATION_MAGIC,
-	SPECIALIZATION_STEALTH,
+typedef enum <int> {
+	SPEC_NONE = -1,
+	SPEC_COMBAT,
+	SPEC_MAGIC,
+	SPEC_STEALTH,
 } Specialization;
 
-typedef enum {
+typedef enum <int> {
 	SKILL_NONE = -1,
 	SKILL_BLOCK,
 	SKILL_ARMORER,
@@ -303,20 +162,722 @@ typedef enum {
 	SKILL_HAND_TO_HAND,
 } Skill;
 
-void CLAS_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Class: " + value;
+typedef enum <int> {
+	MGEF_WATER_BREATHING,
+	MGEF_SWIFT_SWIM,
+	MGEF_WATER_WALKING,
+	MGEF_SHIELD,
+	MGEF_FIRE_SHIELD,
+	MGEF_LIGHTNING_SHIELD,
+	MGEF_FROST_SHIELD,
+	MGEF_BURDEN,
+	MGEF_FEATHER,
+	MGEF_JUMP,
+	MGEF_LEVITATE,
+	MGEF_SLOW_FALL,
+	MGEF_LOCK,
+	MGEF_OPEN,
+	MGEF_FIRE_DAMAGE,
+	MGEF_SHOCK_DAMAGE,
+	MGEF_FROST_DAMAGE,
+	MGEF_DRAIN_ATTRIBUTE,
+	MGEF_DRAIN_HEALTH,
+	MGEF_DRAIN_MAGICKA,
+	MGEF_DRAIN_FATIGUE,
+	MGEF_DRAIN_SKILL,
+	MGEF_DAMAGE_ATTRIBUTE,
+	MGEF_DAMAGE_HEALTH,
+	MGEF_DAMAGE_MAGICKA,
+	MGEF_DAMAGE_FATIGUE,
+	MGEF_DAMAGE_SKILL,
+	MGEF_POISON,
+	MGEF_WEAKNESS_TO_FIRE,
+	MGEF_WEAKNESS_TO_FROST,
+	MGEF_WEAKNESS_TO_SHOCK,
+	MGEF_WEAKNESS_TO_MAGICKA,
+	MGEF_WEAKNESS_TO_COMMON_DISEASE,
+	MGEF_WEAKNESS_TO_BLIGHT_DISEASE,
+	MGEF_WEAKNESS_TO_CORPRUS,
+	MGEF_WEAKNESS_TO_POISON,
+	MGEF_WEAKNESS_TO_NORMAL_WEAPONS,
+	MGEF_DISINTEGRATE_WEAPON,
+	MGEF_DISINTEGRATE_ARMOR,
+	MGEF_INVISIBILITY,
+	MGEF_CHAMELEON,
+	MGEF_LIGHT,
+	MGEF_SANCTUARY,
+	MGEF_NIGHT_EYE,
+	MGEF_CHARM,
+	MGEF_PARALYZE,
+	MGEF_SILENCE,
+	MGEF_BLIND,
+	MGEF_SOUND,
+	MGEF_CALM_HUMANOID,
+	MGEF_CALM_CREATURE,
+	MGEF_FRENZY_HUMANOID,
+	MGEF_FRENZY_CREATURE,
+	MGEF_DEMORALIZE_HUMANOID,
+	MGEF_DEMORALIZE_CREATURE,
+	MGEF_RALLY_HUMANOID,
+	MGEF_RALLY_CREATURE,
+	MGEF_DISPEL,
+	MGEF_SOUL_TRAP,
+	MGEF_TELEKINESIS,
+	MGEF_MARK,
+	MGEF_RECALL,
+	MGEF_DIVINE_INTERVENTION,
+	MGEF_ALMSIVI_INTERVENTION,
+	MGEF_DETECT_ANIMAL,
+	MGEF_DETECT_ENCHANTMENT,
+	MGEF_DETECT_KEY,
+	MGEF_SPELL_ABSORPTION,
+	MGEF_REFLECT,
+	MGEF_CURE_COMMON_DISEASE,
+	MGEF_CURE_BLIGHT_DISEASE,
+	MGEF_CURE_CORPRUS,
+	MGEF_CURE_POISON,
+	MGEF_CURE_PARALYZATION,
+	MGEF_RESTORE_ATTRIBUTE,
+	MGEF_RESTORE_HEALTH,
+	MGEF_RESTORE_MAGICKA,
+	MGEF_RESTORE_FATIGUE,
+	MGEF_RESTORE_SKILL,
+	MGEF_FORTIFY_ATTRIBUTE,
+	MGEF_FORTIFY_HEALTH,
+	MGEF_FORTIFY_MAGICKA,
+	MGEF_FORTIFY_FATIGUE,
+	MGEF_FORTIFY_SKILL,
+	MGEF_FORTIFY_MAGICKA_MULTIPLIER,
+	MGEF_ABSORB_ATTRIBUTE,
+	MGEF_ABSORB_HEALTH,
+	MGEF_ABSORB_MAGICKA,
+	MGEF_ABSORB_FATIGUE,
+	MGEF_ABSORB_SKILL,
+	MGEF_RESIST_FIRE,
+	MGEF_RESIST_FROST,
+	MGEF_RESIST_SHOCK,
+	MGEF_RESIST_MAGICKA,
+	MGEF_RESIST_COMMON_DISEASE,
+	MGEF_RESIST_BLIGHT_DISEASE,
+	MGEF_RESIST_CORPRUS,
+	MGEF_RESIST_POISON,
+	MGEF_RESIST_NORMAL_WEAPONS,
+	MGEF_RESIST_PARALYSIS,
+	MGEF_REMOVE_CURSE,
+	MGEF_TURN_UNDEAD,
+	MGEF_SUMMON_SCAMP,
+	MGEF_SUMMON_CLANNFEAR,
+	MGEF_SUMMON_DAEDROTH,
+	MGEF_SUMMON_DREMORA,
+	MGEF_SUMMON_GHOST,
+	MGEF_SUMMON_SKELETON,
+	MGEF_SUMMON_LEAST_BONEWALKER,
+	MGEF_SUMMON_GREATER_BONEWALKER,
+	MGEF_SUMMON_BONELORD,
+	MGEF_SUMMON_TWILIGHT,
+	MGEF_SUMMON_HUNGER,
+	MGEF_SUMMON_GOLDEN_SAINT,
+	MGEF_SUMMON_FLAME_ATRONACH,
+	MGEF_SUMMON_FROST_ATRONACH,
+	MGEF_SUMMON_STORM_ATRONACH,
+	MGEF_FORTIFY_ATTACK_BONUS,
+	MGEF_COMMAND_CREATURE,
+	MGEF_COMMAND_HUMANOID,
+	MGEF_BOUND_DAGGER,
+	MGEF_BOUND_LONGSWORD,
+	MGEF_BOUND_MACE,
+	MGEF_BOUND_BATTLE_AXE,
+	MGEF_BOUND_SPEAR,
+	MGEF_BOUND_LONGBOW,
+	MGEF_EXTRA_SPELL,
+	MGEF_BOUND_CUIRASS,
+	MGEF_BOUND_HELM,
+	MGEF_BOUND_BOOTS,
+	MGEF_BOUND_SHIELD,
+	MGEF_BOUND_GLOVES,
+	MGEF_CORPRUS,
+	MGEF_VAMPIRISM,
+	MGEF_SUMMON_CENTURION_SPHERE,
+	MGEF_SUN_DAMAGE,
+	MGEF_STUNTED_MAGICKA,
+	MGEF_SUMMON_FABRICANT,
+	MGEF_SUMMON_WOLF,
+	MGEF_SUMMON_BEAR,
+	MGEF_SUMMON_BONE_WOLF,
+	MGEF_SUMMON04,
+	MGEF_SUMMON05,
+} MagicEffect;
+
+typedef enum <int> {
+	ALTERATION,
+	CONJURATION,
+	DESTRUCTION,
+	ILLUSION,
+	MYSTICISM,
+	RESTORATION,
+} SpellSchool;
+
+typedef enum <short> {
+	WEAPON_TYPE_SHORT_BLADE_ONE_HAND,
+	WEAPON_TYPE_LONG_BLADE_ONE_HAND,
+	WEAPON_TYPE_LONG_BLADE_TWO_CLOSE,
+	WEAPON_TYPE_BLUNT_ONE_HAND,
+	WEAPON_TYPE_BLUNT_TWO_CLOSE,
+	WEAPON_TYPE_BLUNT_TWO_WIDE,
+	WEAPON_TYPE_SPEAR_TWO_WIDE,
+	WEAPON_TYPE_AXE_ONE_HAND,
+	WEAPON_TYPE_AXE_TWO_HAND,
+	WEAPON_TYPE_MARKSMAN_BOW,
+	WEAPON_TYPE_MARKSMAN_CROSSBOW,
+	WEAPON_TYPE_MARKSMAN_THROWN,
+	WEAPON_TYPE_ARROW,
+	WEAPON_TYPE_BOLT,
+} WeaponType;
+
+typedef enum <int> {
+	SPELL_TYPE_SPELL,
+	SPELL_TYPE_ABILITY,
+	SPELL_TYPE_BLIGHT,
+	SPELL_TYPE_DISEASE,
+	SPELL_TYPE_CURSE,
+	SPELL_TYPE_POWER,
+} SpellType;
+
+typedef enum <short> {
+	EFFECT_NONE = -1,
+	EFFECT_WATER_BREATHING,
+	EFFECT_SWIFT_SWIM,
+	EFFECT_WATER_WALKING,
+	EFFECT_SHIELD,
+	EFFECT_FIRE_SHIELD,
+	EFFECT_LIGHTNING_SHIELD,
+	EFFECT_FROST_SHIELD,
+	EFFECT_BURDEN,
+	EFFECT_FEATHER,
+	EFFECT_JUMP,
+	EFFECT_LEVITATE,
+	EFFECT_SLOW_FALL,
+	EFFECT_LOCK,
+	EFFECT_OPEN,
+	EFFECT_FIRE_DAMAGE,
+	EFFECT_SHOCK_DAMAGE,
+	EFFECT_FROST_DAMAGE,
+	EFFECT_DRAIN_ATTRIBUTE,
+	EFFECT_DRAIN_HEALTH,
+	EFFECT_DRAIN_MAGICKA,
+	EFFECT_DRAIN_FATIGUE,
+	EFFECT_DRAIN_SKILL,
+	EFFECT_DAMAGE_ATTRIBUTE,
+	EFFECT_DAMAGE_HEALTH,
+	EFFECT_DAMAGE_MAGICKA,
+	EFFECT_DAMAGE_FATIGUE,
+	EFFECT_DAMAGE_SKILL,
+	EFFECT_POISON,
+	EFFECT_WEAKNESS_TO_FIRE,
+	EFFECT_WEAKNESS_TO_FROST,
+	EFFECT_WEAKNESS_TO_SHOCK,
+	EFFECT_WEAKNESS_TO_MAGICKA,
+	EFFECT_WEAKNESS_TO_COMMON_DISEASE,
+	EFFECT_WEAKNESS_TO_BLIGHT_DISEASE,
+	EFFECT_WEAKNESS_TO_CORPRUS,
+	EFFECT_WEAKNESS_TO_POISON,
+	EFFECT_WEAKNESS_TO_NORMAL_WEAPONS,
+	EFFECT_DISINTEGRATE_WEAPON,
+	EFFECT_DISINTEGRATE_ARMOR,
+	EFFECT_INVISIBILITY,
+	EFFECT_CHAMELEON,
+	EFFECT_LIGHT,
+	EFFECT_SANCTUARY,
+	EFFECT_NIGHT_EYE,
+	EFFECT_CHARM,
+	EFFECT_PARALYZE,
+	EFFECT_SILENCE,
+	EFFECT_BLIND,
+	EFFECT_SOUND,
+	EFFECT_CALM_HUMANOID,
+	EFFECT_CALM_CREATURE,
+	EFFECT_FRENZY_HUMANOID,
+	EFFECT_FRENZY_CREATURE,
+	EFFECT_DEMORALIZE_HUMANOID,
+	EFFECT_DEMORALIZE_CREATURE,
+	EFFECT_RALLY_HUMANOID,
+	EFFECT_RALLY_CREATURE,
+	EFFECT_DISPEL,
+	EFFECT_SOUL_TRAP,
+	EFFECT_TELEKINESIS,
+	EFFECT_MARK,
+	EFFECT_RECALL,
+	EFFECT_DIVINE_INTERVENTION,
+	EFFECT_ALMSIVI_INTERVENTION,
+	EFFECT_DETECT_ANIMAL,
+	EFFECT_DETECT_ENCHANTMENT,
+	EFFECT_DETECT_KEY,
+	EFFECT_SPELL_ABSORPTION,
+	EFFECT_REFLECT,
+	EFFECT_CURE_COMMON_DISEASE,
+	EFFECT_CURE_BLIGHT_DISEASE,
+	EFFECT_CURE_CORPRUS,
+	EFFECT_CURE_POISON,
+	EFFECT_CURE_PARALYZATION,
+	EFFECT_RESTORE_ATTRIBUTE,
+	EFFECT_RESTORE_HEALTH,
+	EFFECT_RESTORE_MAGICKA,
+	EFFECT_RESTORE_FATIGUE,
+	EFFECT_RESTORE_SKILL,
+	EFFECT_FORTIFY_ATTRIBUTE,
+	EFFECT_FORTIFY_HEALTH,
+	EFFECT_FORTIFY_MAGICKA,
+	EFFECT_FORTIFY_FATIGUE,
+	EFFECT_FORTIFY_SKILL,
+	EFFECT_FORTIFY_MAGICKA_MULTIPLIER,
+	EFFECT_ABSORB_ATTRIBUTE,
+	EFFECT_ABSORB_HEALTH,
+	EFFECT_ABSORB_MAGICKA,
+	EFFECT_ABSORB_FATIGUE,
+	EFFECT_ABSORB_SKILL,
+	EFFECT_RESIST_FIRE,
+	EFFECT_RESIST_FROST,
+	EFFECT_RESIST_SHOCK,
+	EFFECT_RESIST_MAGICKA,
+	EFFECT_RESIST_COMMON_DISEASE,
+	EFFECT_RESIST_BLIGHT_DISEASE,
+	EFFECT_RESIST_CORPRUS,
+	EFFECT_RESIST_POISON,
+	EFFECT_RESIST_NORMAL_WEAPONS,
+	EFFECT_RESIST_PARALYSIS,
+	EFFECT_REMOVE_CURSE,
+	EFFECT_TURN_UNDEAD,
+	EFFECT_SUMMON_SCAMP,
+	EFFECT_SUMMON_CLANNFEAR,
+	EFFECT_SUMMON_DAEDROTH,
+	EFFECT_SUMMON_DREMORA,
+	EFFECT_SUMMON_GHOST,
+	EFFECT_SUMMON_SKELETON,
+	EFFECT_SUMMON_LEAST_BONEWALKER,
+	EFFECT_SUMMON_GREATER_BONEWALKER,
+	EFFECT_SUMMON_BONELORD,
+	EFFECT_SUMMON_TWILIGHT,
+	EFFECT_SUMMON_HUNGER,
+	EFFECT_SUMMON_GOLDEN_SAINT,
+	EFFECT_SUMMON_FLAME_ATRONACH,
+	EFFECT_SUMMON_FROST_ATRONACH,
+	EFFECT_SUMMON_STORM_ATRONACH,
+	EFFECT_FORTIFY_ATTACK_BONUS,
+	EFFECT_COMMAND_CREATURE,
+	EFFECT_COMMAND_HUMANOID,
+	EFFECT_BOUND_DAGGER,
+	EFFECT_BOUND_LONGSWORD,
+	EFFECT_BOUND_MACE,
+	EFFECT_BOUND_BATTLE_AXE,
+	EFFECT_BOUND_SPEAR,
+	EFFECT_BOUND_LONGBOW,
+	EFFECT_EXTRA_SPELL,
+	EFFECT_BOUND_CUIRASS,
+	EFFECT_BOUND_HELM,
+	EFFECT_BOUND_BOOTS,
+	EFFECT_BOUND_SHIELD,
+	EFFECT_BOUND_GLOVES,
+	EFFECT_CORPRUS,
+	EFFECT_VAMPIRISM,
+	EFFECT_SUMMON_CENTURION_SPHERE,
+	EFFECT_SUN_DAMAGE,
+	EFFECT_STUNTED_MAGICKA,
+	EFFECT_SUMMON_FABRICANT,
+	EFFECT_SUMMON_WOLF,
+	EFFECT_SUMMON_BEAR,
+	EFFECT_SUMMON_BONE_WOLF,
+	EFFECT_SUMMON04,
+	EFFECT_SUMMON05,
+} Effect;
+
+typedef enum <byte> {
+	EFFECT_ATTRIBUTE_NONE = -1,
+	EFFECT_ATTRIBUTE_STRENGTH,
+	EFFECT_ATTRIBUTE_INTELLIGENCE,
+	EFFECT_ATTRIBUTE_WILLPOWER,
+	EFFECT_ATTRIBUTE_AGILITY,
+	EFFECT_ATTRIBUTE_SPEED,
+	EFFECT_ATTRIBUTE_ENDURANCE,
+	EFFECT_ATTRIBUTE_PERSONALITY,
+	EFFECT_ATTRIBUTE_LUCK,
+} EffectAttribute;
+
+typedef enum <byte> {
+	EFFECT_SKILL_NONE = -1,
+	EFFECT_SKILL_BLOCK,
+	EFFECT_SKILL_ARMORER,
+	EFFECT_SKILL_MEDIUM_ARMOR,
+	EFFECT_SKILL_HEAVY_ARMOR,
+	EFFECT_SKILL_BLUNT_WEAPON,
+	EFFECT_SKILL_LONG_BLADE,
+	EFFECT_SKILL_AXE,
+	EFFECT_SKILL_SPEAR,
+	EFFECT_SKILL_ATHLETICS,
+	EFFECT_SKILL_ENCHANT,
+	EFFECT_SKILL_DESTRUCTION,
+	EFFECT_SKILL_ALTERATION,
+	EFFECT_SKILL_ILLUSION,
+	EFFECT_SKILL_CONJURATION,
+	EFFECT_SKILL_MYSTICISM,
+	EFFECT_SKILL_RESTORATION,
+	EFFECT_SKILL_ALCHEMY,
+	EFFECT_SKILL_UNARMORED,
+	EFFECT_SKILL_SECURITY,
+	EFFECT_SKILL_SNEAK,
+	EFFECT_SKILL_ACROBATICS,
+	EFFECT_SKILL_LIGHT_ARMOR,
+	EFFECT_SKILL_SHORT_BLADE,
+	EFFECT_SKILL_MARKSMAN,
+	EFFECT_SKILL_MERCANTILE,
+	EFFECT_SKILL_SPEECHCRAFT,
+	EFFECT_SKILL_HAND_TO_HAND,
+} EffectSkill;
+
+typedef enum <int> {
+	EFFECT_RANGE_SELF,
+	EFFECT_RANGE_TOUCH,
+	EFFECT_RANGE_TARGET,
+} EffectRange;
+
+typedef enum <ubyte> {
+	BODYPART_HEAD,
+	BODYPART_HAIR,
+	BODYPART_NECK,
+	BODYPART_CHEST,
+	BODYPART_GROIN,
+	BODYPART_HAND,
+	BODYPART_WRIST,
+	BODYPART_FOREARM,
+	BODYPART_UPPER_ARM,
+	BODYPART_FOOT,
+	BODYPART_ANKLE,
+	BODYPART_KNEE,
+	BODYPART_UPPER_LEG,
+	BODYPART_CLAVICLE,
+	BODYPART_TAIL,
+} BodyPart;
+
+typedef enum <ubyte> {
+	BODYPART_TYPE_SKIN,
+	BODYPART_TYPE_CLOTHING,
+	BODYPART_TYPE_ARMOR,
+} BodyPartType;
+
+typedef enum <int> {
+	ENCHANT_TYPE_CAST_ONCE,
+	ENCHANT_TYPE_CAST_ON_STRIKE,
+	ENCHANT_TYPE_CAST_WHEN_USED,
+	ENCHANT_TYPE_CONSTANT_EFFECT,
+} EnchantType;
+
+typedef enum <int> {
+	ARMOR_TYPE_HELMET,
+	ARMOR_TYPE_CUIRASS,
+	ARMOR_TYPE_LEFT_PAULDRON,
+	ARMOR_TYPE_RIGHT_PAULDRON,
+	ARMOR_TYPE_GREAVES,
+	ARMOR_TYPE_BOOTS,
+	ARMOR_TYPE_LEFT_GAUNTLET,
+	ARMOR_TYPE_RIGHT_GAUNTLET,
+	ARMOR_TYPE_SHIELD,
+	ARMOR_TYPE_LEFT_BRACER,
+	ARMOR_TYPE_RIGHT_BRACER,
+} ArmorType;
+
+typedef enum <int> {
+	CLOTHING_TYPE_PANTS,
+	CLOTHING_TYPE_SHOES,
+	CLOTHING_TYPE_SHIRT,
+	CLOTHING_TYPE_BELT,
+	CLOTHING_TYPE_ROBE,
+	CLOTHING_TYPE_RIGHT_GLOVE,
+	CLOTHING_TYPE_LEFT_GLOVE,
+	CLOTHING_TYPE_SKIRT,
+	CLOTHING_TYPE_RING,
+	CLOTHING_TYPE_AMULET,
+} ClothingType;
+
+typedef enum <byte> {
+	SEX_ANY = -1,
+	SEX_MALE,
+	SEX_FEMALE,
+} Sex;
+
+typedef enum <int> {
+	DIAL_TYPE_TOPIC,
+	DIAL_TYPE_VOICE,
+	DIAL_TYPE_GREETING,
+	DIAL_TYPE_PERSUASION,
+	DIAL_TYPE_JOURNAL,
+} DialogueType;
+
+typedef enum <char> {
+	VAR_TYPE_NONE = '0',
+	VAR_TYPE_FUNCTION = '1',
+	VAR_TYPE_GLOBAL = '2',
+	VAR_TYPE_LOCAL = '3',
+	VAR_TYPE_JOURNAL = '4',
+	VAR_TYPE_ITEM = '5',
+	VAR_TYPE_DEAD = '6',
+	VAR_TYPE_NOT_ID = '7',
+	VAR_TYPE_NOT_FACTION = '8',
+	VAR_TYPE_NOT_CLASS = '9',
+	VAR_TYPE_NOT_RACE = 'A',
+	VAR_TYPE_NOT_CELL = 'B',
+	VAR_TYPE_NOT_LOCAL = 'C',
+} DialogueVarType;
+
+typedef enum <short> {
+	VAR_FUNC_REACTION_LOW = 12336,            // '00',
+	VAR_FUNC_REACTION_HIGH = 12592,           // '01',
+	VAR_FUNC_RANK_REQUIREMENT = 12848,        // '02',
+	VAR_FUNC_REPUTATION = 13104,              // '03',
+	VAR_FUNC_HEALTH_PERCENT = 13360,          // '04',
+	VAR_FUNC_PC_REPUTATION = 13616,           // '05',
+	VAR_FUNC_PC_LEVEL = 13872,                // '06',
+	VAR_FUNC_PC_HEALTH_PERCENT = 14128,       // '07',
+	VAR_FUNC_PC_MAGICKA = 14384,              // '08',
+	VAR_FUNC_PC_FATIGUE = 14640,              // '09',
+	VAR_FUNC_PC_STRENGTH = 12337,             // '10',
+	VAR_FUNC_PC_BLOCK = 12593,                // '11',
+	VAR_FUNC_PC_ARMORER = 12849,              // '12',
+	VAR_FUNC_PC_MEDIUM_ARMOR = 13105,         // '13',
+	VAR_FUNC_PC_HEAVY_ARMOR = 13361,          // '14',
+	VAR_FUNC_PC_BLUNT_WEAPON = 13617,         // '15',
+	VAR_FUNC_PC_LONG_BLADE = 13873,           // '16',
+	VAR_FUNC_PC_AXE = 14129,                  // '17',
+	VAR_FUNC_PC_SPEAR = 14385,                // '18',
+	VAR_FUNC_PC_ATHLETICS = 14641,            // '19',
+	VAR_FUNC_PC_ENCHANT = 12338,              // '20',
+	VAR_FUNC_PC_DESTRUCTION = 12594,          // '21',
+	VAR_FUNC_PC_ALTERATION = 12850,           // '22',
+	VAR_FUNC_PC_ILLUSION = 13106,             // '23',
+	VAR_FUNC_PC_CONJURATION = 13362,          // '24',
+	VAR_FUNC_PC_MYSTICISM = 13618,            // '25',
+	VAR_FUNC_PC_RESTORATION = 13874,          // '26',
+	VAR_FUNC_PC_ALCHEMY = 14130,              // '27',
+	VAR_FUNC_PC_UNARMORED = 14386,            // '28',
+	VAR_FUNC_PC_SECURITY = 14642,             // '29',
+	VAR_FUNC_PC_SNEAK = 12339,                // '30',
+	VAR_FUNC_PC_ACROBATICS = 12595,           // '31',
+	VAR_FUNC_PC_LIGHT_ARMOR = 12851,          // '32',
+	VAR_FUNC_PC_SHORT_BLADE = 13107,          // '33',
+	VAR_FUNC_PC_MARKSMAN = 13363,             // '34',
+	VAR_FUNC_PC_MERCANTILE = 13619,           // '35',
+	VAR_FUNC_PC_SPEECHCRAFT = 13875,          // '36',
+	VAR_FUNC_PC_HAND_TO_HAND = 14131,         // '37',
+	VAR_FUNC_PC_SEX = 14387,                  // '38',
+	VAR_FUNC_PC_EXPELLED = 14643,             // '39',
+	VAR_FUNC_PC_COMMON_DISEASE = 12340,       // '40',
+	VAR_FUNC_PC_BLIGHT_DISEASE = 12596,       // '41',
+	VAR_FUNC_PC_CLOTHING_MODIFIER = 12852,    // '42',
+	VAR_FUNC_PC_CRIME_LEVEL = 13108,          // '43',
+	VAR_FUNC_SAME_SEX = 13364,                // '44',
+	VAR_FUNC_SAME_RACE = 13620,               // '45',
+	VAR_FUNC_SAME_FACTION = 13876,            // '46',
+	VAR_FUNC_FACTION_RANK_DIFFERENCE = 14132, // '47',
+	VAR_FUNC_DETECTED = 14388,                // '48',
+	VAR_FUNC_ALARMED = 14644,                 // '49',
+	VAR_FUNC_CHOICE = 12341,                  // '50',
+	VAR_FUNC_PC_INTELLIGENCE = 12597,         // '51',
+	VAR_FUNC_PC_WILLPOWER = 12853,            // '52',
+	VAR_FUNC_PC_AGILITY = 13109,              // '53',
+	VAR_FUNC_PC_SPEED = 13365,                // '54',
+	VAR_FUNC_PC_ENDURANCE = 13621,            // '55',
+	VAR_FUNC_PC_PERSONALITY = 13877,          // '56',
+	VAR_FUNC_PC_LUCK = 14133,                 // '57',
+	VAR_FUNC_PC_CORPRUS = 14389,              // '58',
+	VAR_FUNC_WEATHER = 14645,                 // '59',
+	VAR_FUNC_PC_VAMPIRE = 12342,              // '60',
+	VAR_FUNC_LEVEL = 12598,                   // '61',
+	VAR_FUNC_ATTACKED = 12854,                // '62',
+	VAR_FUNC_TALKED_TO_PC = 13110,            // '63',
+	VAR_FUNC_PC_HEALTH = 13366,               // '64',
+	VAR_FUNC_CREATURE_TARGET = 13622,         // '65',
+	VAR_FUNC_FRIEND_HIT = 13878,              // '66',
+	VAR_FUNC_FIGHT = 14134,                   // '67',
+	VAR_FUNC_HELLO = 14390,                   // '68',
+	VAR_FUNC_ALARM = 14646,                   // '69',
+	VAR_FUNC_FLEE = 12343,                    // '70',
+	VAR_FUNC_SHOULD_ATTACK = 12599,           // '71',
+	VAR_FUNC_WEREWOLF = 12855,                // '72',
+	VAR_FUNC_WEREWOLF_KILLS = 13111,          // '73',
+	VAR_FUNC_NOT_CLASS = 22595,               // 'CX',
+	VAR_FUNC_DEAD_TYPE = 22596,               // 'DX',
+	VAR_FUNC_NOT_FACTION = 22598,             // 'FX',
+	VAR_FUNC_ITEM_TYPE = 22601,               // 'IX',
+	VAR_FUNC_JOURNAL_TYPE = 22602,            // 'JX',
+	VAR_FUNC_NOT_CELL = 22604,                // 'LX',
+	VAR_FUNC_NOT_RACE = 22610,                // 'RX',
+	VAR_FUNC_NOT_ID_TYPE = 22616,             // 'XX',
+	VAR_FUNC_GLOBAL = 22630,                  // 'fX',
+	VAR_FUNC_PCGOLD = 22636,                  // 'lX',
+	VAR_FUNC_COMPARE_GLOBAL = 22578,          // '2X',
+	VAR_FUNC_COMPARE_LOCAL = 22579,           // '3X',
+	VAR_FUNC_VARIABLE_COMPARE = 22643,        // 'sX',
+} DialogueVarFunc;
+
+typedef enum <char> {
+	VAR_CMP_EQUAL = '0',
+	VAR_CMP_NOT_EQUAL = '1',
+	VAR_CMP_GREATER = '2',
+	VAR_CMP_GREATER_EQUAL = '3',
+	VAR_CMP_LESS = '4',
+	VAR_CMP_LESS_EQUAL = '5',
+} DialogueVarComp;
+
+typedef enum <uint> {
+	SNDG_LEFT_FOOT,
+	SNDG_RIGHT_FOOT,
+	SNDG_SWIM_LEFT,
+	SNDG_SWIM_RIGHT,
+	SNDG_MOAN,
+	SNDG_ROAR,
+	SNDG_SCREAM,
+	SNDG_LAND,
+} SoundGenType;
+
+typedef enum <char> {
+	TOPIC,
+    VOICE,
+    GREETING,
+    PERSUASION,
+    JOURNAL,
+} DialogueType2;
+
+
+/* -- HEDR (Header) -- */
+
+
+void TES3_HEDR(SubRecord &sr) {
+	float version;
+	ESFileType type;
+	char author[32];
+	char description[256];
+	uint recordCount;
+	/* -- Display -- */
+	sr.displayName = "HEDR (Header Info)";
+	sr.displayValue = author;
 }
 
-void CLAS_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void TES3_MAST(SubRecord &sr) {
+	char masterFileName[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MAST (Master File Name)";
+	sr.displayValue = masterFileName;
 }
 
-void CLAS_CLDT(Subrecord& sr) {
+void TES3_DATA(SubRecord &sr) {
+	uint64 masterFileSize;
+	/* -- Display -- */
+	sr.displayName = "DATA (Master File Size)";
+	SPrintf(sr.displayValue, "%Lu", masterFileSize);
+}
+
+void TES3(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "HEDR": TES3_HEDR(sr); break;
+		case "MAST": TES3_MAST(sr); break;
+		case "DATA": TES3_DATA(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- GMST (Game Setting) -- */
+
+
+void GMST_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue =  id;
+}
+
+void GMST_STRV(SubRecord &sr) {
+	char stringValue[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "STRV (String Value)";
+	sr.displayValue = stringValue;
+}
+
+void GMST_INTV(SubRecord &sr) {
+	int integerValue;
+	/* -- Display -- */
+	sr.displayName = "INTV (Integer Value)";
+	SPrintf(sr.displayValue, "%d", integerValue);
+}
+
+void GMST_FLTV(SubRecord &sr) {
+	float floatValue;
+	/* -- Display -- */
+	sr.displayName = "FLTV (Float Value)";
+	SPrintf(sr.displayValue, "%.4f", floatValue);
+}
+
+void GMST(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": GMST_NAME(sr); break;
+		case "STRV": GMST_STRV(sr); break;
+		case "INTV": GMST_INTV(sr); break;
+		case "FLTV": GMST_FLTV(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- GLOB (Global Variable) -- */
+
+
+void GLOB_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void GLOB_FNAM(SubRecord &sr) {
+	GlobalType variableType;
+	/* -- Display -- */
+	sr.displayName = "FNAM (Variable Type)";
+	sr.displayValue = variableType;
+}
+
+void GLOB_FLTV(SubRecord &sr) {
+	float floatValue;
+	/* -- Display -- */
+	sr.displayName = "GLOB (Float Value)";
+	SPrintf(sr.displayValue, "%.4f", floatValue);
+}
+
+void GLOB(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": GLOB_NAME(sr); break;
+		case "FNAM": GLOB_FNAM(sr); break;
+		case "FLTV": GLOB_FLTV(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- CLAS (Class) -- */
+
+
+void CLAS_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CLAS_FNAM(SubRecord &sr) {
+	char className[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = className;
+}
+
+void CLAS_CLDT(SubRecord &sr) {
 	Attribute attributeId1;
 	Attribute attributeId2;
 	Specialization specialization;
@@ -330,105 +891,113 @@ void CLAS_CLDT(Subrecord& sr) {
 	Skill major4;
 	Skill minor5;
 	Skill major5;
-	uint classFlags;
+	uint flags;
 	uint autoCalcFlags;
-	sr.displayName = "Class Data";
+	/* -- Display -- */
+	sr.displayName = "CLDT (Class Data)";
 }
 
-void CLAS_DESC(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Description";
-	sr.displayValue = value;
+void CLAS_DESC(SubRecord &sr) {
+	char description[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DESC (Description)";
+	sr.displayValue = description;
 }
 
-void SubrecordFactory_CLAS(Subrecord& sr) {
-	switch (sr.tag) {
+void CLAS(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": CLAS_NAME(sr); break;
 		case "FNAM": CLAS_FNAM(sr); break;
 		case "CLDT": CLAS_CLDT(sr); break;
 		case "DESC": CLAS_DESC(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: FACT (Faction)
-//
 
-void FACT_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Faction: " + value;
+/* -- FACT (Faction) -- */
+
+
+void FACT_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void FACT_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void FACT_FNAM(SubRecord &sr) {
+	char factionName[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = factionName;
 }
 
-void FACT_RNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Rank Name";
-	sr.displayValue = value;
+void FACT_RNAM(SubRecord &sr) {
+	char rankName[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "RNAM (Rank Name)";
+	sr.displayValue = rankName;
 }
 
-void FACT_FADT(Subrecord& sr) {
-	Attribute attributeId1;
-	Attribute attributeId2;
+void FACT_FADT(SubRecord &sr) {
+	Attribute favoredAttributes[2];
 	struct {
-		int reqAttributes[2];
-		int requiredSkills[2];
-		int factionReputation;
-	} rankData[10] <name="Rank Data">;
-	Skill skills[7];
+		Attribute attributes[2];
+		Skill primarySkill;
+		Skill favoredSkill;
+		int reputation;
+	} requirements[10];
+	Skill favoredSkills[7];
 	uint flags;
-	sr.displayName = "Faction Data";
+	/* -- Display -- */
+	sr.displayName = "FADT (Faction Data)";
 }
 
-void FACT_ANAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Reaction Faction";
-	sr.displayValue = value;
+void FACT_ANAM(SubRecord &sr) {
+	char factionId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ANAM (Reaction Faction)";
+	sr.displayValue = factionId;
 }
 
-void FACT_INTV(Subrecord& sr) {
-	int value;
-	sr.displayName = "Reaction Adjustment";
-	SPrintf(sr.displayValue, "%d", value);
+void FACT_INTV(SubRecord &sr) {
+	int modifier;
+	/* -- Display -- */
+	sr.displayName = "INTV (Reaction Modifier)";
+	SPrintf(sr.displayValue, "%d", modifier);
 }
 
-void SubrecordFactory_FACT(Subrecord& sr) {
-	switch (sr.tag) {
+void FACT(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": FACT_NAME(sr); break;
 		case "FNAM": FACT_FNAM(sr); break;
 		case "RNAM": FACT_RNAM(sr); break;
 		case "FADT": FACT_FADT(sr); break;
 		case "ANAM": FACT_ANAM(sr); break;
 		case "INTV": FACT_INTV(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: RACE (Race)
-//
 
-void RACE_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Race: " + value;
+/* -- RACE (Race) -- */
+
+
+void RACE_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void RACE_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void RACE_FNAM(SubRecord &sr) {
+	char raceName[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = raceName;
 }
 
-void RACE_RADT(Subrecord& sr) {
+void RACE_RADT(SubRecord &sr) {
 	struct {
 		Skill skill;
 		int bonus;
@@ -444,119 +1013,117 @@ void RACE_RADT(Subrecord& sr) {
 	float height[2];
 	float weight[2];
 	uint flags;
+	/* -- Display -- */
+	sr.displayName = "RADT (Race Data)";
 }
 
-void RACE_NPCS(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Special Power/Ability";
-	sr.displayValue = value;
+void RACE_NPCS(SubRecord &sr) {
+	char spell[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NPCS (Spell)";
+	sr.displayValue = spell;
 }
 
-void RACE_DESC(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Description";
-	sr.displayValue = value;
+void RACE_DESC(SubRecord &sr) {
+	char description[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DESC (Description)";
+	sr.displayValue = description;
 }
 
-void SubrecordFactory_RACE(Subrecord& sr) {
-	switch (sr.tag) {
+void RACE(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": RACE_NAME(sr); break;
 		case "FNAM": RACE_FNAM(sr); break;
 		case "RADT": RACE_RADT(sr); break;
 		case "NPCS": RACE_NPCS(sr); break;
 		case "DESC": RACE_DESC(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: SOUN (Sound)
-//
 
-void SOUN_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Sound: " + value;
+/* -- SOUN (Sound) -- */
+
+
+void SOUN_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void SOUN_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Filename";
-	sr.displayValue = value;
-	sr.comment = "Relative to Data Files\\Sounds\\";
+void SOUN_FNAM(SubRecord &sr) {
+	char fileName[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (File Name)";
+	sr.displayValue = fileName;
 }
 
-void SOUN_DATA(Subrecord& sr) {
-	ubyte volume <comment="0=0.00, 255=1.00">;
+void SOUN_DATA(SubRecord &sr) {
+	ubyte volume;
 	ubyte rangeMin;
 	ubyte rangeMax;
-	sr.displayName = "Sound Data";
+	/* -- Display -- */
+	sr.displayName = "DATA (Sound Data)";
 }
 
-void SubrecordFactory_SOUN(Subrecord& sr) {
-	switch (sr.tag) {
+void SOUN(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": SOUN_NAME(sr); break;
 		case "FNAM": SOUN_FNAM(sr); break;
 		case "DATA": SOUN_DATA(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: SKIL (Skill)
-//
 
-void SKIL_INDX(Subrecord& sr) {
-	int value;
-	sr.displayName = "ID";
-	SPrintf(sr.displayValue, "%d", value);
-	parentof(sr).displayName = "Skill: " + sr.displayValue;
+/* -- SKIL (Skill) -- */
+
+
+void SKIL_INDX(SubRecord &sr) {
+	Skill skill;
+	/* -- Display -- */
+	sr.displayName = "INDX (Skill Id)";
+	sr.displayValue = EnumToString(skill);
 }
 
-void SKIL_SKDT(Subrecord& sr) {
+void SKIL_SKDT(SubRecord &sr) {
 	Attribute attribute;
 	Specialization specialization;
 	float experienceValues[4];
-	sr.displayName = "Skill Data";
+	/* -- Display -- */
+	sr.displayName = "SKDT (Skill Data)";
 }
 
-void SKIL_DESC(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Description";
-	sr.displayValue = value;
+void SKIL_DESC(SubRecord &sr) {
+	char description[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DESC (Description)";
+	sr.displayValue = description;
 }
 
-void SubrecordFactory_SKIL(Subrecord& sr) {
-	switch (sr.tag) {
+void SKIL(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "INDX": SKIL_INDX(sr); break;
 		case "SKDT": SKIL_SKDT(sr); break;
 		case "DESC": SKIL_DESC(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: MGEF (Magic Effect)
-//
 
-typedef enum {
-	SCHOOL_ALTERATION,
-	SCHOOL_CONJURATION,
-	SCHOOL_DESTRUCTION,
-	SCHOOL_ILLUSION,
-	SCHOOL_MYSTICISM,
-	SCHOOL_RESTORATION,
-} SpellSchool;
+/* -- MGEF (Magic Effect) -- */
 
-void MGEF_INDX(Subrecord& sr) {
-	int value;
-	sr.displayName = "ID";
-	SPrintf(sr.displayValue, "%d", value);
-	parentof(sr).displayName = "Magic Effect: " + sr.displayValue;
+
+void MGEF_INDX(SubRecord &sr) {
+	MagicEffect magicEffect;
+	/* -- Display -- */
+	sr.displayName = "INDX (Effect Index)";
+	sr.displayValue = EnumToString(magicEffect);
 }
 
-void MGEF_MEDT(Subrecord& sr) {
+void MGEF_MEDT(SubRecord &sr) {
 	SpellSchool school;
 	float baseCost;
 	uint flags;
@@ -564,77 +1131,89 @@ void MGEF_MEDT(Subrecord& sr) {
 	float speed;
 	float sizeIncrease;
 	float sizeCap;
-	sr.displayName = "EFfect Data";
+	/* -- Display -- */
+	sr.displayName = "MEDT (EFfect Data)";
 }
 
-void MGEF_ITEX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Icon";
-	sr.displayValue = value;
+void MGEF_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
 }
 
-void MGEF_PTEX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Particle Texture";
-	sr.displayValue = value;
+void MGEF_PTEX(SubRecord &sr) {
+	char particleTexture[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "PTEX (Particle Texture)";
+	sr.displayValue = particleTexture;
 }
 
-void MGEF_CVFX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Casting Visual";
-	sr.displayValue = value;
+void MGEF_CVFX(SubRecord &sr) {
+	char castingVisual[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CVFX (Casting Visual)";
+	sr.displayValue = castingVisual;
 }
 
-void MGEF_BVFX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Bolt Visual";
-	sr.displayValue = value;
+void MGEF_BVFX(SubRecord &sr) {
+	char boltVisual[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BVFX (Bolt Visual)";
+	sr.displayValue = boltVisual;
 }
 
-void MGEF_HVFX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Hit Visual";
-	sr.displayValue = value;
+void MGEF_HVFX(SubRecord &sr) {
+	char hitVisual[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "HVFX (Hit Visual)";
+	sr.displayValue = hitVisual;
 }
 
-void MGEF_AVFX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Area Visual";
-	sr.displayValue = value;
+void MGEF_AVFX(SubRecord &sr) {
+	char areaVisual[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "AVFX (Area Visual)";
+	sr.displayValue = areaVisual;
 }
 
-void MGEF_DESC(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Description";
-	sr.displayValue = value;
+void MGEF_DESC(SubRecord &sr) {
+	char description[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DESC (Description)";
+	sr.displayValue = description;
 }
 
-void MGEF_CSND(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Cast Sound";
-	sr.displayValue = value;
+void MGEF_CSND(SubRecord &sr) {
+	char castSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CSND (Cast Sound)";
+	sr.displayValue = castSound;
 }
 
-void MGEF_BSND(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Bolt Sound";
-	sr.displayValue = value;
+void MGEF_BSND(SubRecord &sr) {
+	char boltSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BSND (Bolt Sound)";
+	sr.displayValue = boltSound;
 }
 
-void MGEF_HSND(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Hit Sound";
-	sr.displayValue = value;
+void MGEF_HSND(SubRecord &sr) {
+	char hitSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "HSND (Hit Sound)";
+	sr.displayValue = hitSound;
 }
 
-void MGEF_ASND(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Area Sound";
-	sr.displayValue = value;
+void MGEF_ASND(SubRecord &sr) {
+	char areaSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ASND (Area Sound)";
+	sr.displayValue = areaSound;
 }
 
-void SubrecordFactory_MGEF(Subrecord& sr) {
-	switch (sr.tag) {
+void MGEF(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "INDX": MGEF_INDX(sr); break;
 		case "MEDT": MGEF_MEDT(sr); break;
 		case "ITEX": MGEF_ITEX(sr); break;
@@ -648,69 +1227,99 @@ void SubrecordFactory_MGEF(Subrecord& sr) {
 		case "BSND": MGEF_BSND(sr); break;
 		case "HSND": MGEF_HSND(sr); break;
 		case "ASND": MGEF_ASND(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: SCPT (Script)
-//
 
-void SCPT_SCHD(Subrecord& sr) {
+/* -- SCPT (Script) -- */
+
+
+void SCPT_SCHD(SubRecord &sr) {
 	char id[32];
 	uint numShorts;
 	uint numLongs;
 	uint numFloats;
 	uint scriptDataSize;
 	uint localVarSize;
-	sr.displayName = "Script Data";
+	/* -- Display -- */
+	sr.displayName = "SCHD (Script Header)";
 	sr.displayValue = id;
-	parentof(sr).displayName = "Script: " + sr.displayValue;
 }
 
-void SCPT_SCVR(Subrecord& sr) {
-	char elements[sr.size];
-	sr.displayName = "Script Variables";
+void SCPT_SCVR(SubRecord &sr) {
+	char variables[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCVR (Script Variables)";
 }
 
-void SCPT_SCDT(Subrecord& sr) {
-	byte value[sr.size];
-	sr.displayName = "Compiled Script";
+void SCPT_SCDT(SubRecord &sr) {
+	byte byteCode[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCDT (Script Bytecode)";
 }
 
-void SCPT_SCTX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Script Text";
+void SCPT_SCTX(SubRecord &sr) {
+	char scriptText[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCTX (Script Text)";
 }
 
-void SubrecordFactory_SCPT(Subrecord& sr) {
-	switch (sr.tag) {
+void SCPT(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "SCHD": SCPT_SCHD(sr); break;
 		case "SCVR": SCPT_SCVR(sr); break;
 		case "SCDT": SCPT_SCDT(sr); break;
 		case "SCTX": SCPT_SCTX(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: REGN (Region)
-//
 
-void REGN_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Region: " + sr.displayValue;
+/* -- SSCR (Start Script) -- */
+
+
+void SSCR_DATA(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DATA (Id)";
+	sr.displayValue = id;
 }
 
-void REGN_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void SSCR_NAME(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Script Id)";
+	sr.displayValue = scriptId;
 }
 
-void REGN_WEAT(Subrecord& sr) {
+void SSCR(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "DATA": SSCR_DATA(sr); break;
+		case "NAME": SSCR_NAME(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- REGN (Region) -- */
+
+
+void REGN_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void REGN_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void REGN_WEAT(SubRecord &sr) {
 	ubyte chanceClear;
 	ubyte chanceCloudy;
 	ubyte chanceFoggy;
@@ -719,248 +1328,1398 @@ void REGN_WEAT(Subrecord& sr) {
 	ubyte chanceThunder;
 	ubyte chanceAsh;
 	ubyte chanceBlight;
-	sr.displayName = "Weather Chances";
+	if (sr.header.size > sizeof(ubyte) * 8) { // VERSION 1.3
+		ubyte chanceSnow;
+		ubyte chanceBlizzard;
+	}
+	/* -- Display -- */
+	sr.displayName = "WEAT (Weather Chances)";
 }
 
-void REGN_BNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Sleep Encounter";
-	sr.displayValue = value;
+void REGN_BNAM(SubRecord &sr) {
+	char sleepCreature[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Sleep Creature)";
+	sr.displayValue = sleepCreature;
 }
 
-void REGN_CNAM(Subrecord& sr) {
+void REGN_CNAM(SubRecord &sr) {
 	ubyte red;
 	ubyte green;
 	ubyte blue;
-	ubyte alpha <comment="Potentially unused">;
-	sr.displayName = "Map Color";
-	SPrintf(sr.displayValue, "(%d,%d,%d)", red, green, blue);
+	ubyte alpha;
+	/* -- Display -- */
+	sr.displayName = "CNAM (Map Color)";
+	SPrintf(sr.displayValue, "(%d, %d, %d)", red, green, blue);
 }
 
-void REGN_SNAM(Subrecord& sr) {
-	char soundId[32];
+void REGN_SNAM(SubRecord &sr) {
+	char sound[32];
 	ubyte chance;
-	sr.displayName = "Sound";
-	SPrintf(sr.displayValue, "%s (%d)", soundId, chance);
+	/* -- Display -- */
+	sr.displayName = "SNAM (Sound)";
+	sr.displayValue = sound;
 }
 
-void SubrecordFactory_REGN(Subrecord& sr) {
-	switch (sr.tag) {
+void REGN(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": REGN_NAME(sr); break;
 		case "FNAM": REGN_FNAM(sr); break;
 		case "WEAT": REGN_WEAT(sr); break;
 		case "BNAM": REGN_BNAM(sr); break;
 		case "CNAM": REGN_CNAM(sr); break;
 		case "SNAM": REGN_SNAM(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: BSGN (Birthsign)
-//
 
-void BSGN_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Birthsign: " + sr.displayValue;
+/* -- BSGN (Birthsign) -- */
+
+
+void BSGN_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void BSGN_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void BSGN_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
 }
 
-void BSGN_TNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Texture";
-	sr.displayValue = value;
+void BSGN_TNAM(SubRecord &sr) {
+	char texture[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "TNAM (Texture)";
+	sr.displayValue = texture;
 }
 
-void BSGN_DESC(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Description";
-	sr.displayValue = value;
+void BSGN_DESC(SubRecord &sr) {
+	char description[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DESC (Description)";
+	sr.displayValue = description;
 }
 
-void BSGN_NPCS(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Special Power/Ability";
-	sr.displayValue = value;
+void BSGN_NPCS(SubRecord &sr) {
+	char spell[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NPCS (Spell)";
+	sr.displayValue = spell;
 }
 
-void SubrecordFactory_BSGN(Subrecord& sr) {
-	switch (sr.tag) {
+void BSGN(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": BSGN_NAME(sr); break;
 		case "FNAM": BSGN_FNAM(sr); break;
 		case "TNAM": BSGN_TNAM(sr); break;
 		case "DESC": BSGN_DESC(sr); break;
 		case "NPCS": BSGN_NPCS(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: LTEX (Land Texture)
-//
 
-void LTEX_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Land Texture: " + sr.displayValue;
+/* -- LTEX (Land Texture) -- */
+
+
+void LTEX_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void LTEX_INTV(Subrecord& sr) {
-	int value;
-	SPrintf(sr.displayValue, "%d", value);
+void LTEX_INTV(SubRecord &sr) {
+	uint index;
+	/* -- Display -- */
+	sr.displayName = "INTV (Index)";
+	SPrintf(sr.displayValue, "%d", index);
 }
 
-void LTEX_DATA(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Texture";
-	sr.displayValue = value;
+void LTEX_DATA(SubRecord &sr) {
+	char texture[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DATA (Texture)";
+	sr.displayValue = texture;
 }
 
-void SubrecordFactory_LTEX(Subrecord& sr) {
-	switch (sr.tag) {
+void LTEX(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": LTEX_NAME(sr); break;
 		case "INTV": LTEX_INTV(sr); break;
 		case "DATA": LTEX_DATA(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: STAT (Static Object)
-//
 
-void STAT_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Static: " + sr.displayValue;
+/* -- SPEL (Spell) -- */
+
+
+void SPEL_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "Name (Id)";
+	sr.displayValue = id;
 }
 
-void STAT_MODL(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Model";
-	sr.displayValue = value;
+void SPEL_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
 }
 
-void SubrecordFactory_STAT(Subrecord& sr) {
-	switch (sr.tag) {
-		case "NAME": STAT_NAME(sr); break;
-		case "MODL": STAT_MODL(sr); break;
-		default: byte undefined[sr.size];
+void SPEL_SPDT(SubRecord &sr) {
+	SpellType type;
+	uint cost;
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "SPDT (Spell Data)";
+}
+
+void SPEL_ENAM(SubRecord &sr) {
+	Effect effect;
+	EffectSkill skill;
+	EffectAttribute attribute;
+	EffectRange range;
+	uint area;
+	uint duration;
+	uint minMagnitude;
+	uint maxMagnitude;
+	/* -- Display -- */
+	sr.displayName = "ENAM (Effect Info)";
+	sr.displayValue = EnumToString(effect);
+}
+
+void SPEL(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": SPEL_NAME(sr); break;
+		case "FNAM": SPEL_FNAM(sr); break;
+		case "SPDT": SPEL_SPDT(sr); break;
+		case "ENAM": SPEL_ENAM(sr); break;
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: DOOR (Door Object)
-//
 
-void DOOR_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Door: " + sr.displayValue;
+/* -- ACTI (Activator) -- */
+
+
+void ACTI_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void DOOR_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void ACTI_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
 }
 
-void DOOR_MODL(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Model";
-	sr.displayValue = value;
+void ACTI_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
 }
 
-void DOOR_SCIP(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Script";
-	sr.displayValue = value;
+void ACTI_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
 }
 
-void DOOR_SNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Open Sound";
-	sr.displayValue = value;
+void ACTI(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": ACTI_NAME(sr); break;
+		case "MODL": ACTI_MODL(sr); break;
+		case "FNAM": ACTI_FNAM(sr); break;
+		case "SCRI": ACTI_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
 }
 
-void DOOR_ANAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Close Sound";
-	sr.displayValue = value;
+
+/* -- ALCH (Alchemy) -- */
+
+
+void ALCH_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void SubrecordFactory_DOOR(Subrecord& sr) {
-	switch (sr.tag) {
+void ALCH_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void ALCH_TEXT(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "TEXT (Icon)";
+	sr.displayValue = icon;
+}
+
+void ALCH_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void ALCH_ALDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint autoCalcFlags;
+	/* -- Display -- */
+	sr.displayName = "ALDT (Alchemy Data)";
+}
+
+void ALCH_ENAM(SubRecord &sr) {
+	Effect effect;
+	EffectSkill skill;
+	EffectAttribute attribute;
+	EffectRange range;
+	uint area;
+	uint duration;
+	uint minMagnitude;
+	uint maxMagnitude;
+	/* -- Display -- */
+	sr.displayName = "ENAM (Alchemy Effect Info)";
+	sr.displayValue = EnumToString(effect);
+}
+
+void ALCH_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Alchemy Script)";
+	sr.displayValue = scriptId;
+}
+
+void ALCH(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": ALCH_NAME(sr); break;
+		case "MODL": ALCH_MODL(sr); break;
+		case "FNAM": ALCH_FNAM(sr); break;
+		case "TEXT": ALCH_TEXT(sr); break;
+		case "ALDT": ALCH_ALDT(sr); break;
+		case "ENAM": ALCH_ENAM(sr); break;
+		case "SCRI": ALCH_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- APPA (Apparatus) -- */
+
+
+void APPA_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void APPA_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void APPA_AADT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint uses;
+	float quality;
+	/* -- Display -- */
+	sr.displayName = "AADT (Apparatus Data)";
+}
+
+void APPA_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void APPA_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void APPA_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void APPA(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": APPA_NAME(sr); break;
+		case "MODL": APPA_MODL(sr); break;
+		case "FNAM": APPA_FNAM(sr); break;
+		case "AADT": APPA_AADT(sr); break;
+		case "ITEX": APPA_ITEX(sr); break;
+		case "SCRI": APPA_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- ARMO (Armor) -- */
+
+
+void ARMO_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void ARMO_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void ARMO_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void ARMO_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void ARMO_AODT(SubRecord &sr) {
+	ArmorType type;
+	float weight;
+	uint value;
+	uint health;
+	uint enchantment;
+	uint armorRating;
+	/* -- Display -- */
+	sr.displayName = "AODT (Armor Data)";
+}
+
+void ARMO_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void ARMO_INDX(SubRecord &sr) {
+	BodyPart bipedObject;
+	/* -- Display -- */
+	sr.displayName = "INDX (Biped Object)";
+	sr.displayValue = EnumToString(bipedObject);
+}
+
+void ARMO_BNAM(SubRecord &sr) {
+	char maleBodypart[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Male Bodypart)";
+	sr.displayValue = maleBodypart;
+}
+
+void ARMO_CNAM(SubRecord &sr) {
+	char femaleBodypart[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Male Bodypart)";
+	sr.displayValue = femaleBodypart;
+}
+
+void ARMO_ENAM(SubRecord &sr) {
+	char enchanting[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ENAM (Enchanting)";
+	sr.displayValue = enchanting;
+}
+
+void ARMO(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": ARMO_NAME(sr); break;
+		case "MODL": ARMO_MODL(sr); break;
+		case "FNAM": ARMO_FNAM(sr); break;
+		case "SCRI": ARMO_SCRI(sr); break;
+		case "AODT": ARMO_AODT(sr); break;
+		case "ITEX": ARMO_ITEX(sr); break;
+		case "INDX": ARMO_INDX(sr); break;
+		case "BNAM": ARMO_BNAM(sr); break;
+		case "CNAM": ARMO_CNAM(sr); break;
+		case "ENAM": ARMO_ENAM(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- Body (Bodypart) -- */
+
+
+void BODY_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void BODY_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void BODY_FNAM(SubRecord &sr) {
+	char raceId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Race Id)";
+	sr.displayValue = raceId;
+}
+
+void BODY_BYDT(SubRecord &sr) {
+	BodyPart part;
+	byte isVampire;
+	byte flags;
+	BodyPartType partType;
+	/* -- Display -- */
+	sr.displayName = "BYDT (Bodypart Data)";
+}
+
+void BODY(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": BODY_NAME(sr); break;
+		case "MODL": BODY_MODL(sr); break;
+		case "FNAM": BODY_FNAM(sr); break;
+		case "BYDT": BODY_BYDT(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- BOOK (Book) -- */
+
+
+void BOOK_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void BOOK_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void BOOK_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void BOOK_BKDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint isScroll;
+	Skill skill;
+	uint enchantment;
+	/* -- Display -- */
+	sr.displayName = "BKDT (Book Data)";
+}
+
+void BOOK_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void BOOK_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void BOOK_TEXT(SubRecord &sr) {
+	char text[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "TEXT (Text)";
+	sr.displayValue = text;
+}
+
+void BOOK(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": BOOK_NAME(sr); break;
+		case "MODL": BOOK_MODL(sr); break;
+		case "FNAM": BOOK_FNAM(sr); break;
+		case "BKDT": BOOK_BKDT(sr); break;
+		case "ITEX": BOOK_ITEX(sr); break;
+		case "SCRI": BOOK_SCRI(sr); break;
+		case "TEXT": BOOK_TEXT(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- CLOT (Clothing) -- */
+
+
+void CLOT_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CLOT_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void CLOT_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void CLOT_CTDT(SubRecord &sr) {
+	ClothingType clothingType;
+	float value;
+	short weight;
+	short enchantment;
+	/* -- Display -- */
+	sr.displayName = "CTDT (Clothing Data)";
+}
+
+void CLOT_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void CLOT_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void CLOT_INDX(SubRecord &sr) {
+	BodyPart bipedObject;
+	/* -- Display -- */
+	sr.displayName = "INDX (Biped Object)";
+	sr.displayValue = EnumToString(bipedObject);
+}
+
+void CLOT_BNAM(SubRecord &sr) {
+	char maleBodypart[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Male Bodypart)";
+	sr.displayValue = maleBodypart;
+}
+
+void CLOT_CNAM(SubRecord &sr) {
+	char femaleBodypart[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Male Bodypart)";
+	sr.displayValue = femaleBodypart;
+}
+
+void CLOT_ENAM(SubRecord &sr) {
+	char enchanting[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ENAM (Enchanting)";
+	sr.displayValue = enchanting;
+}
+
+void CLOT(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": CLOT_NAME(sr); break;
+		case "MODL": CLOT_MODL(sr); break;
+		case "FNAM": CLOT_FNAM(sr); break;
+		case "SCRI": CLOT_SCRI(sr); break;
+		case "CTDT": CLOT_CTDT(sr); break;
+		case "ITEX": CLOT_ITEX(sr); break;
+		case "INDX": CLOT_INDX(sr); break;
+		case "BNAM": CLOT_BNAM(sr); break;
+		case "CNAM": CLOT_CNAM(sr); break;
+		case "ENAM": CLOT_ENAM(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- CONT (Container) -- */
+
+
+void CONT_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CONT_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void CONT_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void CONT_CNDT(SubRecord &sr) {
+	float weightCapacity;
+	/* -- Display -- */
+	sr.displayName = "CNDT (Container Data)";
+	SPrintf(sr.displayValue, "Weight Capacity: %.3f", weightCapacity);
+}
+
+void CONT_FLAG(SubRecord &sr) {
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "FLAG (Container Flags)";
+}
+
+void CONT_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void CONT_NPCO(SubRecord &sr) {
+	uint count;
+	char id[32];
+	/* -- Display -- */
+	sr.displayName = "NPCO (Inventory Entry)";
+	sr.displayValue = id;
+}
+
+void CONT(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": CONT_NAME(sr); break;
+		case "MODL": CONT_MODL(sr); break;
+		case "FNAM": CONT_FNAM(sr); break;
+		case "CNDT": CONT_CNDT(sr); break;
+		case "FLAG": CONT_FLAG(sr); break;
+		case "SCRI": CONT_SCRI(sr); break;
+		case "NPCO": CONT_NPCO(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- CREA (Creature) -- */
+
+
+void CREA_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "Name (Id)";
+	sr.displayValue = id;
+}
+
+void CREA_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void CREA_CNAM(SubRecord &sr) {
+	char soundGenCreature[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Sound Gen Creature)";
+	sr.displayValue = soundGenCreature;
+}
+
+void CREA_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void CREA_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void CREA_NPDT(SubRecord &sr) {
+	uint type;
+	uint level;
+	uint strength;
+	uint intelligence;
+	uint willpower;
+	uint agility;
+	uint speed;
+	uint endurance;
+	uint personality;
+	uint luck;
+	uint health;
+	uint magicka;
+	uint fatigue;
+	uint soulPoints;
+	uint combat;
+	uint magic;
+	uint steath;
+	uint attackMin1;
+	uint attackMax1;
+	uint attackMin2;
+	uint attackMax2;
+	uint attackMin3;
+	uint attackMax3;
+	uint gold;
+	/* -- Display -- */
+	sr.displayName = "NPDT (Creature Data)";
+}
+
+void CREA_FLAG(SubRecord &sr) {
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "FLAG (Creature Flags)";
+	SPrintf(sr.displayValue, "%d", flags);
+}
+
+void CREA_XSCL(SubRecord &sr) {
+	float scale;
+	/* -- Display -- */
+	sr.displayName = "XSCL (Creature Scale)";
+	SPrintf(sr.displayValue, "%.3f", scale);
+}
+
+void CREA_NPCO(SubRecord &sr) {
+	uint count;
+	char id[32];
+	/* -- Display -- */
+	sr.displayName = "NPCO (Inventory Entry)";
+	sr.displayValue = id;
+}
+
+void CREA_NPCS(SubRecord &sr) {
+	char spellId[32];
+	/* -- Display -- */
+	sr.displayName = "NPCS (SpellList Entry)";
+	sr.displayValue = spellId;
+}
+
+void CREA_AIDT(SubRecord &sr) {
+	byte hello;
+	byte unknown;
+	byte fight;
+	byte flee;
+	byte alarm;
+	ushort unknown;
+	uint services;
+	byte unknown;
+	/* -- Display -- */
+	sr.displayName = "AIDT (Creature AI Data)";
+}
+
+void CREA_DODT(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	float xRotation;
+	float yRotation;
+	float zRotation;
+	/* -- Display -- */
+	sr.displayName = "DODT (Travel Coordinates)";
+}
+
+void CREA_DNAM(SubRecord &sr) {
+	char cellId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DNAM (Travel Cell Id)";
+	sr.displayValue = cellId;
+}
+
+void CREA_CNDT(SubRecord &sr) {
+	char cellId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNDT (Escort/Follow Cell Id)";
+	sr.displayValue = cellId;
+}
+
+void CREA_AI_W(SubRecord &sr) {
+	short distance;
+	short duration;
+	ubyte gameHour;
+	ubyte idle2;
+	ubyte idle3;
+	ubyte idle4;
+	ubyte idle5;
+	ubyte idle6;
+	ubyte idle7;
+	ubyte idle8;
+	ubyte idle9;
+	ubyte unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_W (AI Wander Package)";
+}
+
+void CREA_AI_E(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	short duration;
+	char targetId[32];
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_E (AI Escort Package)";
+	sr.displayValue = targetId;
+}
+
+void CREA_AI_T(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	uint unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_T (AI Travel Package)";
+}
+
+void CREA_AI_F(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	short duration;
+	char targetId[32];
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_F (AI Follow Package)";
+	sr.displayValue = targetId;
+}
+
+void CREA_AI_A(SubRecord &sr) {
+	char targetId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "AI_A (AI Activate Package)";
+	sr.displayValue = targetId;
+}
+
+void CREA(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": CREA_NAME(sr); break;
+		case "MODL": CREA_MODL(sr); break;
+		case "CNAM": CREA_CNAM(sr); break;
+		case "FNAM": CREA_FNAM(sr); break;
+		case "SCRI": CREA_SCRI(sr); break;
+		case "NPDT": CREA_NPDT(sr); break;
+		case "FLAG": CREA_FLAG(sr); break;
+		case "XSCL": CREA_XSCL(sr); break;
+		case "NPCO": CREA_NPCO(sr); break;
+		case "NPCS": CREA_NPCS(sr); break;
+		case "AIDT": CREA_AIDT(sr); break;
+		case "DODT": CREA_DODT(sr); break;
+		case "DNAM": CREA_DNAM(sr); break;
+		case "AI_W": CREA_AI_W(sr); break;
+		case "AI_E": CREA_AI_E(sr); break;
+		case "AI_T": CREA_AI_T(sr); break;
+		case "AI_F": CREA_AI_F(sr); break;
+		case "AI_A": CREA_AI_A(sr); break;
+		case "CNDT": CREA_CNDT(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- DOOR (Door) -- */
+
+
+void DOOR_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "Name (Id)";
+	sr.displayValue = id;
+}
+
+void DOOR_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void DOOR_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void DOOR_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void DOOR_SNAM(SubRecord &sr) {
+	char openSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SNAM (Open Sound)";
+	sr.displayValue = openSound;
+}
+
+void DOOR_ANAM(SubRecord &sr) {
+	char closeSound[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ANAM (Close Sound)";
+	sr.displayValue = closeSound;
+}
+
+void DOOR(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": DOOR_NAME(sr); break;
 		case "FNAM": DOOR_FNAM(sr); break;
 		case "MODL": DOOR_MODL(sr); break;
-		case "SCIP": DOOR_SCIP(sr); break;
+		case "SCRI": DOOR_SCRI(sr); break;
 		case "SNAM": DOOR_SNAM(sr); break;
 		case "ANAM": DOOR_ANAM(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: MISC (Miscellaneous Object)
-//
 
-void MISC_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Misc. Item: " + sr.displayValue;
+/* -- ENCH (Enchanting) -- */
+
+
+void ENCH_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void MISC_MODL(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Model";
-	sr.displayValue = value;
+void ENCH_ENDT(SubRecord &sr) {
+	EnchantType enchantType;
+	uint cost;
+	uint charge;
+	uint autoCalc;
+	/* -- Display -- */
+	sr.displayName = "ENDT (Enchanting Data)";
 }
 
-void MISC_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Name";
-	sr.displayValue = value;
+void ENCH_ENAM(SubRecord &sr) {
+	Effect effect;
+	EffectSkill skill;
+	EffectAttribute attribute;
+	EffectRange range;
+	uint area;
+	uint duration;
+	uint minMagnitude;
+	uint maxMagnitude;
+	/* -- Display -- */
+	sr.displayName = "ENAM (Enchanting Effect)";
 }
 
-void MISC_MCDT(Subrecord& sr) {
+void ENCH(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": ENCH_NAME(sr); break;
+		case "ENDT": ENCH_ENDT(sr); break;
+		case "ENAM": ENCH_ENAM(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+/* -- INGR (Ingredient) -- */
+
+
+void INGR_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void INGR_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void INGR_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void INGR_IRDT(SubRecord &sr) {
 	float weight;
-	int value;
+	uint value;
+	MagicEffect effects[4];
+	Skill skills[4];
+	Attribute attributes[4];
+	/* -- Display -- */
+	sr.displayName = "IRDT (Ingredient Data)";
+}
+
+void INGR_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void INGR_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void INGR(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": INGR_NAME(sr); break;
+		case "MODL": INGR_MODL(sr); break;
+		case "FNAM": INGR_FNAM(sr); break;
+		case "IRDT": INGR_IRDT(sr); break;
+		case "ITEX": INGR_ITEX(sr); break;
+		case "SCRI": INGR_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- LEVC (Levelled Creature) -- */
+
+
+void LEVC_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void LEVC_DATA(SubRecord &sr) {
+	long flags;
+	/* -- Display -- */
+	sr.displayName = "DATA (Levelled List Data)";
+	SPrintf(sr.displayValue, "%d", flags);
+}
+
+void LEVC_NNAM(SubRecord &sr) {
+	byte chanceNone;
+	/* -- Display -- */
+	sr.displayName = "NNAM (Chance None)";
+	SPrintf(sr.displayValue, "%d", chanceNone);
+}
+
+void LEVC_INDX(SubRecord &sr) {
+	uint length;
+	/* -- Display -- */
+	sr.displayName = "INDX (Levelled List Length)";
+	SPrintf(sr.displayValue, "%d", length);
+}
+
+void LEVC_CNAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Levelled List Object)";
+	sr.displayValue = id;
+}
+
+void LEVC_INTV(SubRecord &sr) {
+	short pcLevel;
+	/* -- Display -- */
+	sr.displayName = "INTV (Levelled List PC Level)";
+	SPrintf(sr.displayValue, "%d", pcLevel);
+}
+
+void LEVC(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": LEVC_NAME(sr); break;
+		case "DATA": LEVC_DATA(sr); break;
+		case "NNAM": LEVC_NNAM(sr); break;
+		case "INDX": LEVC_INDX(sr); break;
+		case "CNAM": LEVC_CNAM(sr); break;
+		case "INTV": LEVC_INTV(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- LEVI (Levelled Item) -- */
+
+
+void LEVI_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void LEVI_DATA(SubRecord &sr) {
+	long flags;
+	/* -- Display -- */
+	sr.displayName = "DATA (Levelled List Data)";
+}
+
+void LEVI_NNAM(SubRecord &sr) {
+	byte chanceNone;
+	/* -- Display -- */
+	sr.displayName = "NNAM (Chance None)";
+	SPrintf(sr.displayValue, "%d", chanceNone);
+}
+
+void LEVI_INDX(SubRecord &sr) {
+	uint length;
+	/* -- Display -- */
+	sr.displayName = "INDX (Levelled List Length)";
+	SPrintf(sr.displayValue, "%d", length);
+}
+
+void LEVI_INAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "INAM (Levelled List Object)";
+	sr.displayValue = id;
+}
+
+void LEVI_INTV(SubRecord &sr) {
+	short pcLevel;
+	/* -- Display -- */
+	sr.displayName = "INTV (Levelled List PC Level)";
+	SPrintf(sr.displayValue, "%d", pcLevel);
+}
+
+void LEVI(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": LEVI_NAME(sr); break;
+		case "DATA": LEVI_DATA(sr); break;
+		case "NNAM": LEVI_NNAM(sr); break;
+		case "INDX": LEVI_INDX(sr); break;
+		case "INAM": LEVI_INAM(sr); break;
+		case "INTV": LEVI_INTV(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- LIGH (Light) -- */
+
+
+void LIGH_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void LIGH_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void LIGH_FNAM(SubRecord &sr) {
+	char raceId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Race Id)";
+	sr.displayValue = raceId;
+}
+
+void LIGH_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void LIGH_LHDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint time;
+	uint radius;
+	ubyte red;
+	ubyte green;
+	ubyte blue;
+	ubyte alpha;
 	uint flags;
-	sr.displayName = "Data";
+	/* -- Display -- */
+	sr.displayName = "LHDT (Light Data)";
 }
 
-void MISC_ITEX(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Inventory Icon";
-	sr.displayValue = value;
+void LIGH_SNAM(SubRecord &sr) {
+	char soundId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SNAM (Sound Id)";
 }
 
-void MISC_ENAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Enchantment";
-	sr.displayValue = value;
+void LIGH(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": LIGH_NAME(sr); break;
+		case "MODL": LIGH_MODL(sr); break;
+		case "FNAM": LIGH_FNAM(sr); break;
+		case "ITEX": LIGH_ITEX(sr); break;
+		case "LHDT": LIGH_LHDT(sr); break;
+		case "SNAM": LIGH_SNAM(sr); break;
+		default: byte undefined[sr.header.size];
+	}
 }
 
-void MISC_SCRI(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Script";
-	sr.displayValue = value;
+
+/* -- LOCK (Lockpick) -- */
+
+
+void LOCK_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
 }
 
-void SubrecordFactory_MISC(Subrecord& sr) {
-	switch (sr.tag) {
+void LOCK_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void LOCK_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void LOCK_LKDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	float quality;
+	uint uses;
+	/* -- Display -- */
+	sr.displayName = "LKDT (Lock Data)";
+}
+
+void LOCK_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void LOCK_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void LOCK(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": LOCK_NAME(sr); break;
+		case "MODL": LOCK_MODL(sr); break;
+		case "FNAM": LOCK_FNAM(sr); break;
+		case "LKDT": LOCK_LKDT(sr); break;
+		case "ITEX": LOCK_ITEX(sr); break;
+		case "SCRI": LOCK_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- MISC (Miscellaneous) -- */
+
+
+void MISC_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void MISC_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void MISC_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void MISC_MCDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "MCDT (Misc Data)";
+}
+
+void MISC_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void MISC_ENAM(SubRecord &sr) {
+	char enchanting[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ENAM (Enchanting)";
+	sr.displayValue = enchanting;
+}
+
+void MISC_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void MISC(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "NAME": MISC_NAME(sr); break;
 		case "MODL": MISC_MODL(sr); break;
 		case "FNAM": MISC_FNAM(sr); break;
@@ -968,267 +2727,981 @@ void SubrecordFactory_MISC(Subrecord& sr) {
 		case "ITEX": MISC_ITEX(sr); break;
 		case "ENAM": MISC_ENAM(sr); break;
 		case "SCRI": MISC_SCRI(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: INFO (Dialogue Info)
-//
 
-typedef enum <byte> {
-	SEX_ANY = -1,
-	SEX_MALE,
-	SEX_FEMALE,
-} Sex;
+/* -- NPC_ (Character) -- */
 
-typedef enum {
-	TYPE_TOPIC,
-	TYPE_VOICE,
-	TYPE_GREETING,
-	TYPE_PERSUASION,
-	TYPE_JOURNAL,
-} DialogueType;
 
-typedef enum <char> {
-	VAR_NONE = '0',
-	VAR_FUNCTION = '1',
-	VAR_GLOBAL = '2',
-	VAR_LOCAL = '3',
-	VAR_JOURNAL = '4',
-	VAR_ITEM = '5',
-	VAR_DEAD = '6',
-	VAR_NOT_ID = '7',
-	VAR_NOT_FACTION = '8',
-	VAR_NOT_CLASS = '9',
-	VAR_NOT_RACE = 'A',
-	VAR_NOT_CELL = 'B',
-	VAR_NOT_LOCAL = 'C',
-} DialogueVarType;
-
-typedef enum <ushort> {
-	FUNC_REACTION_LOW = 12336,            // '00',
-	FUNC_REACTION_HIGH = 12592,           // '01',
-	FUNC_RANK_REQUIREMENT = 12848,        // '02',
-	FUNC_REPUTATION = 13104,              // '03',
-	FUNC_HEALTH_PERCENT = 13360,          // '04',
-	FUNC_PC_REPUTATION = 13616,           // '05',
-	FUNC_PC_LEVEL = 13872,                // '06',
-	FUNC_PC_HEALTH_PERCENT = 14128,       // '07',
-	FUNC_PC_MAGICKA = 14384,              // '08',
-	FUNC_PC_FATIGUE = 14640,              // '09',
-	FUNC_PC_STRENGTH = 12337,             // '10',
-	FUNC_PC_BLOCK = 12593,                // '11',
-	FUNC_PC_ARMORER = 12849,              // '12',
-	FUNC_PC_MEDIUM_ARMOR = 13105,         // '13',
-	FUNC_PC_HEAVY_ARMOR = 13361,          // '14',
-	FUNC_PC_BLUNT_WEAPON = 13617,         // '15',
-	FUNC_PC_LONG_BLADE = 13873,           // '16',
-	FUNC_PC_AXE = 14129,                  // '17',
-	FUNC_PC_SPEAR = 14385,                // '18',
-	FUNC_PC_ATHLETICS = 14641,            // '19',
-	FUNC_PC_ENCHANT = 12338,              // '20',
-	FUNC_PC_DESTRUCTION = 12594,          // '21',
-	FUNC_PC_ALTERATION = 12850,           // '22',
-	FUNC_PC_ILLUSION = 13106,             // '23',
-	FUNC_PC_CONJURATION = 13362,          // '24',
-	FUNC_PC_MYSTICISM = 13618,            // '25',
-	FUNC_PC_RESTORATION = 13874,          // '26',
-	FUNC_PC_ALCHEMY = 14130,              // '27',
-	FUNC_PC_UNARMORED = 14386,            // '28',
-	FUNC_PC_SECURITY = 14642,             // '29',
-	FUNC_PC_SNEAK = 12339,                // '30',
-	FUNC_PC_ACROBATICS = 12595,           // '31',
-	FUNC_PC_LIGHT_ARMOR = 12851,          // '32',
-	FUNC_PC_SHORT_BLADE = 13107,          // '33',
-	FUNC_PC_MARKSMAN = 13363,             // '34',
-	FUNC_PC_MERCANTILE = 13619,           // '35',
-	FUNC_PC_SPEECHCRAFT = 13875,          // '36',
-	FUNC_PC_HAND_TO_HAND = 14131,         // '37',
-	FUNC_PC_SEX = 14387,                  // '38',
-	FUNC_PC_EXPELLED = 14643,             // '39',
-	FUNC_PC_COMMON_DISEASE = 12340,       // '40',
-	FUNC_PC_BLIGHT_DISEASE = 12596,       // '41',
-	FUNC_PC_CLOTHING_MODIFIER = 12852,    // '42',
-	FUNC_PC_CRIME_LEVEL = 13108,          // '43',
-	FUNC_SAME_SEX = 13364,                // '44',
-	FUNC_SAME_RACE = 13620,               // '45',
-	FUNC_SAME_FACTION = 13876,            // '46',
-	FUNC_FACTION_RANK_DIFFERENCE = 14132, // '47',
-	FUNC_DETECTED = 14388,                // '48',
-	FUNC_ALARMED = 14644,                 // '49',
-	FUNC_CHOICE = 12341,                  // '50',
-	FUNC_PC_INTELLIGENCE = 12597,         // '51',
-	FUNC_PC_WILLPOWER = 12853,            // '52',
-	FUNC_PC_AGILITY = 13109,              // '53',
-	FUNC_PC_SPEED = 13365,                // '54',
-	FUNC_PC_ENDURANCE = 13621,            // '55',
-	FUNC_PC_PERSONALITY = 13877,          // '56',
-	FUNC_PC_LUCK = 14133,                 // '57',
-	FUNC_PC_CORPRUS = 14389,              // '58',
-	FUNC_WEATHER = 14645,                 // '59',
-	FUNC_PC_VAMPIRE = 12342,              // '60',
-	FUNC_LEVEL = 12598,                   // '61',
-	FUNC_ATTACKED = 12854,                // '62',
-	FUNC_TALKED_TO_PC = 13110,            // '63',
-	FUNC_PC_HEALTH = 13366,               // '64',
-	FUNC_CREATURE_TARGET = 13622,         // '65',
-	FUNC_FRIEND_HIT = 13878,              // '66',
-	FUNC_FIGHT = 14134,                   // '67',
-	FUNC_HELLO = 14390,                   // '68',
-	FUNC_ALARM = 14646,                   // '69',
-	FUNC_FLEE = 12343,                    // '70',
-	FUNC_SHOULD_ATTACK = 12599,           // '71',
-	FUNC_WEREWOLF = 12855,                // '72',
-	FUNC_WEREWOLF_KILLS = 13111,          // '73',
-	FUNC_NOT_CLASS = 22595,               // 'CX',
-	FUNC_DEAD_TYPE = 22596,               // 'DX',
-	FUNC_NOT_FACTION = 22598,             // 'FX',
-	FUNC_ITEM_TYPE = 22601,               // 'IX',
-	FUNC_JOURNAL_TYPE = 22602,            // 'JX',
-	FUNC_NOT_CELL = 22604,                // 'LX',
-	FUNC_NOT_RACE = 22610,                // 'RX',
-	FUNC_NOT_ID_TYPE = 22616,             // 'XX',
-	FUNC_GLOBAL = 22630,                  // 'fX',
-	FUNC_PCGOLD = 22636,                  // 'lX',
-	FUNC_COMPARE_GLOBAL = 22578,          // '2X',
-	FUNC_COMPARE_LOCAL = 22579,           // '3X',
-	FUNC_VARIABLE_COMPARE = 22643,        // 'sX',
-} DialogueVarFunc;
-
-typedef enum <char> {
-	COMP_EQUAL = '0',
-	COMP_NOT_EQUAL = '1',
-	COMP_GREATER = '2',
-	COMP_GREATER_EQUAL = '3',
-	COMP_LESS = '4',
-	COMP_LESS_EQUAL = '5',
-} DialogueVarComp;
-
-void INFO_INAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "thisID";
-	sr.displayValue = value;
-	parentof(sr).displayName = "Dialogue Info: " + value;
+void NPC__NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "Name (Id)";
+	sr.displayValue = id;
 }
 
-void INFO_PNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "prevID";
-	sr.displayValue = value;
+void NPC__MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
 }
 
-void INFO_NNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "nextID";
-	sr.displayValue = value;
+void NPC__RNAM(SubRecord &sr) {
+	char raceId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "RNAM (Race Id)";
+	sr.displayValue = raceId;
 }
 
-void INFO_DATA(Subrecord& sr) {
+void NPC__CNAM(SubRecord &sr) {
+	char classId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Class Id)";
+	sr.displayValue = classId;
+}
+
+void NPC__ANAM(SubRecord &sr) {
+	char factionId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ANAM (Faction Id)";
+	sr.displayValue = factionId;
+}
+
+void NPC__BNAM(SubRecord &sr) {
+	char headModel[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Head Model)";
+	sr.displayValue = headModel;
+}
+
+void NPC__KNAM(SubRecord &sr) {
+	char hairModel[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "KNAM (Hair Model)";
+	sr.displayValue = hairModel;
+}
+
+void NPC__FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void NPC__SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void NPC__NPDT(SubRecord &sr) {
+	if (sr.header.size == 12) { // AutoCalc Enabled
+		short level;
+		byte disposition;
+		byte reputation;
+		byte rank;
+		short unknown;
+		byte unknown; // padding?
+		uint gold;
+	} else {  // AutoCalc Disabled
+		short level;
+		byte attributes[8];
+		byte skills[27];
+		byte unknown;
+		short health;
+		short magicka;
+		short fatigue;
+		byte disposition;
+		byte reputation;
+		byte rank;
+		byte unknown; // padding?
+		uint gold;
+	}
+	/* -- Display -- */
+	sr.displayName = "NPDT (NPC Data)";
+}
+
+void NPC__FLAG(SubRecord &sr) {
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "FLAG (NPC Flags)";
+	SPrintf(sr.displayValue, "%d", flags);
+}
+
+void NPC__XSCL(SubRecord &sr) {
+	float scale;
+	/* -- Display -- */
+	sr.displayName = "XSCL (NPC  Scale)";
+	SPrintf(sr.displayValue, "%.3f", scale);
+}
+
+void NPC__NPCO(SubRecord &sr) {
+	uint count;
+	char id[32];
+	/* -- Display -- */
+	sr.displayName = "NPCO (Inventory Entry)";
+	sr.displayValue = id;
+}
+
+void NPC__NPCS(SubRecord &sr) {
+	char spellId[32];
+	/* -- Display -- */
+	sr.displayName = "NPCS (SpellList Entry)";
+	sr.displayValue = spellId;
+}
+
+void NPC__AIDT(SubRecord &sr) {
+	byte hello;
+	byte unknown;
+	byte fight;
+	byte flee;
+	byte alarm;
+	ushort unknown;
+	uint services;
+	byte unknown;
+	/* -- Display -- */
+	sr.displayName = "AIDT (AI Data)";
+}
+
+void NPC__DODT(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	float xRotation;
+	float yRotation;
+	float zRotation;
+	/* -- Display -- */
+	sr.displayName = "DODT (Travel Coordinates)";
+}
+
+void NPC__DNAM(SubRecord &sr) {
+	char cellId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DNAM (Travel Cell Id)";
+	sr.displayValue = cellId;
+}
+
+void NPC__CNDT(SubRecord &sr) {
+	char cellId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNDT (Escort/Follow Cell Id)";
+	sr.displayValue = cellId;
+}
+
+void NPC__AI_W(SubRecord &sr) {
+	short distance;
+	short duration;
+	ubyte gameHour;
+	ubyte idle2;
+	ubyte idle3;
+	ubyte idle4;
+	ubyte idle5;
+	ubyte idle6;
+	ubyte idle7;
+	ubyte idle8;
+	ubyte idle9;
+	ubyte unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_W (AI Wander Package)";
+}
+
+void NPC__AI_E(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	short duration;
+	char targetId[32];
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_E (AI Escort Package)";
+}
+
+void NPC__AI_T(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	short unknown;
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_T (AI Travel Package)";
+}
+
+void NPC__AI_F(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	short duration;
+	char targetId[32];
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "AI_F (AI Follow Package)";
+}
+
+void NPC__AI_A(SubRecord &sr) {
+	char targetId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "AI_A (AI Activate Package)";
+}
+
+void NPC_(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": NPC__NAME(sr); break;
+		case "MODL": NPC__MODL(sr); break;
+		case "RNAM": NPC__RNAM(sr); break;
+		case "CNAM": NPC__CNAM(sr); break;
+		case "ANAM": NPC__ANAM(sr); break;
+		case "BNAM": NPC__BNAM(sr); break;
+		case "KNAM": NPC__KNAM(sr); break;
+		case "FNAM": NPC__FNAM(sr); break;
+		case "SCRI": NPC__SCRI(sr); break;
+		case "NPDT": NPC__NPDT(sr); break;
+		case "FLAG": NPC__FLAG(sr); break;
+		case "XSCL": NPC__XSCL(sr); break;
+		case "NPCO": NPC__NPCO(sr); break;
+		case "NPCS": NPC__NPCS(sr); break;
+		case "AIDT": NPC__AIDT(sr); break;
+		case "DODT": NPC__DODT(sr); break;
+		case "DNAM": NPC__DNAM(sr); break;
+		case "CNDT": NPC__CNDT(sr); break;
+		case "AI_W": NPC__AI_W(sr); break;
+		case "AI_E": NPC__AI_E(sr); break;
+		case "AI_T": NPC__AI_T(sr); break;
+		case "AI_F": NPC__AI_F(sr); break;
+		case "AI_A": NPC__AI_A(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- PROB (Probe) -- */
+
+
+void PROB_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void PROB_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void PROB_PBDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	float quality;
+	uint uses;
+	/* -- Display -- */
+	sr.displayName = "PBDT (Probe Data)";
+}
+
+void PROB_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void PROB_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void PROB_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void PROB(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": PROB_NAME(sr); break;
+		case "MODL": PROB_MODL(sr); break;
+		case "FNAM": PROB_FNAM(sr); break;
+		case "PBDT": PROB_PBDT(sr); break;
+		case "ITEX": PROB_ITEX(sr); break;
+		case "SCRI": PROB_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- REPA (Repair) -- */
+
+
+void REPA_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void REPA_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void REPA_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void REPA_RIDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	uint uses;
+	float quality;
+	/* -- Display -- */
+	sr.displayName = "RIDT (Repair Data)";
+}
+
+void REPA_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void REPA_SCRI(SubRecord &sr) {
+	char script[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = script;
+}
+
+void REPA(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": REPA_NAME(sr); break;
+		case "MODL": REPA_MODL(sr); break;
+		case "FNAM": REPA_FNAM(sr); break;
+		case "RIDT": REPA_RIDT(sr); break;
+		case "ITEX": REPA_ITEX(sr); break;
+		case "SCRI": REPA_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- STAT (Static) -- */
+
+
+void STAT_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "Name (Id)";
+	sr.displayValue = id;
+}
+
+void STAT_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void STAT(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": STAT_NAME(sr); break;
+		case "MODL": STAT_MODL(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- WEAP (Weapon) -- */
+
+
+void WEAP_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void WEAP_MODL(SubRecord &sr) {
+	char model[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "MODL (Model)";
+	sr.displayValue = model;
+}
+
+void WEAP_FNAM(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Name)";
+	sr.displayValue = name;
+}
+
+void WEAP_WPDT(SubRecord &sr) {
+	float weight;
+	uint value;
+	WeaponType type;
+	short health;
+	float speed;
+	float reach;
+	short enchantment;
+	ubyte chopMin;
+	ubyte chopMax;
+	ubyte slashMin;
+	ubyte slashMax;
+	ubyte thrustMin;
+	ubyte thrustMax;
+	uint flags;
+	/* -- Display -- */
+	sr.displayName = "WPDT (Weapon Data)";
+}
+
+void WEAP_ITEX(SubRecord &sr) {
+	char icon[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ITEX (Icon)";
+	sr.displayValue = icon;
+}
+
+void WEAP_ENAM(SubRecord &sr) {
+	char enchanting[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ENAM (Enchanting)";
+	sr.displayValue = enchanting;
+}
+
+void WEAP_SCRI(SubRecord &sr) {
+	char scriptId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = scriptId;
+}
+
+void WEAP(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": WEAP_NAME(sr); break;
+		case "MODL": WEAP_MODL(sr); break;
+		case "FNAM": WEAP_FNAM(sr); break;
+		case "WPDT": WEAP_WPDT(sr); break;
+		case "ITEX": WEAP_ITEX(sr); break;
+		case "ENAM": WEAP_ENAM(sr); break;
+		case "SCRI": WEAP_SCRI(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- CELL (Cell) -- */
+
+
+void CELL_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CELL_DATA(SubRecord &sr) {
+	if (sr.header.size == 12) {  // Cell Data
+		uint flags;
+		int gridX;
+		int gridY;
+	} else {  // Cell Object Data
+		float xPosition;
+		float yPosition;
+		float zPosition;
+		float xRotation;
+		float yRotation;
+		float zRotation;
+	}
+	/* -- Display -- */
+	sr.displayName = "DATA (Data)";
+}
+
+void CELL_WHGT(SubRecord &sr) {
+	float waterHeight;
+	/* -- Display -- */
+	sr.displayName = "WHGT (Water Height)";
+	SPrintf(sr.displayValue, "%.3f", waterHeight);
+}
+
+void CELL_AMBI(SubRecord &sr) {
+	uint ambientColor;
+	uint sunlightColor;
+	uint fogColor;
+	float fogDensity;
+	/* -- Display -- */
+	sr.displayName = "AMBI (Ambient Light Data)";
+}
+
+void CELL_RGNN(SubRecord &sr) {
+	char id[sr.header.size];
+	byte undefined[startof(sr) + 8 + sr.header.size - FTell()];
+	/* -- Display -- */
+	sr.displayName = "RGNN (Region)";
+	sr.displayValue = id;
+}
+
+void CELL_NAM0(SubRecord &sr) {
+	uint length;
+	/* -- Display -- */
+	sr.displayName = "NAM0 (Objects List Length)";
+	SPrintf(sr.displayValue, "%d", length);
+}
+
+void CELL_FRMR(SubRecord &sr) {
+	uint objectIndex;
+	/* -- Display -- */
+	sr.displayName = "FRMR (Index)";
+	SPrintf(sr.displayValue, "%d", objectIndex);
+}
+
+void CELL_XSCL(SubRecord &sr) {
+	float scale;
+	/* -- Display -- */
+	sr.displayName = "XSCL (Scale)";
+	SPrintf(sr.displayValue, "%.3f", scale);
+}
+
+void CELL_DODT(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	float xRotation;
+	float yRotation;
+	float zRotation;
+	/* -- Display -- */
+	sr.displayName = "DODT (Door Destination Coords)";
+}
+
+void CELL_DNAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DNAM (Door Destination Cell)";
+	sr.displayValue = id;
+}
+
+void CELL_ANAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ANAM (Owner/Faction Id)";
+	sr.displayValue = id;
+}
+
+void CELL_BNAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Global Variable/Rank Id)";
+	sr.displayValue = id;
+}
+
+void CELL_INTV(SubRecord &sr) {
+	uint healthLeft;
+	/* -- Display -- */
+	sr.displayName = "INTV (Health Left)";
+	SPrintf(sr.displayValue, "%d", healthLeft);
+}
+
+void CELL_NAM9(SubRecord &sr) {
+	long hasOwner;
+	/* -- Display -- */
+	sr.displayName = "NAM9 (Has Owner)";
+	SPrintf(sr.displayValue, "%d", hasOwner);
+}
+
+void CELL_FLTV(SubRecord &sr) {
+	long lockLevel;
+	/* -- Display -- */
+	sr.displayName = "FLTV (Lock Level)";
+	SPrintf(sr.displayValue, "%d", lockLevel);
+}
+
+void CELL_KNAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "KNAM (Key Id)";
+	sr.displayValue = id;
+}
+
+void CELL_TNAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "KNAM (Trap Id)";
+	sr.displayValue = id;
+}
+
+void CELL_UNAM(SubRecord &sr) {
+	byte blocked;
+	/* -- Display -- */
+	sr.displayName = "UNAM (Blocked)";
+	SPrintf(sr.displayValue, "%d", blocked);
+}
+
+void CELL_XSOL(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "XSOL (Soul Id)";
+	sr.displayValue = id;
+}
+
+void CELL(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": CELL_NAME(sr); break;
+		case "DATA": CELL_DATA(sr); break;
+		case "WHGT": CELL_WHGT(sr); break;
+		case "AMBI": CELL_AMBI(sr); break;
+		case "RGNN": CELL_RGNN(sr); break;
+		case "NAM0": CELL_NAM0(sr); break;
+		case "FRMR": CELL_FRMR(sr); break;
+		case "XSCL": CELL_XSCL(sr); break;
+		case "DODT": CELL_DODT(sr); break;
+		case "DNAM": CELL_DNAM(sr); break;
+		case "ANAM": CELL_ANAM(sr); break;
+		case "BNAM": CELL_BNAM(sr); break;
+		case "INTV": CELL_INTV(sr); break;
+		case "NAM9": CELL_NAM9(sr); break;
+		case "FLTV": CELL_FLTV(sr); break;
+		case "KNAM": CELL_KNAM(sr); break;
+		case "TNAM": CELL_TNAM(sr); break;
+		case "UNAM": CELL_UNAM(sr); break;
+		case "XSOL": CELL_XSOL(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- LAND (Land) -- */
+
+
+void LAND_INTV(SubRecord &sr) {
+	uint gridX;
+	uint gridY;
+	/* -- Display -- */
+	sr.displayName = "INTV (Cell Coordinates)";
+}
+
+void LAND_DATA(SubRecord &sr) {
+	uint unknown;
+	/* -- Display -- */
+	sr.displayName = "DATA (?)";
+}
+
+void LAND_VNML(SubRecord &sr) {
+	byte normals[3*65*65];
+	/* -- Display -- */
+	sr.displayName = "VNML (Vertex Normals)";
+}
+
+void LAND_VHGT(SubRecord &sr) {
+	float offset;
+	byte unknown;
+	byte heightData[65*65];
+	short unknown;
+	/* -- Display -- */
+	sr.displayName = "VHGT (Vertex Height)";
+}
+
+void LAND_WNAM(SubRecord &sr) {
+	byte undefined[startof(sr) + 8 + sr.header.size - FTell()];
+	/* -- Display -- */
+	sr.displayName = "WNAM (?)";
+}
+
+void LAND_VCLR(SubRecord &sr) {
+	byte colors[3*65*65];
+	/* -- Display -- */
+	sr.displayName = "VCLR (Vertex Colors)";
+}
+
+void LAND_VTEX(SubRecord &sr) {
+	short textureIndices[16*16];
+	/* -- Display -- */
+	sr.displayName = "VTEX (Texture Indices)";
+}
+
+void LAND(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "INTV": LAND_INTV(sr); break;
+		case "DATA": LAND_DATA(sr); break;
+		case "VNML": LAND_VNML(sr); break;
+		case "VHGT": LAND_VHGT(sr); break;
+		case "WNAM": LAND_WNAM(sr); break;
+		case "VCLR": LAND_VCLR(sr); break;
+		case "VTEX": LAND_VTEX(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- PGRD (Path Grid) -- */
+
+
+void PGRD_NAME(SubRecord &sr) {
+	char name[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayName = name;
+}
+
+void PGRD_DATA(SubRecord &sr) {
+	uint x;
+	uint y;
+	short granularity;
+	short pointcount;
+	/* -- Display -- */
+	sr.displayName = "DATA (Path Grid Data)";
+}
+
+void PGRD_PGRP(SubRecord &sr) {
+	byte unknown[startof(sr) + 8 + sr.header.size - FTell()];
+	/* -- Display -- */
+	sr.displayName = "PGRP (?)";
+}
+
+void PGRD_PGRC(SubRecord &sr) {
+	byte unknown[startof(sr) + 8 + sr.header.size - FTell()];
+	/* -- Display -- */
+	sr.displayName = "PGRC (?)";
+}
+
+void PGRD(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": PGRD_NAME(sr); break;
+		case "DATA": PGRD_DATA(sr); break;
+		case "PGRP": PGRD_PGRP(sr); break;
+		case "PGRC": PGRD_PGRC(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- SNDG (Sound Gen) -- */
+
+
+void SNDG_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void SNDG_DATA(SubRecord &sr) {
+	SoundGenType soundGenType;
+	/* -- Display -- */
+	sr.displayName = "DATA (Sound Gen Data)";
+	sr.displayValue = EnumToString(soundGenType);;
+}
+
+void SNDG_CNAM(SubRecord &sr) {
+	char creatureId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Creature Id)";
+	sr.displayValue = creatureId;
+}
+
+void SNDG_SNAM(SubRecord &sr) {
+	char soundId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SNAM (Sound Id)";
+	sr.displayValue = soundId;
+}
+
+void SNDG(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": SNDG_NAME(sr); break;
+		case "DATA": SNDG_DATA(sr); break;
+		case "CNAM": SNDG_CNAM(sr); break;
+		case "SNAM": SNDG_SNAM(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- DIAL (Dialogue) -- */
+
+
+void DIAL_NAME(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void DIAL_DATA(SubRecord &sr) {
+	if (sr.header.size == 1) {
+		DialogueType2 dialogueType;
+		sr.displayValue = EnumToString(dialogueType);
+	} else {
+		byte undefined[startof(sr) + 8 + sr.header.size - FTell()];
+	}
+	/* -- Display -- */
+	sr.displayName = "DATA (Dialogue Data)";
+}
+
+void DIAL(SubRecord &sr) {
+	switch (sr.header.tag) {
+		case "NAME": DIAL_NAME(sr); break;
+		case "DATA": DIAL_DATA(sr); break;
+		default: byte undefined[sr.header.size];
+	}
+}
+
+
+/* -- INFO (Dialogue Info) -- */
+
+
+void INFO_INAM(SubRecord &sr) {
+	char id[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "INAM (Id)";
+	sr.displayValue = id;
+}
+
+void INFO_PNAM(SubRecord &sr) {
+	char prevId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "PNAM (Previous Id)";
+	sr.displayValue = prevId;
+}
+
+void INFO_NNAM(SubRecord &sr) {
+	char nextId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NNAM (Next Id)";
+	sr.displayValue = nextId;
+}
+
+void INFO_DATA(SubRecord &sr) {
 	DialogueType type;
 	int disposition;
 	byte speakerRank;
 	Sex speakerSex;
 	byte playerRank;
-	byte padding;
-	sr.displayName = "data";
+	byte unknown;
+	/* -- Display -- */
+	sr.displayName = "DATA (Info Data)";
 }
 
-void INFO_ONAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "speaker";
-	sr.displayValue = value;
+void INFO_ONAM(SubRecord &sr) {
+	char speakerId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ONAM (Speaker Id)";
+	sr.displayValue = speakerId;
 }
 
-void INFO_RNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "speakerRace";
-	sr.displayValue = value;
+void INFO_RNAM(SubRecord &sr) {
+	char speakerRaceId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "RNAM (Speaker Race Id)";
+	sr.displayValue = speakerRaceId;
 }
 
-void INFO_CNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "speakerClass";
-	sr.displayValue = value;
+void INFO_CNAM(SubRecord &sr) {
+	char speakerClassId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Speaker Class Id)";
+	sr.displayValue = speakerClassId;
 }
 
-void INFO_FNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "speakerFaction";
-	sr.displayValue = value;
+void INFO_FNAM(SubRecord &sr) {
+	char speakerFactionId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Speaker Faction Id)";
+	sr.displayValue = speakerFactionId;
 }
 
-void INFO_ANAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "speakerCell";
-	sr.displayValue = value;
+void INFO_ANAM(SubRecord &sr) {
+	char speakerCellId[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "ANAM (Speaker Cell Id)";
+	sr.displayValue = speakerCellId;
 }
 
-void INFO_DNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "playerFaction";
-	sr.displayValue = value;
+void INFO_DNAM(SubRecord &sr) {
+	char playerFaction[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "DNAM (Player Faction)";
+	sr.displayValue = playerFaction;
 }
 
-void INFO_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "text";
-	sr.displayValue = value;
+void INFO_NAME(SubRecord &sr) {
+	char text[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Text)";
+	sr.displayValue = text;
 }
 
-void INFO_SNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "soundPath";
-	sr.displayValue = value;
+void INFO_SNAM(SubRecord &sr) {
+	char soundPath[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "SNAM (Sound Path)";
+	sr.displayValue = soundPath;
 }
 
-void INFO_QSTN(Subrecord& sr) {
-	ubyte value;
-	sr.displayName = "isQuestName";
-	sr.displayValue = value ? "true" : "false";
+void INFO_QSTN(SubRecord &sr) {
+	ubyte name;
+	/* -- Display -- */
+	sr.displayName = "QSTN (Quest Name)";
+	sr.displayValue = name ? "true" : "false";
 }
 
-void INFO_QSTF(Subrecord& sr) {
-	ubyte value;
-	sr.displayName = "isQuestFinished";
-	sr.displayValue = value ? "true" : "false";
+void INFO_QSTF(SubRecord &sr) {
+	ubyte finished;
+	/* -- Display -- */
+	sr.displayName = "QSTF (Quest Finished)";
+	sr.displayValue = finished ? "true" : "false";
 }
 
-void INFO_QSTR(Subrecord& sr) {
-	ubyte value;
-	sr.displayName = "isQuestRestart";
-	sr.displayValue = value ? "true" : "false";
+void INFO_QSTR(SubRecord &sr) {
+	ubyte restart;
+	/* -- Display -- */
+	sr.displayName = "QSTR (Quest Restart)";
+	sr.displayValue = restart ? "true" : "false";
 }
 
-void INFO_SCVR(Subrecord& sr) {
-	char index;
+void INFO_SCVR(SubRecord &sr) {
+	ubyte index;
 	DialogueVarType type;
 	DialogueVarFunc function;
 	DialogueVarComp compare;
-	char variableName[sr.size - 5];  // remaining bytes
-	sr.displayName = "variableInfo";
+	char variableName[sr.header.size - 5];
+	/* -- Display -- */
+	sr.displayName = "SCVR (Function/Variable)";
 }
 
-void INFO_FLTV(Subrecord& sr) {
-	float value;
-	sr.displayName = "variableValue";
-	SPrintf(sr.displayValue, "%.4f", value);
+void INFO_FLTV(SubRecord &sr) {
+	float floatValue;
+	/* -- Display -- */
+	sr.displayName = "FLTV (Float Value)";
+	SPrintf(sr.displayValue, "%.4f", floatValue);
 }
 
-void INFO_INTV(Subrecord& sr) {
-	int value;
-	sr.displayName = "variableValue";
-	SPrintf(sr.displayValue, "%d", value);
+void INFO_INTV(SubRecord &sr) {
+	int integerValue;
+	/* -- Display -- */
+	sr.displayName = "INTV (Integer Value)";
+	SPrintf(sr.displayValue, "%d", integerValue);
 }
 
-void INFO_BNAM(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "scriptText";
-	sr.displayValue = value;
+void INFO_BNAM(SubRecord &sr) {
+	char scriptText[sr.header.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Script Text)";
+	sr.displayValue = scriptText;
 }
 
-void SubrecordFactory_INFO(Subrecord& sr) {
-	switch (sr.tag) {
+void INFO(SubRecord &sr) {
+	switch (sr.header.tag) {
 		case "INAM": INFO_INAM(sr); break;
 		case "PNAM": INFO_PNAM(sr); break;
 		case "NNAM": INFO_NNAM(sr); break;
@@ -1248,38 +3721,125 @@ void SubrecordFactory_INFO(Subrecord& sr) {
 		case "FLTV": INFO_FLTV(sr); break;
 		case "INTV": INFO_INTV(sr); break;
 		case "BNAM": INFO_BNAM(sr); break;
-		default: byte undefined[sr.size];
+		default: byte undefined[sr.header.size];
 	}
 }
 
-//
-// Record: SSCR (Start Script)
-//
 
-void SSCR_DATA(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "ID";
-	parentof(sr).displayName = "Start Script: " + value;
+/* -- Display Functions -- */
+
+
+string SubRecord_Name(SubRecord &sr) {
+	return sr.displayName;
 }
 
-void SSCR_NAME(Subrecord& sr) {
-	char value[sr.size];
-	sr.displayName = "Script ID";
-	sr.displayValue = value;
-	parentof(sr).displayValue = value;
+string SubRecord_Read(SubRecord &sr) {
+	return sr.displayValue;
 }
 
-void SubrecordFactory_SSCR(Subrecord& sr) {
-	switch (sr.tag) {
-		case "DATA": SSCR_DATA(sr); break;
-		case "NAME": SSCR_NAME(sr); break;
-		default: byte undefined[sr.size];
+int64 SubRecord_Size(SubRecord &sr) {
+	return 8 + ReadUInt(startof(sr) + 4);
+}
+
+int64 Record_Size(Record &r) {
+	return 16 + ReadUInt(startof(r) + 4);
+}
+
+string Record_Name(Record &r) {
+	switch (r.header.tag) {
+		case "TES3": return "TES3 (File Header)";
+		case "GMST": return "GMST (Game Setting)";
+		case "GLOB": return "GLOB (Global Variable)";
+		case "CLAS": return "CLAS (Class)";
+		case "FACT": return "FACT (Faction)";
+		case "RACE": return "RACE (Race)";
+		case "SOUN": return "SOUN (Sound)";
+		case "SKIL": return "SKIL (Skill)";
+		case "MGEF": return "MGEF (Magic Effect)";
+		case "SCPT": return "SCPT (Script)";
+		case "REGN": return "REGN (Region)";
+		case "BSGN": return "BSGN (Birthsign)";
+		case "LTEX": return "LTEX (Land Texture)";
+		case "STAT": return "STAT (Static)";
+		case "DOOR": return "DOOR (Door)";
+		case "MISC": return "MISC (Miscellaneous)";
+		case "WEAP": return "WEAP (Weapon)";
+		case "CONT": return "CONT (Container)";
+		case "SPEL": return "SPEL (Spell)";
+		case "CREA": return "CREA (Creature)";
+		case "BODY": return "BODY (Bodypart)";
+		case "LIGH": return "LIGH (Light)";
+		case "ENCH": return "ENCH (Enchanting)";
+		case "NPC_": return "NPC_ (Character)";
+		case "ARMO": return "ARMO (Armor)";
+		case "CLOT": return "CLOT (Clothing)";
+		case "REPA": return "REPA (Repair)";
+		case "ACTI": return "ACTI (Activator)";
+		case "APPA": return "APPA (Apparatus)";
+		case "LOCK": return "LOCK (Lockpick)";
+		case "PROB": return "PROB (Probe)";
+		case "INGR": return "INGR (Ingredient)";
+		case "BOOK": return "BOOK (Book)";
+		case "ALCH": return "ALCH (Alchemy)";
+		case "LEVI": return "LEVI (Levelled Item)";
+		case "LEVC": return "LEVC (Levelled Creature)";
+		case "CELL": return "CELL (Cell)";
+		case "LAND": return "LAND (Land)";
+		case "PGRD": return "PGRD (Path Grid)";
+		case "SNDG": return "SNDG (Sound Gen)";
+		case "DIAL": return "DIAL (Dialogue)";
+		case "INFO": return "INFO (Dialogue Info)";
+		case "SSCR": return "SSCR (Start Script)";
+		default: return tag + "(?)";
 	}
 }
 
-//
-// Begin actual reading.
-//
+string Record_Read(Record &r) {
+	// These record types have no id.
+	switch (r.header.tag) {
+		case "DIAL": return "";
+		case "LAND": return "";
+		case "MGEF": return "";
+		case "PGRD": return "";
+		case "SKIL": return "";
+		case "TES3": return "";
+	}
+
+	// For others the id can be found in a specific subrecord.
+	local string idSubRecordTag = "NAME";
+	if (r.header.tag == "INFO") { idSubRecordTag = "INAM"; }
+	if (r.header.tag == "SCPT") { idSubRecordTag = "SCHD"; }
+
+	// Find the specified subrecord and read its first string.
+	local uint pos = startof(r) + 16;
+	local char tag[4];
+	local uint size;
+	local string id;
+
+	while (pos < r.endPos) {
+		tag = ReadString(pos, 4);
+		pos += 4;
+
+		size = ReadUInt(pos);
+		pos += 4;
+
+		if (tag == idSubRecordTag) {
+			return ReadString(pos, size);
+		}
+
+		pos += size;
+	}
+
+	return "{ ID NOT FOUND }";
+}
+
+string RecordHeader_Name(RecordHeader &rh) {
+	return rh.tag + " (Flags)";
+}
+
+
+/* -- Begin Parsing -- */
+
 
 while (!FEof()) {
 	Record record;
