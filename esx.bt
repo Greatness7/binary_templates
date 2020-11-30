@@ -3433,10 +3433,10 @@ void CELL_INTV(SubRecord &sr) {
 }
 
 void CELL_NAM9(SubRecord &sr) {
-	uint hasOwner;
+	uint stackSize;
 	/* -- Display -- */
-	sr.displayName = "NAM9 (Has Owner)";
-	SPrintf(sr.displayValue, "%d", hasOwner);
+	sr.displayName = "NAM9 (Stack Size)";
+	SPrintf(sr.displayValue, "%d", stackSize);
 }
 
 void CELL_FLTV(SubRecord &sr) {
