@@ -1784,7 +1784,7 @@ void ARMO_BNAM(SubRecord &sr) {
 void ARMO_CNAM(SubRecord &sr) {
 	char femaleBodypart[sr.size];
 	/* -- Display -- */
-	sr.displayName = "CNAM (Male Bodypart)";
+	sr.displayName = "CNAM (Female Bodypart)";
 	sr.displayValue = femaleBodypart;
 }
 
@@ -2003,7 +2003,7 @@ void CLOT_BNAM(SubRecord &sr) {
 void CLOT_CNAM(SubRecord &sr) {
 	char femaleBodypart[sr.size];
 	/* -- Display -- */
-	sr.displayName = "CNAM (Male Bodypart)";
+	sr.displayName = "CNAM (Female Bodypart)";
 	sr.displayValue = femaleBodypart;
 }
 
@@ -2202,7 +2202,7 @@ void CREA_AIDT(SubRecord &sr) {
 	byte fight;
 	byte flee;
 	byte alarm;
-	ushort unknown;
+	short unknown;
 	uint services;
 	byte unknown;
 	/* -- Display -- */
@@ -2227,11 +2227,13 @@ void CREA_DNAM(SubRecord &sr) {
 	sr.displayValue = cellId;
 }
 
-void CREA_CNDT(SubRecord &sr) {
-	char cellId[sr.size];
+void CREA_AI_T(SubRecord &sr) {
+	float xPosition;
+	float yPosition;
+	float zPosition;
+	int unknown;
 	/* -- Display -- */
-	sr.displayName = "CNDT (Escort/Follow Cell Id)";
-	sr.displayValue = cellId;
+	sr.displayName = "AI_T (AI Travel Package)";
 }
 
 void CREA_AI_W(SubRecord &sr) {
@@ -2246,7 +2248,7 @@ void CREA_AI_W(SubRecord &sr) {
 	ubyte idle7;
 	ubyte idle8;
 	ubyte idle9;
-	ubyte unknown;
+	byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AI_W (AI Wander Package)";
 }
@@ -2263,15 +2265,6 @@ void CREA_AI_E(SubRecord &sr) {
 	sr.displayValue = targetId;
 }
 
-void CREA_AI_T(SubRecord &sr) {
-	float xPosition;
-	float yPosition;
-	float zPosition;
-	uint unknown;
-	/* -- Display -- */
-	sr.displayName = "AI_T (AI Travel Package)";
-}
-
 void CREA_AI_F(SubRecord &sr) {
 	float xPosition;
 	float yPosition;
@@ -2285,10 +2278,18 @@ void CREA_AI_F(SubRecord &sr) {
 }
 
 void CREA_AI_A(SubRecord &sr) {
-	char targetId[sr.size];
+	char targetId[32];
+    byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AI_A (AI Activate Package)";
 	sr.displayValue = targetId;
+}
+
+void CREA_CNDT(SubRecord &sr) {
+	char cellId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "CNDT (Escort/Follow Cell Id)";
+	sr.displayValue = cellId;
 }
 
 void CREA(SubRecord &sr) {
@@ -2304,11 +2305,11 @@ void CREA(SubRecord &sr) {
 		case "NPCO": CREA_NPCO(sr); break;
 		case "NPCS": CREA_NPCS(sr); break;
 		case "AIDT": CREA_AIDT(sr); break;
-		case "DODT": CREA_DODT(sr); break;
-		case "DNAM": CREA_DNAM(sr); break;
+        case "DODT": CREA_DODT(sr); break;
+        case "DNAM": CREA_DNAM(sr); break;
+		case "AI_T": CREA_AI_T(sr); break;
 		case "AI_W": CREA_AI_W(sr); break;
 		case "AI_E": CREA_AI_E(sr); break;
-		case "AI_T": CREA_AI_T(sr); break;
 		case "AI_F": CREA_AI_F(sr); break;
 		case "AI_A": CREA_AI_A(sr); break;
 		case "CNDT": CREA_CNDT(sr); break;
@@ -2496,7 +2497,7 @@ void LEVC_NAME(SubRecord &sr) {
 }
 
 void LEVC_DATA(SubRecord &sr) {
-	long flags;
+	uint flags;
 	/* -- Display -- */
 	sr.displayName = "DATA (Levelled List Data)";
 	SPrintf(sr.displayValue, "%d", flags);
@@ -2556,7 +2557,7 @@ void LEVI_NAME(SubRecord &sr) {
 }
 
 void LEVI_DATA(SubRecord &sr) {
-	long flags;
+	uint flags;
 	/* -- Display -- */
 	sr.displayName = "DATA (Levelled List Data)";
 }
@@ -2882,8 +2883,9 @@ void NPC__NPDT(SubRecord &sr) {
 		byte disposition;
 		byte reputation;
 		byte rank;
-		short unknown;
-		byte unknown; // padding?
+		byte unknown;
+        byte unknown;
+		byte unknown;
 		uint gold;
 	} else {  // AutoCalc Disabled
 		short level;
@@ -2896,7 +2898,7 @@ void NPC__NPDT(SubRecord &sr) {
 		byte disposition;
 		byte reputation;
 		byte rank;
-		byte unknown; // padding?
+		byte unknown;
 		uint gold;
 	}
 	/* -- Display -- */
@@ -2938,7 +2940,7 @@ void NPC__AIDT(SubRecord &sr) {
 	byte fight;
 	byte flee;
 	byte alarm;
-	ushort unknown;
+	short unknown;
 	uint services;
 	byte unknown;
 	/* -- Display -- */
@@ -2982,7 +2984,7 @@ void NPC__AI_W(SubRecord &sr) {
 	ubyte idle7;
 	ubyte idle8;
 	ubyte idle9;
-	ubyte unknown;
+	byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AI_W (AI Wander Package)";
 }
@@ -3324,9 +3326,9 @@ void CELL_WHGT(SubRecord &sr) {
 }
 
 void CELL_AMBI(SubRecord &sr) {
-	uint ambientColor;
-	uint sunlightColor;
-	uint fogColor;
+    ubyte ambientColor[4];
+    ubyte sunlightColor[4];
+    ubyte fogColor[4];
 	float fogDensity;
 	/* -- Display -- */
 	sr.displayName = "AMBI (Ambient Light Data)";
@@ -3339,11 +3341,21 @@ void CELL_RGNN(SubRecord &sr) {
 	sr.displayValue = id;
 }
 
-void CELL_NAM0(SubRecord &sr) {
-	uint length;
+void CELL_NAM5(SubRecord &sr) {
+	ubyte red;
+	ubyte green;
+	ubyte blue;
+	ubyte alpha;
+    Printf("MAP COLOR FOUND");
 	/* -- Display -- */
-	sr.displayName = "NAM0 (Objects List Length)";
-	SPrintf(sr.displayValue, "%d", length);
+	sr.displayName = "NAM5 (Map Color)";
+}
+
+void CELL_NAM0(SubRecord &sr) {
+	uint unknown;
+	/* -- Display -- */
+	sr.displayName = "NAM0 (?)";
+	SPrintf(sr.displayValue, "%d", unknown);
 }
 
 void CELL_FRMR(SubRecord &sr) {
@@ -3351,6 +3363,13 @@ void CELL_FRMR(SubRecord &sr) {
 	/* -- Display -- */
 	sr.displayName = "FRMR (Index)";
 	SPrintf(sr.displayValue, "%d", objectIndex);
+}
+
+void CELL_UNAM(SubRecord &sr) {
+	byte blocked;
+	/* -- Display -- */
+	sr.displayName = "UNAM (Blocked)";
+	SPrintf(sr.displayValue, "%d", blocked);
 }
 
 void CELL_XSCL(SubRecord &sr) {
@@ -3392,6 +3411,20 @@ void CELL_BNAM(SubRecord &sr) {
 	sr.displayValue = id;
 }
 
+void CELL_XSOL(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "XSOL (Soul Id)";
+	sr.displayValue = id;
+}
+
+void CELL_XCHG(SubRecord &sr) {
+	uint chargeLeft;
+	/* -- Display -- */
+	sr.displayName = "XCHG (Charge Left)";
+	SPrintf(sr.displayValue, "%d", chargeLeft);
+}
+
 void CELL_INTV(SubRecord &sr) {
 	uint healthLeft;
 	/* -- Display -- */
@@ -3400,14 +3433,14 @@ void CELL_INTV(SubRecord &sr) {
 }
 
 void CELL_NAM9(SubRecord &sr) {
-	long hasOwner;
+	uint hasOwner;
 	/* -- Display -- */
 	sr.displayName = "NAM9 (Has Owner)";
 	SPrintf(sr.displayValue, "%d", hasOwner);
 }
 
 void CELL_FLTV(SubRecord &sr) {
-	long lockLevel;
+	uint lockLevel;
 	/* -- Display -- */
 	sr.displayName = "FLTV (Lock Level)";
 	SPrintf(sr.displayValue, "%d", lockLevel);
@@ -3423,21 +3456,7 @@ void CELL_KNAM(SubRecord &sr) {
 void CELL_TNAM(SubRecord &sr) {
 	char id[sr.size];
 	/* -- Display -- */
-	sr.displayName = "KNAM (Trap Id)";
-	sr.displayValue = id;
-}
-
-void CELL_UNAM(SubRecord &sr) {
-	byte blocked;
-	/* -- Display -- */
-	sr.displayName = "UNAM (Blocked)";
-	SPrintf(sr.displayValue, "%d", blocked);
-}
-
-void CELL_XSOL(SubRecord &sr) {
-	char id[sr.size];
-	/* -- Display -- */
-	sr.displayName = "XSOL (Soul Id)";
+	sr.displayName = "TNAM (Trap Id)";
 	sr.displayValue = id;
 }
 
@@ -3448,20 +3467,22 @@ void CELL(SubRecord &sr) {
 		case "WHGT": CELL_WHGT(sr); break;
 		case "AMBI": CELL_AMBI(sr); break;
 		case "RGNN": CELL_RGNN(sr); break;
+        case "NAM5": CELL_NAM5(sr); break;
 		case "NAM0": CELL_NAM0(sr); break;
 		case "FRMR": CELL_FRMR(sr); break;
+		case "UNAM": CELL_UNAM(sr); break;
 		case "XSCL": CELL_XSCL(sr); break;
 		case "DODT": CELL_DODT(sr); break;
 		case "DNAM": CELL_DNAM(sr); break;
 		case "ANAM": CELL_ANAM(sr); break;
 		case "BNAM": CELL_BNAM(sr); break;
-		case "INTV": CELL_INTV(sr); break;
+        case "XSOL": CELL_XSOL(sr); break;
+        case "XCHG": CELL_XCHG(sr); break;
+        case "INTV": CELL_INTV(sr); break;
 		case "NAM9": CELL_NAM9(sr); break;
 		case "FLTV": CELL_FLTV(sr); break;
 		case "KNAM": CELL_KNAM(sr); break;
 		case "TNAM": CELL_TNAM(sr); break;
-		case "UNAM": CELL_UNAM(sr); break;
-		case "XSOL": CELL_XSOL(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3480,7 +3501,7 @@ void LAND_INTV(SubRecord &sr) {
 }
 
 void LAND_DATA(SubRecord &sr) {
-	uint unknown;
+	int unknown;
 	/* -- Display -- */
 	sr.displayName = "DATA (?)";
 }
