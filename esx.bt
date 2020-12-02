@@ -309,10 +309,10 @@ typedef enum <int> {
 } SpellSchool;
 
 typedef enum <int> {
-    MORTAR_AND_PESTLE,
-    ALEMBIC,
-    CALCINATOR,
-    RETORT,
+	MORTAR_AND_PESTLE,
+	ALEMBIC,
+	CALCINATOR,
+	RETORT,
 } ApparatusType;
 
 typedef enum <short> {
@@ -737,10 +737,10 @@ typedef enum <uint> {
 
 typedef enum <char> {
 	TOPIC,
-    VOICE,
-    GREETING,
-    PERSUASION,
-    JOURNAL,
+	VOICE,
+	GREETING,
+	PERSUASION,
+	JOURNAL,
 } DialogueType2;
 
 
@@ -1674,8 +1674,8 @@ void APPA_MODL(SubRecord &sr) {
 }
 
 void APPA_AADT(SubRecord &sr) {
-    ApparatusType type;
-    float quality;
+	ApparatusType type;
+	float quality;
 	float weight;
 	uint value;
 	/* -- Display -- */
@@ -1931,7 +1931,7 @@ void BOOK(SubRecord &sr) {
 		case "ITEX": BOOK_ITEX(sr); break;
 		case "SCRI": BOOK_SCRI(sr); break;
 		case "TEXT": BOOK_TEXT(sr); break;
-        case "ENAM": BOOK_ENAM(sr); break;
+		case "ENAM": BOOK_ENAM(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1965,8 +1965,8 @@ void CLOT_FNAM(SubRecord &sr) {
 
 void CLOT_CTDT(SubRecord &sr) {
 	ClothingSlot clothingSlot;
-    float weight;
-    short value;
+	float weight;
+	short value;
 	short enchantment;
 	/* -- Display -- */
 	sr.displayName = "CTDT (Clothing Data)";
@@ -2279,7 +2279,7 @@ void CREA_AI_F(SubRecord &sr) {
 
 void CREA_AI_A(SubRecord &sr) {
 	char targetId[32];
-    byte unknown;
+	byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AI_A (AI Activate Package)";
 	sr.displayValue = targetId;
@@ -2305,8 +2305,8 @@ void CREA(SubRecord &sr) {
 		case "NPCO": CREA_NPCO(sr); break;
 		case "NPCS": CREA_NPCS(sr); break;
 		case "AIDT": CREA_AIDT(sr); break;
-        case "DODT": CREA_DODT(sr); break;
-        case "DNAM": CREA_DNAM(sr); break;
+		case "DODT": CREA_DODT(sr); break;
+		case "DNAM": CREA_DNAM(sr); break;
 		case "AI_T": CREA_AI_T(sr); break;
 		case "AI_W": CREA_AI_W(sr); break;
 		case "AI_E": CREA_AI_E(sr); break;
@@ -2661,7 +2661,7 @@ void LIGH_SNAM(SubRecord &sr) {
 	char soundId[sr.size];
 	/* -- Display -- */
 	sr.displayName = "SNAM (Sound Id)";
-    sr.displayValue = soundId;
+	sr.displayValue = soundId;
 }
 
 void LIGH(SubRecord &sr) {
@@ -2671,7 +2671,7 @@ void LIGH(SubRecord &sr) {
 		case "FNAM": LIGH_FNAM(sr); break;
 		case "ITEX": LIGH_ITEX(sr); break;
 		case "LHDT": LIGH_LHDT(sr); break;
-        case "SCRI": LIGH_SCRI(sr); break;
+		case "SCRI": LIGH_SCRI(sr); break;
 		case "SNAM": LIGH_SNAM(sr); break;
 		default:
 			byte undefined[sr.size];
@@ -2884,7 +2884,7 @@ void NPC__NPDT(SubRecord &sr) {
 		byte reputation;
 		byte rank;
 		byte unknown;
-        byte unknown;
+		byte unknown;
 		byte unknown;
 		uint gold;
 	} else {  // AutoCalc Disabled
@@ -3306,7 +3306,7 @@ void CELL_DATA(SubRecord &sr) {
 		uint flags;
 		int gridX;
 		int gridY;
-	} else {  // Cell Object Data
+	} else {  // Reference Data
 		float xPosition;
 		float yPosition;
 		float zPosition;
@@ -3319,16 +3319,16 @@ void CELL_DATA(SubRecord &sr) {
 }
 
 void CELL_WHGT(SubRecord &sr) {
-	float waterHeight;
+	uint waterHeight;
 	/* -- Display -- */
 	sr.displayName = "WHGT (Water Height)";
-	SPrintf(sr.displayValue, "%.3f", waterHeight);
+	SPrintf(sr.displayValue, "%d", waterHeight);
 }
 
 void CELL_AMBI(SubRecord &sr) {
-    ubyte ambientColor[4];
-    ubyte sunlightColor[4];
-    ubyte fogColor[4];
+	ubyte ambientColor[4];
+	ubyte sunlightColor[4];
+	ubyte fogColor[4];
 	float fogDensity;
 	/* -- Display -- */
 	sr.displayName = "AMBI (Ambient Light Data)";
@@ -3346,23 +3346,38 @@ void CELL_NAM5(SubRecord &sr) {
 	ubyte green;
 	ubyte blue;
 	ubyte alpha;
-    Printf("MAP COLOR FOUND");
+	Printf("MAP COLOR FOUND");
 	/* -- Display -- */
 	sr.displayName = "NAM5 (Map Color)";
 }
 
 void CELL_NAM0(SubRecord &sr) {
-	uint unknown;
+	uint sectionSize;
 	/* -- Display -- */
-	sr.displayName = "NAM0 (?)";
-	SPrintf(sr.displayValue, "%d", unknown);
+	sr.displayName = "NAM0 (Section Size)";
+	SPrintf(sr.displayValue, "%d", sectionSize);
 }
 
 void CELL_FRMR(SubRecord &sr) {
 	uint objectIndex;
 	/* -- Display -- */
-	sr.displayName = "FRMR (Index)";
+	sr.displayName = "FRMR (Reference Index)";
 	SPrintf(sr.displayValue, "%d", objectIndex);
+}
+
+void CELL_MVRF(SubRecord &sr) {
+	uint objectIndex;
+	/* -- Display -- */
+	sr.displayName = "MVRF (Moved Reference Index)";
+	SPrintf(sr.displayValue, "%d", objectIndex);
+}
+
+void CELL_CNDT(SubRecord &sr) {
+	int gridX;
+	int gridY;
+	/* -- Display -- */
+	sr.displayName = "CNDT (Moved Reference Cell)";
+	SPrintf(sr.displayValue, "(%d, %d)", gridX, gridY);
 }
 
 void CELL_UNAM(SubRecord &sr) {
@@ -3400,15 +3415,29 @@ void CELL_DNAM(SubRecord &sr) {
 void CELL_ANAM(SubRecord &sr) {
 	char id[sr.size];
 	/* -- Display -- */
-	sr.displayName = "ANAM (Owner/Faction Id)";
+	sr.displayName = "ANAM (Owner Id)";
 	sr.displayValue = id;
 }
 
 void CELL_BNAM(SubRecord &sr) {
 	char id[sr.size];
 	/* -- Display -- */
-	sr.displayName = "BNAM (Global Variable/Rank Id)";
+	sr.displayName = "BNAM (Owner Global Variable)";
 	sr.displayValue = id;
+}
+
+void CELL_CNAM(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "BNAM (Owner Faction Id)";
+	sr.displayValue = id;
+}
+
+void CELL_INDX(SubRecord &sr) {
+	uint rank;
+	/* -- Display -- */
+	sr.displayName = "INDX (Owner Faction Rank)";
+	SPrintf(sr.displayValue, "%d", rank);
 }
 
 void CELL_XSOL(SubRecord &sr) {
@@ -3460,6 +3489,12 @@ void CELL_TNAM(SubRecord &sr) {
 	sr.displayValue = id;
 }
 
+void CELL_DELE(SubRecord &sr) {
+	uint deleted;
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+}
+
 void CELL(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": CELL_NAME(sr); break;
@@ -3467,22 +3502,27 @@ void CELL(SubRecord &sr) {
 		case "WHGT": CELL_WHGT(sr); break;
 		case "AMBI": CELL_AMBI(sr); break;
 		case "RGNN": CELL_RGNN(sr); break;
-        case "NAM5": CELL_NAM5(sr); break;
+		case "NAM5": CELL_NAM5(sr); break;
 		case "NAM0": CELL_NAM0(sr); break;
 		case "FRMR": CELL_FRMR(sr); break;
+		case "MVRF": CELL_MVRF(sr); break;
+		case "CNDT": CELL_CNDT(sr); break;
 		case "UNAM": CELL_UNAM(sr); break;
 		case "XSCL": CELL_XSCL(sr); break;
 		case "DODT": CELL_DODT(sr); break;
 		case "DNAM": CELL_DNAM(sr); break;
 		case "ANAM": CELL_ANAM(sr); break;
 		case "BNAM": CELL_BNAM(sr); break;
-        case "XSOL": CELL_XSOL(sr); break;
-        case "XCHG": CELL_XCHG(sr); break;
-        case "INTV": CELL_INTV(sr); break;
+		case "CNAM": CELL_CNAM(sr); break;
+		case "INDX": CELL_INDX(sr); break;
+		case "XSOL": CELL_XSOL(sr); break;
+		case "XCHG": CELL_XCHG(sr); break;
+		case "INTV": CELL_INTV(sr); break;
 		case "NAM9": CELL_NAM9(sr); break;
 		case "FLTV": CELL_FLTV(sr); break;
 		case "KNAM": CELL_KNAM(sr); break;
 		case "TNAM": CELL_TNAM(sr); break;
+		case "DELE": CELL_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
