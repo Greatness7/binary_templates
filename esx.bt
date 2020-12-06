@@ -3615,13 +3615,20 @@ void PGRD_DATA(SubRecord &sr) {
 }
 
 void PGRD_PGRP(SubRecord &sr) {
-	byte unknown[sr.size];
+    struct {
+		int x;
+		int y;
+		int z;
+		byte unkown;
+        byte linkCount;
+        byte padding[2];
+	} data[sr.size / 0x10];
 	/* -- Display -- */
 	sr.displayName = "PGRP (?)";
 }
 
 void PGRD_PGRC(SubRecord &sr) {
-	byte unknown[sr.size];
+	uint linkIds[sr.size / sizeof(uint)];
 	/* -- Display -- */
 	sr.displayName = "PGRC (?)";
 }
