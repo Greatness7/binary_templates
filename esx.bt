@@ -3362,14 +3362,14 @@ void CELL_FRMR(SubRecord &sr) {
 	uint objectIndex;
 	/* -- Display -- */
 	sr.displayName = "FRMR (Reference Index)";
-	SPrintf(sr.displayValue, "%d", objectIndex);
+	SPrintf(sr.displayValue, "(%d, %d)", objectIndex & 0xFFFFFF, objectIndex >> 24);
 }
 
 void CELL_MVRF(SubRecord &sr) {
 	uint objectIndex;
 	/* -- Display -- */
 	sr.displayName = "MVRF (Moved Reference Index)";
-	SPrintf(sr.displayValue, "%d", objectIndex);
+	SPrintf(sr.displayValue, "(%d, %d)", objectIndex & 0xFFFFFF, objectIndex >> 24);
 }
 
 void CELL_CNDT(SubRecord &sr) {
