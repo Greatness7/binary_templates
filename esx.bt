@@ -2883,9 +2883,7 @@ void NPC__NPDT(SubRecord &sr) {
 		byte disposition;
 		byte reputation;
 		byte rank;
-		byte unknown;
-		byte unknown;
-		byte unknown;
+		byte padding[3];
 		uint gold;
 	} else {  // AutoCalc Disabled
 		short level;
