@@ -3357,17 +3357,35 @@ void CELL_NAM0(SubRecord &sr) {
 }
 
 void CELL_FRMR(SubRecord &sr) {
-	uint objectIndex;
-	/* -- Display -- */
-	sr.displayName = "FRMR (Reference Index)";
-	SPrintf(sr.displayValue, "(%d, %d)", objectIndex & 0xFFFFFF, objectIndex >> 24);
+    if (sr.size == 8) {
+        uint masterIndex;
+        uint objectIndex;
+	    /* -- Display -- */
+	    sr.displayName = "FRMR (Reference Index)";
+	    SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
+    }
+    else {
+        uint packedIndices;
+	    /* -- Display -- */
+	    sr.displayName = "FRMR (Reference Index)";
+	    SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
+    }
 }
 
 void CELL_MVRF(SubRecord &sr) {
-	uint objectIndex;
-	/* -- Display -- */
-	sr.displayName = "MVRF (Moved Reference Index)";
-	SPrintf(sr.displayValue, "(%d, %d)", objectIndex & 0xFFFFFF, objectIndex >> 24);
+    if (sr.size == 8) {
+        uint masterIndex;
+        uint objectIndex;
+	    /* -- Display -- */
+	    sr.displayName = "MVRF (Moved Reference Index)";
+	    SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
+    }
+    else {
+        uint packedIndices;
+	    /* -- Display -- */
+	    sr.displayName = "MVRF (Moved Reference Index)";
+	    SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
+    }
 }
 
 void CELL_CNDT(SubRecord &sr) {
