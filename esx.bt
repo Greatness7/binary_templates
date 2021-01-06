@@ -846,10 +846,10 @@ void GLOB_FNAM(SubRecord &sr) {
 }
 
 void GLOB_FLTV(SubRecord &sr) {
-	float floatValue;
+	float value;
 	/* -- Display -- */
-	sr.displayName = "GLOB (Float Value)";
-	SPrintf(sr.displayValue, "%.4f", floatValue);
+	sr.displayName = "FLTV (Variable Value)";
+	SPrintf(sr.displayValue, "%.4f", value);
 }
 
 void GLOB(SubRecord &sr) {
@@ -1143,7 +1143,7 @@ void MGEF_MEDT(SubRecord &sr) {
 	uint flags;
 	int rgb[3];
 	float speed;
-	float sizeIncrease;
+	float size;
 	float sizeCap;
 	/* -- Display -- */
 	sr.displayName = "MEDT (EFfect Data)";
@@ -1161,6 +1161,34 @@ void MGEF_PTEX(SubRecord &sr) {
 	/* -- Display -- */
 	sr.displayName = "PTEX (Particle Texture)";
 	sr.displayValue = particleTexture;
+}
+
+void MGEF_BSND(SubRecord &sr) {
+	char boltSound[sr.size];
+	/* -- Display -- */
+	sr.displayName = "BSND (Bolt Sound)";
+	sr.displayValue = boltSound;
+}
+
+void MGEF_CSND(SubRecord &sr) {
+	char castSound[sr.size];
+	/* -- Display -- */
+	sr.displayName = "CSND (Cast Sound)";
+	sr.displayValue = castSound;
+}
+
+void MGEF_HSND(SubRecord &sr) {
+	char hitSound[sr.size];
+	/* -- Display -- */
+	sr.displayName = "HSND (Hit Sound)";
+	sr.displayValue = hitSound;
+}
+
+void MGEF_ASND(SubRecord &sr) {
+	char areaSound[sr.size];
+	/* -- Display -- */
+	sr.displayName = "ASND (Area Sound)";
+	sr.displayValue = areaSound;
 }
 
 void MGEF_CVFX(SubRecord &sr) {
@@ -1198,49 +1226,21 @@ void MGEF_DESC(SubRecord &sr) {
 	sr.displayValue = description;
 }
 
-void MGEF_CSND(SubRecord &sr) {
-	char castSound[sr.size];
-	/* -- Display -- */
-	sr.displayName = "CSND (Cast Sound)";
-	sr.displayValue = castSound;
-}
-
-void MGEF_BSND(SubRecord &sr) {
-	char boltSound[sr.size];
-	/* -- Display -- */
-	sr.displayName = "BSND (Bolt Sound)";
-	sr.displayValue = boltSound;
-}
-
-void MGEF_HSND(SubRecord &sr) {
-	char hitSound[sr.size];
-	/* -- Display -- */
-	sr.displayName = "HSND (Hit Sound)";
-	sr.displayValue = hitSound;
-}
-
-void MGEF_ASND(SubRecord &sr) {
-	char areaSound[sr.size];
-	/* -- Display -- */
-	sr.displayName = "ASND (Area Sound)";
-	sr.displayValue = areaSound;
-}
-
 void MGEF(SubRecord &sr) {
 	switch (sr.tag) {
 		case "INDX": MGEF_INDX(sr); break;
 		case "MEDT": MGEF_MEDT(sr); break;
 		case "ITEX": MGEF_ITEX(sr); break;
 		case "PTEX": MGEF_PTEX(sr); break;
+		case "BSND": MGEF_BSND(sr); break;
+		case "CSND": MGEF_CSND(sr); break;
+		case "HSND": MGEF_HSND(sr); break;
+		case "ASND": MGEF_ASND(sr); break;
 		case "CVFX": MGEF_CVFX(sr); break;
 		case "BVFX": MGEF_BVFX(sr); break;
 		case "HVFX": MGEF_HVFX(sr); break;
 		case "AVFX": MGEF_AVFX(sr); break;
 		case "DESC": MGEF_DESC(sr); break;
-		case "CSND": MGEF_CSND(sr); break;
-		case "BSND": MGEF_BSND(sr); break;
-		case "HSND": MGEF_HSND(sr); break;
-		case "ASND": MGEF_ASND(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1840,8 +1840,8 @@ void BODY_FNAM(SubRecord &sr) {
 
 void BODY_BYDT(SubRecord &sr) {
 	BodyPart part;
-	byte isVampire;
-	byte flags;
+	byte vampire;
+	byte female;
 	BodyPartType partType;
 	/* -- Display -- */
 	sr.displayName = "BYDT (Bodypart Data)";
@@ -3344,7 +3344,6 @@ void CELL_NAM5(SubRecord &sr) {
 	ubyte green;
 	ubyte blue;
 	ubyte alpha;
-	Printf("MAP COLOR FOUND");
 	/* -- Display -- */
 	sr.displayName = "NAM5 (Map Color)";
 }
@@ -3357,35 +3356,35 @@ void CELL_NAM0(SubRecord &sr) {
 }
 
 void CELL_FRMR(SubRecord &sr) {
-    if (sr.size == 8) {
-        uint masterIndex;
-        uint objectIndex;
-	    /* -- Display -- */
-	    sr.displayName = "FRMR (Reference Index)";
-	    SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
-    }
-    else {
-        uint packedIndices;
-	    /* -- Display -- */
-	    sr.displayName = "FRMR (Reference Index)";
-	    SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
-    }
+	if (sr.size == 8) {
+		uint masterIndex;
+		uint objectIndex;
+		/* -- Display -- */
+		sr.displayName = "FRMR (Reference Index)";
+		SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
+	}
+	else {
+		uint packedIndices;
+		/* -- Display -- */
+		sr.displayName = "FRMR (Reference Index)";
+		SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
+	}
 }
 
 void CELL_MVRF(SubRecord &sr) {
-    if (sr.size == 8) {
-        uint masterIndex;
-        uint objectIndex;
-	    /* -- Display -- */
-	    sr.displayName = "MVRF (Moved Reference Index)";
-	    SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
-    }
-    else {
-        uint packedIndices;
-	    /* -- Display -- */
-	    sr.displayName = "MVRF (Moved Reference Index)";
-	    SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
-    }
+	if (sr.size == 8) {
+		uint masterIndex;
+		uint objectIndex;
+		/* -- Display -- */
+		sr.displayName = "MVRF (Moved Reference Index)";
+		SPrintf(sr.displayValue, "(%d, %d)",  masterIndex, objectIndex);
+	}
+	else {
+		uint packedIndices;
+		/* -- Display -- */
+		sr.displayName = "MVRF (Moved Reference Index)";
+		SPrintf(sr.displayValue, "(%d, %d)", packedIndices >> 24, packedIndices & 0xFFFFFF);
+	}
 }
 
 void CELL_CNDT(SubRecord &sr) {
@@ -3631,13 +3630,13 @@ void PGRD_DATA(SubRecord &sr) {
 }
 
 void PGRD_PGRP(SubRecord &sr) {
-    struct {
+	struct {
 		int x;
 		int y;
 		int z;
 		byte unkown;
-        byte linkCount;
-        byte padding[2];
+		byte linkCount;
+		byte padding[2];
 	} data[sr.size / 0x10];
 	/* -- Display -- */
 	sr.displayName = "PGRP (?)";
@@ -3815,18 +3814,18 @@ void INFO_DNAM(SubRecord &sr) {
 	sr.displayValue = playerFaction;
 }
 
-void INFO_NAME(SubRecord &sr) {
-	char text[sr.size];
-	/* -- Display -- */
-	sr.displayName = "NAME (Text)";
-	sr.displayValue = text;
-}
-
 void INFO_SNAM(SubRecord &sr) {
 	char soundPath[sr.size];
 	/* -- Display -- */
 	sr.displayName = "SNAM (Sound Path)";
 	sr.displayValue = soundPath;
+}
+
+void INFO_NAME(SubRecord &sr) {
+	char text[sr.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Text)";
+	sr.displayValue = text;
 }
 
 void INFO_QSTN(SubRecord &sr) {
@@ -3875,10 +3874,16 @@ void INFO_INTV(SubRecord &sr) {
 }
 
 void INFO_BNAM(SubRecord &sr) {
-	char scriptText[sr.size];
+	char result[sr.size];
 	/* -- Display -- */
-	sr.displayName = "BNAM (Script Text)";
-	sr.displayValue = scriptText;
+	sr.displayName = "BNAM (Result)";
+	sr.displayValue = result;
+}
+
+void INFO_DELE(SubRecord &sr) {
+	uint deleted;
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
 }
 
 void INFO(SubRecord &sr) {
@@ -3893,8 +3898,8 @@ void INFO(SubRecord &sr) {
 		case "FNAM": INFO_FNAM(sr); break;
 		case "ANAM": INFO_ANAM(sr); break;
 		case "DNAM": INFO_DNAM(sr); break;
-		case "NAME": INFO_NAME(sr); break;
 		case "SNAM": INFO_SNAM(sr); break;
+		case "NAME": INFO_NAME(sr); break;
 		case "QSTN": INFO_QSTN(sr); break;
 		case "QSTF": INFO_QSTF(sr); break;
 		case "QSTR": INFO_QSTR(sr); break;
@@ -3902,6 +3907,7 @@ void INFO(SubRecord &sr) {
 		case "FLTV": INFO_FLTV(sr); break;
 		case "INTV": INFO_INTV(sr); break;
 		case "BNAM": INFO_BNAM(sr); break;
+		case "DELE": INFO_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
