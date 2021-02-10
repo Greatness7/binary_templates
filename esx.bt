@@ -3304,6 +3304,7 @@ void CELL_DATA(SubRecord &sr) {
 		uint flags;
 		int gridX;
 		int gridY;
+		SPrintf(sr.displayValue, "(%d, %d)", gridX, gridY);
 	} else {  // Reference Data
 		float xPosition;
 		float yPosition;
@@ -3986,7 +3987,6 @@ string Record_Name(Record &r) {
 string Record_Read(Record &r) {
 	// These record types have no id.
 	switch (r.tag) {
-		case "DIAL": return "";
 		case "LAND": return "";
 		case "MGEF": return "";
 		case "PGRD": return "";
