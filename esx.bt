@@ -3606,9 +3606,8 @@ void LAND_VNML(SubRecord &sr) {
 
 void LAND_VHGT(SubRecord &sr) {
 	float offset;
-	byte unknown;
-	byte heightData[65*65];
-	short unknown;
+	byte heights[65*65];
+	byte padding[3];
 	/* -- Display -- */
 	sr.displayName = "VHGT (Vertex Heights)";
 }
