@@ -556,6 +556,36 @@ typedef enum <ubyte> {
 } BodyPart;
 
 typedef enum <ubyte> {
+	HEAD = 0,
+	HAIR = 1,
+	NECK = 2,
+	CHEST = 3,
+	GROIN = 4,
+	SKIRT = 5,
+	RIGHT_HAND = 6,
+	LEFT_HAND = 7,
+	RIGHT_WRIST = 8,
+	LEFT_WRIST = 9,
+	SHIELD = 10,
+	RIGHT_FOREARM = 11,
+	LEFT_FOREARM = 12,
+	RIGHT_UPPER_ARM = 13,
+	LEFT_UPPER_ARM = 14,
+	RIGHT_FOOT = 15,
+	LEFT_FOOT = 16,
+	RIGHT_ANKLE = 17,
+	LEFT_ANKLE = 18,
+	RIGHT_KNEE = 19,
+	LEFT_KNEE = 20,
+	RIGHT_UPPER_LEG = 21,
+	LEFT_UPPER_LEG = 22,
+	RIGHT_PAULDRON = 23,
+	LEFT_PAULDRON = 24,
+	WEAPON = 25,
+	TAIL = 26,
+} BipedObject;
+
+typedef enum <ubyte> {
 	BODYPART_TYPE_SKIN,
 	BODYPART_TYPE_CLOTHING,
 	BODYPART_TYPE_ARMOR,
@@ -608,6 +638,14 @@ typedef enum <int> {
 	DIAL_TYPE_PERSUASION,
 	DIAL_TYPE_JOURNAL,
 } DialogueType;
+
+typedef enum <char> {
+	DIAL2_TYPE_TOPIC,
+	DIAL2_TYPE_VOICE,
+	DIAL2_TYPE_GREETING,
+	DIAL2_TYPE_PERSUASION,
+	DIAL2_TYPE_JOURNAL,
+} DialogueType2;
 
 typedef enum <char> {
 	VAR_TYPE_NONE = '0',
@@ -736,12 +774,14 @@ typedef enum <uint> {
 } SoundGenType;
 
 typedef enum <char> {
-	TOPIC,
-	VOICE,
-	GREETING,
-	PERSUASION,
-	JOURNAL,
-} DialogueType2;
+	Slot0 = '0',
+	Slot1 = '1',
+	Slot2 = '2',
+	Slot3 = '3',
+	Slot4 = '4',
+	Slot5 = '5',
+	Slot6 = '6',
+} FilterSlot;
 
 
 /* -- HEDR (Header) -- */
@@ -1768,10 +1808,10 @@ void ARMO_ITEX(SubRecord &sr) {
 }
 
 void ARMO_INDX(SubRecord &sr) {
-	BodyPart bipedObject;
+	BipedObject bipedObject;
 	/* -- Display -- */
 	sr.displayName = "INDX (Biped Object)";
-	sr.displayValue = EnumToString(bipedObject);
+	// sr.displayValue = EnumToString(bipedObject);
 }
 
 void ARMO_BNAM(SubRecord &sr) {
@@ -1987,7 +2027,7 @@ void CLOT_ITEX(SubRecord &sr) {
 }
 
 void CLOT_INDX(SubRecord &sr) {
-	BodyPart bipedObject;
+	BipedObject bipedObject;
 	/* -- Display -- */
 	sr.displayName = "INDX (Biped Object)";
 	sr.displayValue = EnumToString(bipedObject);
@@ -2197,14 +2237,12 @@ void CREA_NPCS(SubRecord &sr) {
 }
 
 void CREA_AIDT(SubRecord &sr) {
-	byte hello;
-	byte unknown;
+	short hello;
 	byte fight;
 	byte flee;
 	byte alarm;
-	short unknown;
+	byte padding[3];
 	uint services;
-	byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AIDT (Creature AI Data)";
 }
@@ -2933,14 +2971,12 @@ void NPC__NPCS(SubRecord &sr) {
 }
 
 void NPC__AIDT(SubRecord &sr) {
-	byte hello;
-	byte unknown;
+	short hello;
 	byte fight;
 	byte flee;
 	byte alarm;
-	short unknown;
+	byte padding[3];
 	uint services;
-	byte unknown;
 	/* -- Display -- */
 	sr.displayName = "AIDT (AI Data)";
 }
@@ -3851,7 +3887,7 @@ void INFO_QSTR(SubRecord &sr) {
 }
 
 void INFO_SCVR(SubRecord &sr) {
-	ubyte index;
+	FilterSlot index;
 	DialogueVarType type;
 	DialogueVarFunc function;
 	DialogueVarComp compare;
