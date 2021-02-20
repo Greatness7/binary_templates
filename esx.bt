@@ -3393,10 +3393,10 @@ void CELL_NAM5(SubRecord &sr) {
 }
 
 void CELL_NAM0(SubRecord &sr) {
-	uint sectionSize;
+	uint numTempRefs;
 	/* -- Display -- */
-	sr.displayName = "NAM0 (Section Size)";
-	SPrintf(sr.displayValue, "%d", sectionSize);
+	sr.displayName = "NAM0 (Num Temp Refs)";
+	SPrintf(sr.displayValue, "%d", numTempRefs);
 }
 
 void CELL_FRMR(SubRecord &sr) {
