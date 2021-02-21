@@ -8,7 +8,7 @@
 //  Category: Games
 // File Mask: *.esp; *.esm; *.omwaddon
 //  ID Bytes:
-//   History: See GIT.
+//   History: https://github.com/Greatness7/binary_templates
 //------------------------------------------------
 
 LittleEndian();
