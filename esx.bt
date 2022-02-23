@@ -3361,7 +3361,7 @@ void CELL_DATA(SubRecord &sr) {
 }
 
 void CELL_WHGT(SubRecord &sr) {
-	uint waterHeight;
+	float waterHeight;
 	/* -- Display -- */
 	sr.displayName = "WHGT (Water Height)";
 	SPrintf(sr.displayValue, "%d", waterHeight);
@@ -3549,7 +3549,7 @@ void CELL_TNAM(SubRecord &sr) {
 }
 
 void CELL_DELE(SubRecord &sr) {
-	uint deleted;
+	byte deleted[sr.size];
 	/* -- Display -- */
 	sr.displayName = "DELE (Deleted)";
 }
@@ -3593,8 +3593,8 @@ void CELL(SubRecord &sr) {
 
 
 void LAND_INTV(SubRecord &sr) {
-	uint gridX;
-	uint gridY;
+	int gridX;
+	int gridY;
 	/* -- Display -- */
 	sr.displayName = "INTV (Cell Coordinates)";
 }
