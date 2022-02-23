@@ -1,0 +1,53 @@
+//------------------------------------------------
+//--- 010 Editor v10.0.2 Binary Template
+//
+//      File: bsa.bt
+//   Authors: Greatness7
+//   Version:
+//   Purpose: Parse BSA files.
+//  Category: Games
+// File Mask: *.bsa
+//  ID Bytes: 00 01 00 00
+//   History:
+//------------------------------------------------
+
+LittleEndian();
+
+struct {
+    uint version;
+    uint fileNameHashesOffset;
+    uint numFiles;
+}  header;
+
+struct {
+    uint size;
+    uint offset;
+} fileOffsets[header.numFiles];
+
+uint fileNameOffsets[header.numFiles];
+
+char fileNames[header.fileNameHashesOffset - 12 * header.numFiles];
+
+struct {
+    uint hash1;
+    uint hash2;
+} fileNameHashes[header.numFiles];
+
+struct {
+    local uint i;
+    for (i = 0; i < header.numFiles; i++) {
+        FSeek(startof(this) + fileOffsets[i].offset);
+        struct {
+            local uint index = i;
+            byte data[fileOffsets[i].size];
+        } file <read=ReadName(this.index)>;
+    };
+} files;
+
+// helper function
+
+string ReadName(uint index) {
+    local uint fileNamesStart = 12 + 12 * header.numFiles;
+    local uint fileNamesOffset = ReadUInt(fileNamesStart - 4 * (header.numFiles - index));
+    return ReadString(fileNamesStart + fileNamesOffset);
+}
