@@ -1525,7 +1525,7 @@ string NiLODNode_Read(NiLODNode &self) { return NiSwitchNode_Read(self.super); }
 
 
 const uint foregroundColors[8] = {
-	cDkRed, cDkBlue, cDkGreen, cBlack, cDkYellow, cDkPurple, cDkAqua, cDkGray
+	cLtRed, cLtGreen, cLtBlue, cSilver, cLtPurple, cLtAqua, cLtYellow, cLtGray
 };
 
 
