@@ -3626,9 +3626,13 @@ void LAND_WNAM(SubRecord &sr) {
 }
 
 void LAND_VCLR(SubRecord &sr) {
-	byte colors[3*65*65];
 	/* -- Display -- */
 	sr.displayName = "VCLR (Vertex Colors)";
+	struct {
+		ubyte r;
+		ubyte g;
+		ubyte b;
+	} colors[sr.size / 3];
 }
 
 void LAND_VTEX(SubRecord &sr) {
