@@ -14,22 +14,22 @@
 LittleEndian();
 
 typedef struct {
-    uint id;
-    uint base;
-    uint data_size <hidden=true>;
-    byte data[data_size];
+	uint id;
+	uint address;
+	uint data_size <hidden=true>;
+	byte data[data_size];
 } Patch <name=Patch_Name, read=Patch_Value>;
 
 string Patch_Name(Patch& p) {
-    return "Patch #" + Str("%u", p.id);
+	return Str("Patch #%u", p.id);
 }
 
 string Patch_Value(Patch& p) {
-    if (p.data_size > 1) {
-        return Str("0x%X : %u bytes", p.base + 0x400000, p.data_size);
-    } else {
-        return Str("0x%X : 1 byte", p.base + 0x400000);
-    }
+	if (p.data_size > 1) {
+		return Str("0x%X : %u bytes", p.address + 0x400000, p.data_size);
+	} else {
+		return Str("0x%X : 1 byte", p.address + 0x400000);
+	}
 }
 
 while (!FEof()) {
