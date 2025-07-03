@@ -59,6 +59,8 @@ typedef struct {
     uint numTriangles;
     CompressedVertex vertices[numVertices];
     Triangle triangles[numTriangles];
+    ubyte hasAlpha;
+    ubyte hasUVController;
     ushort pathSize;
     char textureName[pathSize];
 } Subset;
