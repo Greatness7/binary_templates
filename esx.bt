@@ -68,6 +68,8 @@ typedef struct {
 		case "SNDG": SNDG(this); break;
 		case "DIAL": DIAL(this); break;
 		case "INFO": INFO(this); break;
+        case "REFR": REFR(this); break;
+        case "PCDT": PCDT(this); break;
 		default:
 			byte undefined[size];
 			displayName = tag + " (?)";
@@ -2117,7 +2119,7 @@ void CONT_SCRI(SubRecord &sr) {
 }
 
 void CONT_NPCO(SubRecord &sr) {
-	uint count;
+	int count;
 	char id[32];
 	/* -- Display -- */
 	sr.displayName = "NPCO (Inventory Entry)";
@@ -2222,7 +2224,7 @@ void CREA_XSCL(SubRecord &sr) {
 }
 
 void CREA_NPCO(SubRecord &sr) {
-	uint count;
+	int count;
 	char id[32];
 	/* -- Display -- */
 	sr.displayName = "NPCO (Inventory Entry)";
@@ -2230,7 +2232,7 @@ void CREA_NPCO(SubRecord &sr) {
 }
 
 void CREA_NPCS(SubRecord &sr) {
-	char spellId[32];
+	char spellId[sr.size];
 	/* -- Display -- */
 	sr.displayName = "NPCS (SpellList Entry)";
 	sr.displayValue = spellId;
@@ -2959,7 +2961,7 @@ void NPC__XSCL(SubRecord &sr) {
 }
 
 void NPC__NPCO(SubRecord &sr) {
-	uint count;
+	int count;
 	char id[32];
 	/* -- Display -- */
 	sr.displayName = "NPCO (Inventory Entry)";
@@ -2967,7 +2969,7 @@ void NPC__NPCO(SubRecord &sr) {
 }
 
 void NPC__NPCS(SubRecord &sr) {
-	char spellId[32];
+	char spellId[sr.size];
 	/* -- Display -- */
 	sr.displayName = "NPCS (SpellList Entry)";
 	sr.displayValue = spellId;
@@ -3399,6 +3401,12 @@ void CELL_NAM0(SubRecord &sr) {
 	SPrintf(sr.displayValue, "%d", numTempRefs);
 }
 
+void CELL_NAM8(SubRecord &sr) {
+	float matrix[9];
+	/* -- Display -- */
+	sr.displayName = "NAM8 (Rotaiton Matrix)";
+}
+
 void CELL_FRMR(SubRecord &sr) {
 	if (sr.size == 8) {
 		uint masterIndex;
@@ -3507,7 +3515,7 @@ void CELL_XSOL(SubRecord &sr) {
 }
 
 void CELL_XCHG(SubRecord &sr) {
-	uint chargeLeft;
+	float chargeLeft;
 	/* -- Display -- */
 	sr.displayName = "XCHG (Charge Left)";
 	SPrintf(sr.displayValue, "%d", chargeLeft);
@@ -3528,7 +3536,7 @@ void CELL_NAM9(SubRecord &sr) {
 }
 
 void CELL_FLTV(SubRecord &sr) {
-	uint lockLevel;
+	int lockLevel;
 	/* -- Display -- */
 	sr.displayName = "FLTV (Lock Level)";
 	SPrintf(sr.displayValue, "%d", lockLevel);
@@ -3561,8 +3569,9 @@ void CELL(SubRecord &sr) {
 		case "WHGT": CELL_WHGT(sr); break;
 		case "AMBI": CELL_AMBI(sr); break;
 		case "RGNN": CELL_RGNN(sr); break;
-		case "NAM5": CELL_NAM5(sr); break;
 		case "NAM0": CELL_NAM0(sr); break;
+        case "NAM5": CELL_NAM5(sr); break;
+        case "NAM8": CELL_NAM8(sr); break;
 		case "FRMR": CELL_FRMR(sr); break;
 		case "MVRF": CELL_MVRF(sr); break;
 		case "CNDT": CELL_CNDT(sr); break;
@@ -3597,6 +3606,7 @@ void LAND_INTV(SubRecord &sr) {
 	int gridY;
 	/* -- Display -- */
 	sr.displayName = "INTV (Cell Coordinates)";
+    SPrintf(sr.displayValue, "(%d, %d)", gridX, gridY);
 }
 
 void LAND_DATA(SubRecord &sr) {
@@ -3664,8 +3674,8 @@ void PGRD_NAME(SubRecord &sr) {
 }
 
 void PGRD_DATA(SubRecord &sr) {
-	uint x;
-	uint y;
+	int x;
+	int y;
 	short granularity;
 	short pointCount;
 	/* -- Display -- */
@@ -3957,6 +3967,49 @@ void INFO(SubRecord &sr) {
 	}
 }
 
+void REFR_DATA(SubRecord &sr) {
+	float data[6];
+	/* -- Display -- */
+	sr.displayName = "DATA (Unknown)";
+    SPrintf(sr.displayValue, "%d (%d)", this.data[5], this.data[5] * 57.29577951308232);
+}
+
+
+void REFR_STPR(SubRecord &sr) {
+	float data[6];
+	/* -- Display -- */
+	sr.displayName = "STPR (Unknown)";
+    SPrintf(sr.displayValue, "%d (%d)", this.data[5], this.data[5] * 57.29577951308232);
+}
+
+void REFR(SubRecord &sr) {
+	switch (sr.tag) {
+		case "STPR": REFR_STPR(sr); break;
+        case "DATA": REFR_DATA(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+void PCDT_PNAM(SubRecord &sr) {
+    byte unknown1[176];
+    float verticalRotation[9];
+    byte unknown2[4];
+    /* -- Display -- */
+    sr.displayName = "PNAM (Unknown)";
+}
+
+void PCDT(SubRecord &sr) {
+    switch (sr.tag) {
+        case "PNAM": PCDT_PNAM(sr); break;
+        default:
+            byte undefined[sr.size];
+            sr.displayName = sr.tag + " (?)";
+    }
+}
+
+
 
 /* -- Display Functions -- */
 
@@ -4022,6 +4075,10 @@ string Record_Name(Record &r) {
 		case "DIAL": return "DIAL (Dialogue)";
 		case "INFO": return "INFO (Dialogue Info)";
 		case "SSCR": return "SSCR (Start Script)";
+
+        case "REFR": return "REFR (Reference)";
+        case "PCDT": return "PCDT (PC Data)";
+
 		default: return r.tag + " (?)";
 	}
 }
