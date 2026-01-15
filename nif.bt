@@ -125,6 +125,8 @@ typedef enum {
 	FORMAT_RGBA,
 	FORMAT_PAL,
 	FORMAT_PALALPHA,
+    FORMAT_BGR,
+	FORMAT_BGRA,
 	FORMAT_COMPRESS1,
 	FORMAT_COMPRESS3,
 	FORMAT_COMPRESS5,
@@ -325,7 +327,7 @@ typedef struct {
 typedef struct {
 	float time;
 	NiString value;
-} NiTextKey;
+} NiTextKey <read=NiString_Read(this.value)>;
 
 
 typedef struct {
@@ -941,9 +943,14 @@ typedef struct {
 	PixelFormat pixelFormat;
 	uint colorMasks[4];
 	uint bitsPerPixel;
-	ubyte oldFastCompare[8];
+	uint compareBits[2];
 } NiPixelFormat;
 
+typedef struct {
+    ubyte width;
+    ubyte height;
+    ubyte depth;
+} MipMapLevel;
 
 typedef struct {
 	NiObject super;
