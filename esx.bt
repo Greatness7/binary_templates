@@ -70,6 +70,16 @@ typedef struct {
 		case "INFO": INFO(this); break;
         case "REFR": REFR(this); break;
         case "PCDT": PCDT(this); break;
+        case "CREC": CREC(this); break;
+        case "NPCC": NPCC(this); break;
+        case "CNTC": CNTC(this); break;
+        case "STLN": STLN(this); break;
+        case "JOUR": JOUR(this); break;
+        case "QUES": QUES(this); break;
+        case "KLST": KLST(this); break;
+        case "FMAP": FMAP(this); break;
+        case "GAME": GAME(this); break;
+        case "SPLM": SPLM(this); break;
 		default:
 			byte undefined[size];
 			displayName = tag + " (?)";
@@ -814,11 +824,32 @@ void TES3_DATA(SubRecord &sr) {
 	SPrintf(sr.displayValue, "%Lu", masterFileSize);
 }
 
+void TES3_GMDT(SubRecord &sr) {
+	byte saveGameData[124]; /* 0x7C bytes based on decomp */
+	/* -- Display -- */
+	sr.displayName = "GMDT (Save Game Data)";
+}
+
+void TES3_SCRD(SubRecord &sr) {
+	byte screenshotHeader[sr.size];
+	/* -- Display -- */
+	sr.displayName = "SCRD (Screenshot Header)";
+}
+
+void TES3_SCRS(SubRecord &sr) {
+	byte screenshotData[sr.size];
+	/* -- Display -- */
+	sr.displayName = "SCRS (Screenshot Data)";
+}
+
 void TES3(SubRecord &sr) {
 	switch (sr.tag) {
 		case "HEDR": TES3_HEDR(sr); break;
 		case "MAST": TES3_MAST(sr); break;
 		case "DATA": TES3_DATA(sr); break;
+		case "GMDT": TES3_GMDT(sr); break;
+		case "SCRD": TES3_SCRD(sr); break;
+		case "SCRS": TES3_SCRS(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -894,11 +925,18 @@ void GLOB_FLTV(SubRecord &sr) {
 	SPrintf(sr.displayValue, "%.4f", value);
 }
 
+void GLOB_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void GLOB(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": GLOB_NAME(sr); break;
 		case "FNAM": GLOB_FNAM(sr); break;
 		case "FLTV": GLOB_FLTV(sr); break;
+		case "DELE": GLOB_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -941,6 +979,7 @@ void CLAS_CLDT(SubRecord &sr) {
 	uint autoCalcFlags;
 	/* -- Display -- */
 	sr.displayName = "CLDT (Class Data)";
+	SPrintf(sr.displayValue, "Attr: %d/%d", attributeId1, attributeId2);
 }
 
 void CLAS_DESC(SubRecord &sr) {
@@ -950,12 +989,19 @@ void CLAS_DESC(SubRecord &sr) {
 	sr.displayValue = description;
 }
 
+void CLAS_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void CLAS(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": CLAS_NAME(sr); break;
 		case "FNAM": CLAS_FNAM(sr); break;
 		case "CLDT": CLAS_CLDT(sr); break;
 		case "DESC": CLAS_DESC(sr); break;
+		case "DELE": CLAS_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -999,6 +1045,7 @@ void FACT_FADT(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "FADT (Faction Data)";
+	SPrintf(sr.displayValue, "Attr: %d/%d", favoredAttributes[0], favoredAttributes[1]);
 }
 
 void FACT_ANAM(SubRecord &sr) {
@@ -1015,6 +1062,13 @@ void FACT_INTV(SubRecord &sr) {
 	SPrintf(sr.displayValue, "%d", modifier);
 }
 
+void FACT_DELE(SubRecord &sr) {
+	byte deleted[sr.size];
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void FACT(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": FACT_NAME(sr); break;
@@ -1023,6 +1077,7 @@ void FACT(SubRecord &sr) {
 		case "FADT": FACT_FADT(sr); break;
 		case "ANAM": FACT_ANAM(sr); break;
 		case "INTV": FACT_INTV(sr); break;
+		case "DELE": FACT_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1065,6 +1120,7 @@ void RACE_RADT(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "RADT (Race Data)";
+	SPrintf(sr.displayValue, "Str: %d/%d, Int: %d/%d", strength[0], strength[1], intelligence[0], intelligence[1]);
 }
 
 void RACE_NPCS(SubRecord &sr) {
@@ -1081,6 +1137,12 @@ void RACE_DESC(SubRecord &sr) {
 	sr.displayValue = description;
 }
 
+void RACE_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void RACE(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": RACE_NAME(sr); break;
@@ -1088,6 +1150,7 @@ void RACE(SubRecord &sr) {
 		case "RADT": RACE_RADT(sr); break;
 		case "NPCS": RACE_NPCS(sr); break;
 		case "DESC": RACE_DESC(sr); break;
+		case "DELE": RACE_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1118,6 +1181,7 @@ void SOUN_DATA(SubRecord &sr) {
 	ubyte rangeMax;
 	/* -- Display -- */
 	sr.displayName = "DATA (Sound Data)";
+	SPrintf(sr.displayValue, "Vol: %d, Range: %d-%d", volume, rangeMin, rangeMax);
 }
 
 void SOUN(SubRecord &sr) {
@@ -1148,6 +1212,7 @@ void SKIL_SKDT(SubRecord &sr) {
 	float actions[4];
 	/* -- Display -- */
 	sr.displayName = "SKDT (Skill Data)";
+	SPrintf(sr.displayValue, "Attr: %d, Spec: %d", governingAttribute, specialization);
 }
 
 void SKIL_DESC(SubRecord &sr) {
@@ -1189,6 +1254,7 @@ void MGEF_MEDT(SubRecord &sr) {
 	float sizeCap;
 	/* -- Display -- */
 	sr.displayName = "MEDT (EFfect Data)";
+	SPrintf(sr.displayValue, "School: %d, Cost: %.1f", school, baseCost);
 }
 
 void MGEF_ITEX(SubRecord &sr) {
@@ -1396,6 +1462,7 @@ void REGN_WEAT(SubRecord &sr) {
 	}
 	/* -- Display -- */
 	sr.displayName = "WEAT (Weather Chances)";
+	SPrintf(sr.displayValue, "Clear: %d%%, Cloudy: %d%%", chanceClear, chanceCloudy);
 }
 
 void REGN_BNAM(SubRecord &sr) {
@@ -1423,6 +1490,13 @@ void REGN_SNAM(SubRecord &sr) {
 	sr.displayValue = sound;
 }
 
+void REGN_RNAM(SubRecord &sr) {
+	char name[sr.size];
+	/* -- Display -- */
+	sr.displayName = "RNAM (Region Name)";
+	sr.displayValue = name;
+}
+
 void REGN(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": REGN_NAME(sr); break;
@@ -1431,6 +1505,7 @@ void REGN(SubRecord &sr) {
 		case "BNAM": REGN_BNAM(sr); break;
 		case "CNAM": REGN_CNAM(sr); break;
 		case "SNAM": REGN_SNAM(sr); break;
+		case "RNAM": REGN_RNAM(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1565,12 +1640,20 @@ void SPEL_ENAM(SubRecord &sr) {
 	sr.displayValue = EnumToString(effect);
 }
 
+void SPEL_DELE(SubRecord &sr) {
+	byte deleted[sr.size];
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void SPEL(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": SPEL_NAME(sr); break;
 		case "FNAM": SPEL_FNAM(sr); break;
 		case "SPDT": SPEL_SPDT(sr); break;
 		case "ENAM": SPEL_ENAM(sr); break;
+		case "DELE": SPEL_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1722,6 +1805,7 @@ void APPA_AADT(SubRecord &sr) {
 	uint value;
 	/* -- Display -- */
 	sr.displayName = "AADT (Apparatus Data)";
+	SPrintf(sr.displayValue, "Type: %d, Quality: %.2f", type, quality);
 }
 
 void APPA_FNAM(SubRecord &sr) {
@@ -1800,6 +1884,7 @@ void ARMO_AODT(SubRecord &sr) {
 	uint armorRating;
 	/* -- Display -- */
 	sr.displayName = "AODT (Armor Data)";
+	SPrintf(sr.displayValue, "Slot: %d, AR: %d", slot, armorRating);
 }
 
 void ARMO_ITEX(SubRecord &sr) {
@@ -1813,7 +1898,7 @@ void ARMO_INDX(SubRecord &sr) {
 	BipedObject bipedObject;
 	/* -- Display -- */
 	sr.displayName = "INDX (Biped Object)";
-	// sr.displayValue = EnumToString(bipedObject);
+	sr.displayValue = EnumToString(bipedObject);
 }
 
 void ARMO_BNAM(SubRecord &sr) {
@@ -1837,6 +1922,12 @@ void ARMO_ENAM(SubRecord &sr) {
 	sr.displayValue = enchanting;
 }
 
+void ARMO_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void ARMO(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": ARMO_NAME(sr); break;
@@ -1849,6 +1940,7 @@ void ARMO(SubRecord &sr) {
 		case "BNAM": ARMO_BNAM(sr); break;
 		case "CNAM": ARMO_CNAM(sr); break;
 		case "ENAM": ARMO_ENAM(sr); break;
+		case "DELE": ARMO_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -1934,6 +2026,7 @@ void BOOK_BKDT(SubRecord &sr) {
 	uint enchantment;
 	/* -- Display -- */
 	sr.displayName = "BKDT (Book Data)";
+	SPrintf(sr.displayValue, "Skill: %d, Scroll: %d", skill, isScroll);
 }
 
 void BOOK_ITEX(SubRecord &sr) {
@@ -2012,6 +2105,7 @@ void CLOT_CTDT(SubRecord &sr) {
 	short enchantment;
 	/* -- Display -- */
 	sr.displayName = "CTDT (Clothing Data)";
+	SPrintf(sr.displayValue, "Slot: %d, Value: %d", clothingSlot, value);
 }
 
 void CLOT_SCRI(SubRecord &sr) {
@@ -2103,12 +2197,14 @@ void CONT_CNDT(SubRecord &sr) {
 	float encumbrance;
 	/* -- Display -- */
 	sr.displayName = "CNDT (Container Data)";
+	SPrintf(sr.displayValue, "%.1f", encumbrance);
 }
 
 void CONT_FLAG(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "FLAG (Container Flags)";
+	SPrintf(sr.displayValue, "%d", flags);
 }
 
 void CONT_SCRI(SubRecord &sr) {
@@ -2126,6 +2222,12 @@ void CONT_NPCO(SubRecord &sr) {
 	sr.displayValue = id;
 }
 
+void CONT_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void CONT(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": CONT_NAME(sr); break;
@@ -2135,6 +2237,7 @@ void CONT(SubRecord &sr) {
 		case "FLAG": CONT_FLAG(sr); break;
 		case "SCRI": CONT_SCRI(sr); break;
 		case "NPCO": CONT_NPCO(sr); break;
+		case "DELE": CONT_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -2207,6 +2310,7 @@ void CREA_NPDT(SubRecord &sr) {
 	uint gold;
 	/* -- Display -- */
 	sr.displayName = "NPDT (Creature Data)";
+	SPrintf(sr.displayValue, "Type: %d, Level: %d", type, level);
 }
 
 void CREA_FLAG(SubRecord &sr) {
@@ -2247,6 +2351,7 @@ void CREA_AIDT(SubRecord &sr) {
 	uint services;
 	/* -- Display -- */
 	sr.displayName = "AIDT (Creature AI Data)";
+	SPrintf(sr.displayValue, "Services: %d", services);
 }
 
 void CREA_DODT(SubRecord &sr) {
@@ -2335,6 +2440,12 @@ void CREA_CNDT(SubRecord &sr) {
 	sr.displayValue = cellId;
 }
 
+void CREA_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void CREA(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": CREA_NAME(sr); break;
@@ -2356,6 +2467,7 @@ void CREA(SubRecord &sr) {
 		case "AI_F": CREA_AI_F(sr); break;
 		case "AI_A": CREA_AI_A(sr); break;
 		case "CNDT": CREA_CNDT(sr); break;
+		case "DELE": CREA_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -2408,6 +2520,13 @@ void DOOR_ANAM(SubRecord &sr) {
 	sr.displayValue = closeSound;
 }
 
+void DOOR_DELE(SubRecord &sr) {
+	byte deleted[sr.size];
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void DOOR(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": DOOR_NAME(sr); break;
@@ -2416,6 +2535,7 @@ void DOOR(SubRecord &sr) {
 		case "SCRI": DOOR_SCRI(sr); break;
 		case "SNAM": DOOR_SNAM(sr); break;
 		case "ANAM": DOOR_ANAM(sr); break;
+		case "DELE": DOOR_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -2453,6 +2573,13 @@ void ENCH_ENAM(SubRecord &sr) {
 	uint maxMagnitude;
 	/* -- Display -- */
 	sr.displayName = "ENAM (Enchanting Effect)";
+	sr.displayValue = EnumToString(effect);
+}
+
+void ENCH_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
 }
 
 void ENCH(SubRecord &sr) {
@@ -2460,6 +2587,7 @@ void ENCH(SubRecord &sr) {
 		case "NAME": ENCH_NAME(sr); break;
 		case "ENDT": ENCH_ENDT(sr); break;
 		case "ENAM": ENCH_ENAM(sr); break;
+		case "DELE": ENCH_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -2603,6 +2731,7 @@ void LEVI_DATA(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "DATA (Levelled List Data)";
+	SPrintf(sr.displayValue, "%d", flags);
 }
 
 void LEVI_NNAM(SubRecord &sr) {
@@ -2691,6 +2820,7 @@ void LIGH_LHDT(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "LHDT (Light Data)";
+	SPrintf(sr.displayValue, "Radius: %d, Time: %d", radius, time);
 }
 
 void LIGH_SCRI(SubRecord &sr) {
@@ -2754,6 +2884,7 @@ void LOCK_LKDT(SubRecord &sr) {
 	uint uses;
 	/* -- Display -- */
 	sr.displayName = "LKDT (Lock Data)";
+	SPrintf(sr.displayValue, "Quality: %.1f, Uses: %d", quality, uses);
 }
 
 void LOCK_ITEX(SubRecord &sr) {
@@ -2770,6 +2901,13 @@ void LOCK_SCRI(SubRecord &sr) {
 	sr.displayValue = script;
 }
 
+void LOCK_DELE(SubRecord &sr) {
+	byte deleted[sr.size];
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void LOCK(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": LOCK_NAME(sr); break;
@@ -2778,6 +2916,7 @@ void LOCK(SubRecord &sr) {
 		case "LKDT": LOCK_LKDT(sr); break;
 		case "ITEX": LOCK_ITEX(sr); break;
 		case "SCRI": LOCK_SCRI(sr); break;
+		case "DELE": LOCK_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -2815,6 +2954,7 @@ void MISC_MCDT(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "MCDT (Misc Data)";
+	SPrintf(sr.displayValue, "Value: %d, Flags: %d", value, flags);
 }
 
 void MISC_ITEX(SubRecord &sr) {
@@ -2944,6 +3084,7 @@ void NPC__NPDT(SubRecord &sr) {
 	}
 	/* -- Display -- */
 	sr.displayName = "NPDT (NPC Data)";
+	SPrintf(sr.displayValue, "AutoCalc: %s", (sr.size == 12) ? "Yes" : "No");
 }
 
 void NPC__FLAG(SubRecord &sr) {
@@ -2984,6 +3125,7 @@ void NPC__AIDT(SubRecord &sr) {
 	uint services;
 	/* -- Display -- */
 	sr.displayName = "AIDT (AI Data)";
+	SPrintf(sr.displayValue, "Services: %d", services);
 }
 
 void NPC__DODT(SubRecord &sr) {
@@ -3070,6 +3212,12 @@ void NPC__AI_A(SubRecord &sr) {
 	sr.displayValue = targetId;
 }
 
+void NPC__DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void NPC_(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": NPC__NAME(sr); break;
@@ -3095,6 +3243,7 @@ void NPC_(SubRecord &sr) {
 		case "AI_T": NPC__AI_T(sr); break;
 		case "AI_F": NPC__AI_F(sr); break;
 		case "AI_A": NPC__AI_A(sr); break;
+		case "DELE": NPC__DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3126,6 +3275,7 @@ void PROB_PBDT(SubRecord &sr) {
 	uint uses;
 	/* -- Display -- */
 	sr.displayName = "PBDT (Probe Data)";
+	SPrintf(sr.displayValue, "Quality: %.1f, Uses: %d", quality, uses);
 }
 
 void PROB_FNAM(SubRecord &sr) {
@@ -3149,6 +3299,13 @@ void PROB_SCRI(SubRecord &sr) {
 	sr.displayValue = script;
 }
 
+void PROB_DELE(SubRecord &sr) {
+	byte deleted[sr.size];
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void PROB(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": PROB_NAME(sr); break;
@@ -3157,6 +3314,7 @@ void PROB(SubRecord &sr) {
 		case "PBDT": PROB_PBDT(sr); break;
 		case "ITEX": PROB_ITEX(sr); break;
 		case "SCRI": PROB_SCRI(sr); break;
+		case "DELE": PROB_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3195,6 +3353,7 @@ void REPA_RIDT(SubRecord &sr) {
 	float quality;
 	/* -- Display -- */
 	sr.displayName = "RIDT (Repair Data)";
+	SPrintf(sr.displayValue, "Quality: %.1f, Uses: %d", quality, uses);
 }
 
 void REPA_ITEX(SubRecord &sr) {
@@ -3295,6 +3454,7 @@ void WEAP_WPDT(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "WPDT (Weapon Data)";
+	SPrintf(sr.displayValue, "Type: %d, Value: %d", type, value);
 }
 
 void WEAP_ITEX(SubRecord &sr) {
@@ -3318,6 +3478,12 @@ void WEAP_SCRI(SubRecord &sr) {
 	sr.displayValue = scriptId;
 }
 
+void WEAP_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
+}
+
 void WEAP(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": WEAP_NAME(sr); break;
@@ -3327,6 +3493,7 @@ void WEAP(SubRecord &sr) {
 		case "ITEX": WEAP_ITEX(sr); break;
 		case "ENAM": WEAP_ENAM(sr); break;
 		case "SCRI": WEAP_SCRI(sr); break;
+		case "DELE": WEAP_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3359,7 +3526,8 @@ void CELL_DATA(SubRecord &sr) {
 		float zRotation;
 	}
 	/* -- Display -- */
-	sr.displayName = "DATA (Data)";
+	sr.displayName = "DATA (Cell Data)";
+	SPrintf(sr.displayValue, "Size: %d", sr.size);
 }
 
 void CELL_WHGT(SubRecord &sr) {
@@ -3560,6 +3728,7 @@ void CELL_DELE(SubRecord &sr) {
 	byte deleted[sr.size];
 	/* -- Display -- */
 	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
 }
 
 void CELL(SubRecord &sr) {
@@ -3613,6 +3782,7 @@ void LAND_DATA(SubRecord &sr) {
 	uint flags;
 	/* -- Display -- */
 	sr.displayName = "DATA (Landscape Flags)";
+	SPrintf(sr.displayValue, "%d", flags);
 }
 
 void LAND_VNML(SubRecord &sr) {
@@ -3680,6 +3850,7 @@ void PGRD_DATA(SubRecord &sr) {
 	short pointCount;
 	/* -- Display -- */
 	sr.displayName = "DATA (Path Grid Data)";
+	SPrintf(sr.displayValue, "(%d, %d), Points: %d", x, y, pointCount);
 }
 
 void PGRD_PGRP(SubRecord &sr) {
@@ -3693,6 +3864,7 @@ void PGRD_PGRP(SubRecord &sr) {
 	} points[sr.size / 16];  // sizeof(point)
 	/* -- Display -- */
 	sr.displayName = "PGRP (Path Grid Points)";
+	SPrintf(sr.displayValue, "Count: %d", sr.size / 16);
 }
 
 void PGRD_PGRC(SubRecord &sr) {
@@ -3770,19 +3942,36 @@ void DIAL_NAME(SubRecord &sr) {
 
 void DIAL_DATA(SubRecord &sr) {
 	if (sr.size == 1) {
-		DialogueType2 dialogueType;
+		byte dialogueType;
+		/* -- Display -- */
+		sr.displayName = "DATA (Dialogue Type)";
 		sr.displayValue = EnumToString(dialogueType);
 	} else {
 		byte unknown[sr.size];
+		/* -- Display -- */
+		sr.displayName = "DATA (Dialogue Data)";
 	}
+}
+
+void DIAL_XIDX(SubRecord &sr) {
+	int journalIndex;
 	/* -- Display -- */
-	sr.displayName = "DATA (Dialogue Data)";
+	sr.displayName = "XIDX (Journal Index)";
+	SPrintf(sr.displayValue, "%d", journalIndex);
+}
+
+void DIAL_DELE(SubRecord &sr) {
+	/* -- Display -- */
+	sr.displayName = "DELE (Deleted)";
+	sr.displayValue = "Yes";
 }
 
 void DIAL(SubRecord &sr) {
 	switch (sr.tag) {
 		case "NAME": DIAL_NAME(sr); break;
 		case "DATA": DIAL_DATA(sr); break;
+		case "XIDX": DIAL_XIDX(sr); break;
+		case "DELE": DIAL_DELE(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3830,6 +4019,13 @@ void INFO_ONAM(SubRecord &sr) {
 	/* -- Display -- */
 	sr.displayName = "ONAM (Speaker Id)";
 	sr.displayValue = speakerId;
+}
+
+void INFO_ACDT(SubRecord &sr) {
+	char firstSpeakerId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "ACDT (First Speaker Id)";
+	sr.displayValue = firstSpeakerId;
 }
 
 void INFO_RNAM(SubRecord &sr) {
@@ -3937,6 +4133,7 @@ void INFO_DELE(SubRecord &sr) {
 	uint deleted;
 	/* -- Display -- */
 	sr.displayName = "DELE (Deleted)";
+	SPrintf(sr.displayValue, "%d", deleted);
 }
 
 void INFO(SubRecord &sr) {
@@ -3946,6 +4143,7 @@ void INFO(SubRecord &sr) {
 		case "NNAM": INFO_NNAM(sr); break;
 		case "DATA": INFO_DATA(sr); break;
 		case "ONAM": INFO_ONAM(sr); break;
+		case "ACDT": INFO_ACDT(sr); break;
 		case "RNAM": INFO_RNAM(sr); break;
 		case "CNAM": INFO_CNAM(sr); break;
 		case "FNAM": INFO_FNAM(sr); break;
@@ -3982,10 +4180,38 @@ void REFR_STPR(SubRecord &sr) {
     SPrintf(sr.displayValue, "%d (%d)", this.data[5], this.data[5] * 57.29577951308232);
 }
 
+void REFR_ACDT(SubRecord &sr) {
+	byte animControllerData[268];
+	/* -- Display -- */
+	sr.displayName = "ACDT (Animation Controller Data)";
+}
+
+void REFR_ACSC(SubRecord &sr) {
+	byte actorStateCurrent[24];
+	/* -- Display -- */
+	sr.displayName = "ACSC (Actor State Current)";
+}
+
+void REFR_ACSL(SubRecord &sr) {
+	byte actorStateLast[24];
+	/* -- Display -- */
+	sr.displayName = "ACSL (Actor State Last)";
+}
+
+void REFR_CRED(SubRecord &sr) {
+	byte creatureData[24];
+	/* -- Display -- */
+	sr.displayName = "CRED (Creature Data)";
+}
+
 void REFR(SubRecord &sr) {
 	switch (sr.tag) {
 		case "STPR": REFR_STPR(sr); break;
         case "DATA": REFR_DATA(sr); break;
+        case "ACDT": REFR_ACDT(sr); break;
+        case "ACSC": REFR_ACSC(sr); break;
+        case "ACSL": REFR_ACSL(sr); break;
+        case "CRED": REFR_CRED(sr); break;
 		default:
 			byte undefined[sr.size];
 			sr.displayName = sr.tag + " (?)";
@@ -3993,16 +4219,97 @@ void REFR(SubRecord &sr) {
 }
 
 void PCDT_PNAM(SubRecord &sr) {
-    byte unknown1[176];
-    float verticalRotation[9];
-    byte unknown2[4];
+    byte playerData[176];
+    float rotationMatrix[9];
+    byte flags[4];
     /* -- Display -- */
-    sr.displayName = "PNAM (Unknown)";
+    sr.displayName = "PNAM (Player Data)";
+    SPrintf(sr.displayValue, "Rotation: [%f, %f, %f]", rotationMatrix[0], rotationMatrix[1], rotationMatrix[2]);
+}
+
+void PCDT_DNAM(SubRecord &sr) {
+    byte flagControlsDisabled;
+    byte flagJumpingDisabled;
+    byte flagMouselookDisabled;
+    byte flagViewSwitchDisabled;
+    byte flagVanityDisabled;
+    byte flagAttackDisabled;
+    byte flagMagicDisabled;
+    byte flagAlwaysRun;
+    byte flagAutoRun;
+    byte flagSleeping;
+    byte flagWaiting;
+    byte flagPlayerInJail;
+    byte flagPlayerIsTravelling;
+    byte onLoadThirdPersonView;
+    byte goalStateWeaponReady;
+    byte goalStateCastReady;
+    byte padding[sr.size - 16];
+    sr.displayName = "DNAM (Player Flags)";
+    SPrintf(sr.displayValue, "Controls: %d, Jump: %d, Mouselook: %d, ViewSwitch: %d, Vanity: %d, Attack: %d, Magic: %d, AlwaysRun: %d, AutoRun: %d, Sleeping: %d, Waiting: %d, Jail: %d, Travelling: %d, ThirdPerson: %d, WeaponReady: %d, CastReady: %d", flagControlsDisabled, flagJumpingDisabled, flagMouselookDisabled, flagViewSwitchDisabled, flagVanityDisabled, flagAttackDisabled, flagMagicDisabled, flagAlwaysRun, flagAutoRun, flagSleeping, flagWaiting, flagPlayerInJail, flagPlayerIsTravelling, onLoadThirdPersonView, goalStateWeaponReady, goalStateCastReady);
+}
+
+void PCDT_NAM0(SubRecord &sr) {
+    char mortarId[sr.size];
+    sr.displayName = "NAM0 (Mortar Apparatus)";
+    sr.displayValue = mortarId;
+}
+
+void PCDT_NAM1(SubRecord &sr) {
+    char alembicId[sr.size];
+    sr.displayName = "NAM1 (Alembic Apparatus)";
+    sr.displayValue = alembicId;
+}
+
+void PCDT_NAM2(SubRecord &sr) {
+    char calcinatorId[sr.size];
+    sr.displayName = "NAM2 (Calcinator Apparatus)";
+    sr.displayValue = calcinatorId;
+}
+
+void PCDT_NAM3(SubRecord &sr) {
+    char retortId[sr.size];
+    sr.displayName = "NAM3 (Retort Apparatus)";
+    sr.displayValue = retortId;
+}
+
+void PCDT_NAM9(SubRecord &sr) {
+    char unknownId[sr.size];
+    sr.displayName = "NAM9 (Unknown Apparatus)";
+    sr.displayValue = unknownId;
+}
+
+void PCDT_SNAM(SubRecord &sr) {
+    char birthsignId[sr.size];
+    sr.displayName = "SNAM (Birthsign)";
+    sr.displayValue = birthsignId;
+}
+
+void PCDT_WERE(SubRecord &sr) {
+    byte isWerewolf;
+    byte padding[sr.size - 1];
+    sr.displayName = "WERE (Werewolf State)";
+    SPrintf(sr.displayValue, "IsWerewolf: %d", isWerewolf);
+}
+
+void PCDT_FNAM(SubRecord &sr) {
+    char unknownData[sr.size];
+    sr.displayName = "FNAM (Unknown Data)";
+    sr.displayValue = unknownData;
 }
 
 void PCDT(SubRecord &sr) {
     switch (sr.tag) {
         case "PNAM": PCDT_PNAM(sr); break;
+        case "DNAM": PCDT_DNAM(sr); break;
+        case "NAM0": PCDT_NAM0(sr); break;
+        case "NAM1": PCDT_NAM1(sr); break;
+        case "NAM2": PCDT_NAM2(sr); break;
+        case "NAM3": PCDT_NAM3(sr); break;
+        case "NAM9": PCDT_NAM9(sr); break;
+        case "SNAM": PCDT_SNAM(sr); break;
+        case "WERE": PCDT_WERE(sr); break;
+        case "FNAM": PCDT_FNAM(sr); break;
         default:
             byte undefined[sr.size];
             sr.displayName = sr.tag + " (?)";
@@ -4075,10 +4382,18 @@ string Record_Name(Record &r) {
 		case "DIAL": return "DIAL (Dialogue)";
 		case "INFO": return "INFO (Dialogue Info)";
 		case "SSCR": return "SSCR (Start Script)";
-
         case "REFR": return "REFR (Reference)";
         case "PCDT": return "PCDT (PC Data)";
-
+        case "CREC": return "CREC (Creature Clone)";
+        case "NPCC": return "NPCC (NPC Clone)";
+        case "CNTC": return "CNTC (Container Clone)";
+        case "STLN": return "STLN (Stolen List)";
+        case "JOUR": return "JOUR (Journal)";
+        case "QUES": return "QUES (Quest)";
+        case "KLST": return "KLST (Kill List)";
+        case "FMAP": return "FMAP (Footprint Map)";
+        case "GAME": return "GAME (Game Settings)";
+		case "SPLM": return "SPLM (Spell List)";
 		default: return r.tag + " (?)";
 	}
 }
@@ -4120,6 +4435,941 @@ string Record_Read(Record &r) {
 	}
 
 	return "{ ID NOT FOUND }";
+}
+
+
+/* -- CREC (Creature Clone) -- */
+
+void CREC_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CREC_ONAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "ONAM (Object Name)";
+	sr.displayValue = id;
+}
+
+void CREC_CREC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "CREC (Creature Clone ID)";
+	sr.displayValue = id;
+}
+
+void CREC_ACTI(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "ACTI (Item Count)";
+	sr.displayValue = id;
+}
+
+void CREC_SLSD(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "SLSD (Soul/Item Data)";
+	sr.displayValue = id;
+}
+
+void CREC_XNPC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XNPC (NPC Reference)";
+	sr.displayValue = id;
+}
+
+void CREC_AI_A(SubRecord &sr) {
+	int packageType;
+	int targetPtr;
+	byte reset;
+	byte padding[3];
+	char target[sr.size - 8];
+	sr.displayName = "AI_A (AI Activate)";
+	SPrintf(sr.displayValue, "Type: %d, Reset: %d, Target: %s", packageType, reset, target);
+}
+
+void CREC_XGLB(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XGLB (Global Variable)";
+	sr.displayValue = id;
+}
+
+void CREC_XFAC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XFAC (Factor/Script)";
+	sr.displayValue = id;
+}
+
+void CREC_SLFD(SubRecord &sr) {
+	float value;
+	sr.displayName = "SLFD (Float Data)";
+	SPrintf(sr.displayValue, "%f", value);
+}
+
+void CREC_SLLD(SubRecord &sr) {
+	int value;
+	sr.displayName = "SLLD (Long Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_AI_F(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte durationHours;
+	byte padding1[3];
+	int actorPtr;
+	int cellPtr;
+	byte reset;
+	byte padding2[3];
+	char actor[sr.size - 28];
+	sr.displayName = "AI_F (AI Follow)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Duration: %d, Reset: %d, Actor: %s", packageType, destX, destY, destZ, durationHours, reset, actor);
+}
+
+void CREC_DELE(SubRecord &sr) {
+	uint value;
+	sr.displayName = "DELE (Deleted)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_AI_E(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte durationHours;
+	byte padding1[3];
+	int actorPtr;
+	int cellPtr;
+	byte reset;
+	byte padding2[3];
+	char actor[sr.size - 28];
+	sr.displayName = "AI_E (AI Escort)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Duration: %d, Reset: %d, Actor: %s", packageType, destX, destY, destZ, durationHours, reset, actor);
+}
+
+void CREC_XHLT(SubRecord &sr) {
+	uint value;
+	sr.displayName = "XHLT (Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_NPCO(SubRecord &sr) {
+	uint value;
+	sr.displayName = "NPCO (Open)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_XRNK(SubRecord &sr) {
+	uint value;
+	sr.displayName = "XRNK (Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_XSCL(SubRecord &sr) {
+	uint value;
+	sr.displayName = "XSCL (Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_XSOL(SubRecord &sr) {
+	uint value;
+	sr.displayName = "XSOL (Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_SLCS(SubRecord &sr) {
+	uint value;
+	sr.displayName = "SLCS (Scale)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_CNDT(SubRecord &sr) {
+	uint value;
+	sr.displayName = "CNDT (Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CREC_WIDX(SubRecord &sr) {
+	int itemPtr;
+	int itemDataPtr;
+	sr.displayName = "WIDX (Equipment Stack)";
+	SPrintf(sr.displayValue, "Item: 0x%X, ItemData: 0x%X", itemPtr, itemDataPtr);
+}
+
+void CREC_INDX(SubRecord &sr) {
+	int index;
+	sr.displayName = "INDX (Index)";
+	SPrintf(sr.displayValue, "%d", index);
+}
+
+void CREC_AI_T(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte reset;
+	byte padding[3];
+	sr.displayName = "AI_T (AI Travel)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Reset: %d", packageType, destX, destY, destZ, reset);
+}
+
+void CREC_AI_W(SubRecord &sr) {
+	int packageType;
+	WORD range;
+	byte durationHours;
+	byte timeStartHours;
+	byte idles[8];
+	byte reset;
+	byte padding[3];
+	sr.displayName = "AI_W (AI Wander)";
+	SPrintf(sr.displayValue, "Type: %d, Range: %d, Duration: %d, TimeStart: %d, Reset: %d", packageType, range, durationHours, timeStartHours, reset);
+}
+
+void CREC(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": CREC_NAME(sr); break;
+		case "ONAM": CREC_ONAM(sr); break;
+		case "CREC": CREC_CREC(sr); break;
+		case "ACTI": CREC_ACTI(sr); break;
+		case "SLSD": CREC_SLSD(sr); break;
+		case "XNPC": CREC_XNPC(sr); break;
+		case "AI_A": CREC_AI_A(sr); break;
+		case "XGLB": CREC_XGLB(sr); break;
+		case "XFAC": CREC_XFAC(sr); break;
+		case "SLFD": CREC_SLFD(sr); break;
+		case "SLLD": CREC_SLLD(sr); break;
+		case "AI_F": CREC_AI_F(sr); break;
+		case "DELE": CREC_DELE(sr); break;
+		case "AI_E": CREC_AI_E(sr); break;
+		case "XHLT": CREC_XHLT(sr); break;
+		case "NPCO": CREC_NPCO(sr); break;
+		case "XRNK": CREC_XRNK(sr); break;
+		case "XSCL": CREC_XSCL(sr); break;
+		case "XSOL": CREC_XSOL(sr); break;
+		case "SLCS": CREC_SLCS(sr); break;
+		case "CNDT": CREC_CNDT(sr); break;
+		case "WIDX": CREC_WIDX(sr); break;
+		case "AI_T": CREC_AI_T(sr); break;
+		case "AI_W": CREC_AI_W(sr); break;
+		case "XDIX": CREC_INDX(sr); break;
+		case "INDX": CREC_INDX(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- NPCC (NPC Clone) -- */
+
+void NPCC_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void NPCC_ONAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "ONAM (Object Name)";
+	sr.displayValue = id;
+}
+
+void NPCC_NPCC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NPCC (NPC Clone ID)";
+	sr.displayValue = id;
+}
+
+void NPCC_XRNK(SubRecord &sr) {
+	short rank;
+	sr.displayName = "XRNK (Rank)";
+	SPrintf(sr.displayValue, "%d", rank);
+}
+
+void NPCC_SLSD(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "SLSD (Soul/Item Data)";
+	sr.displayValue = id;
+}
+
+void NPCC_XNPC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XNPC (NPC Reference)";
+	sr.displayValue = id;
+}
+
+void NPCC_AI_A(SubRecord &sr) {
+	int packageType;
+	int targetPtr;
+	byte reset;
+	byte padding[3];
+	char target[sr.size - 8];
+	sr.displayName = "AI_A (AI Activate)";
+	SPrintf(sr.displayValue, "Type: %d, Reset: %d, Target: %s", packageType, reset, target);
+}
+
+void NPCC_XGLB(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XGLB (Global Variable)";
+	sr.displayValue = id;
+}
+
+void NPCC_XFAC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XFAC (Factor/Script)";
+	sr.displayValue = id;
+}
+
+void NPCC_SLFD(SubRecord &sr) {
+	float value;
+	sr.displayName = "SLFD (Float Data)";
+	SPrintf(sr.displayValue, "%f", value);
+}
+
+void NPCC_SLLD(SubRecord &sr) {
+	int value;
+	sr.displayName = "SLLD (Long Data)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void NPCC_AI_F(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte durationHours;
+	byte padding1[3];
+	int actorPtr;
+	int cellPtr;
+	byte reset;
+	byte padding2[3];
+	char actor[sr.size - 28];
+	sr.displayName = "AI_F (AI Follow)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Duration: %d, Reset: %d, Actor: %s", packageType, destX, destY, destZ, durationHours, reset, actor);
+}
+
+void NPCC_DELE(SubRecord &sr) {
+	byte deleted;
+	sr.displayName = "DELE (Delete)";
+	SPrintf(sr.displayValue, "%d", deleted);
+}
+
+void NPCC_AI_E(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte durationHours;
+	byte padding1[3];
+	int actorPtr;
+	int cellPtr;
+	byte reset;
+	byte padding2[3];
+	char actor[sr.size - 28];
+	sr.displayName = "AI_E (AI Escort)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Duration: %d, Reset: %d, Actor: %s", packageType, destX, destY, destZ, durationHours, reset, actor);
+}
+
+void NPCC_XCHG(SubRecord &sr) {
+	short value;
+	sr.displayName = "XCHG (Change)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void NPCC_SCRI(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "SCRI (Script)";
+	sr.displayValue = id;
+}
+
+void NPCC_XHLT(SubRecord &sr) {
+	float health;
+	sr.displayName = "XHLT (Health)";
+	SPrintf(sr.displayValue, "%f", health);
+}
+
+void NPCC_SLCS(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "SLCS (Class)";
+	sr.displayValue = id;
+}
+
+void NPCC_XSOL(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XSOL (Soul)";
+	sr.displayValue = id;
+}
+
+void NPCC_DNAM(SubRecord &sr) {
+	short disposition;
+	sr.displayName = "DNAM (Disposition)";
+	SPrintf(sr.displayValue, "%d", disposition);
+}
+
+void NPCC_NPCO(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NPCO (NPC Object)";
+	sr.displayValue = id;
+}
+
+void NPCC_CNDT(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "CNDT (Count Data)";
+	sr.displayValue = id;
+}
+
+void NPCC_NPDT(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NPDT (NPC Data)";
+	sr.displayValue = id;
+}
+
+void NPCC_AI_T(SubRecord &sr) {
+	int packageType;
+	float destX, destY, destZ;
+	byte reset;
+	byte padding[3];
+	sr.displayName = "AI_T (AI Travel)";
+	SPrintf(sr.displayValue, "Type: %d, Dest: [%f,%f,%f], Reset: %d", packageType, destX, destY, destZ, reset);
+}
+
+void NPCC_AI_W(SubRecord &sr) {
+	int packageType;
+	WORD range;
+	byte durationHours;
+	byte timeStartHours;
+	byte idles[8];
+	byte reset;
+	byte padding[3];
+	sr.displayName = "AI_W (AI Wander)";
+	SPrintf(sr.displayValue, "Type: %d, Range: %d, Duration: %d, TimeStart: %d, Reset: %d", packageType, range, durationHours, timeStartHours, reset);
+}
+
+void NPCC_WIDX(SubRecord &sr) {
+	int itemPtr;
+	int itemDataPtr;
+	sr.displayName = "WIDX (Equipment Stack)";
+	SPrintf(sr.displayValue, "Item: 0x%X, ItemData: 0x%X", itemPtr, itemDataPtr);
+}
+
+void NPCC_XIDX(SubRecord &sr) {
+	int cloneCount;
+	/* -- Display -- */
+	sr.displayName = "XIDX (Clone Count)";
+	SPrintf(sr.displayValue, "%d", cloneCount);
+}
+
+void NPCC_INDX(SubRecord &sr) {
+	int index;
+	sr.displayName = "INDX (Index)";
+	SPrintf(sr.displayValue, "%d", index);
+}
+
+void NPCC(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": NPCC_NAME(sr); break;
+		case "ONAM": NPCC_ONAM(sr); break;
+		case "NPCC": NPCC_NPCC(sr); break;
+		case "XRNK": NPCC_XRNK(sr); break;
+		case "SLSD": NPCC_SLSD(sr); break;
+		case "XNPC": NPCC_XNPC(sr); break;
+		case "AI_A": NPCC_AI_A(sr); break;
+		case "XGLB": NPCC_XGLB(sr); break;
+		case "XFAC": NPCC_XFAC(sr); break;
+		case "SLFD": NPCC_SLFD(sr); break;
+		case "SLLD": NPCC_SLLD(sr); break;
+		case "AI_F": NPCC_AI_F(sr); break;
+		case "DELE": NPCC_DELE(sr); break;
+		case "AI_E": NPCC_AI_E(sr); break;
+		case "XCHG": NPCC_XCHG(sr); break;
+		case "SCRI": NPCC_SCRI(sr); break;
+		case "XHLT": NPCC_XHLT(sr); break;
+		case "SLCS": NPCC_SLCS(sr); break;
+		case "XSOL": NPCC_XSOL(sr); break;
+		case "DNAM": NPCC_DNAM(sr); break;
+		case "NPCO": NPCC_NPCO(sr); break;
+		case "CNDT": NPCC_CNDT(sr); break;
+		case "NPDT": NPCC_NPDT(sr); break;
+		case "AI_T": NPCC_AI_T(sr); break;
+		case "AI_W": NPCC_AI_W(sr); break;
+		case "WIDX": NPCC_WIDX(sr); break;
+		case "XIDX": NPCC_XIDX(sr); break;
+		case "INDX": NPCC_INDX(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- CNTC (Container Clone) -- */
+
+void CNTC_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void CNTC_ONAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "ONAM (Object Name)";
+	sr.displayValue = id;
+}
+
+void CNTC_CNTC(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "CNTC (Container Clone ID)";
+	sr.displayValue = id;
+}
+
+void CNTC_SCRI(SubRecord &sr) {
+	char scriptId[sr.size];
+	sr.displayName = "SCRI (Script Reference)";
+	sr.displayValue = scriptId;
+}
+
+void CNTC_SLLD(SubRecord &sr) {
+	int longVarCount;
+	int longVarValues[sr.size / 4 - 1];
+	sr.displayName = "SLLD (Script Long Variables)";
+	SPrintf(sr.displayValue, "Count: %d", longVarCount);
+}
+
+void CNTC_XNPC(SubRecord &sr) {
+	char ownerId[sr.size];
+	sr.displayName = "XNPC (Owner NPC Reference)";
+	sr.displayValue = ownerId;
+}
+
+void CNTC_XGLB(SubRecord &sr) {
+	char globalVarId[sr.size];
+	sr.displayName = "XGLB (Global Variable)";
+	sr.displayValue = globalVarId;
+}
+
+void CNTC_XFAC(SubRecord &sr) {
+	char actorFactionId[sr.size];
+	sr.displayName = "XFAC (Actor/Faction Reference)";
+	sr.displayValue = actorFactionId;
+}
+
+void CNTC_SLFD(SubRecord &sr) {
+	int floatVarCount;
+	float floatVarValues[sr.size / 4 - 1];
+	sr.displayName = "SLFD (Script Float Variables)";
+	SPrintf(sr.displayValue, "Count: %d", floatVarCount);
+}
+
+void CNTC_ACTI(SubRecord &sr) {
+	int itemIndex;
+	sr.displayName = "ACTI (Item Index)";
+	SPrintf(sr.displayValue, "%d", itemIndex);
+}
+
+void CNTC_SLSD(SubRecord &sr) {
+	int shortVarCount;
+	short shortVarValues[sr.size / 2 - 2];
+	sr.displayName = "SLSD (Script Short Variables)";
+	SPrintf(sr.displayValue, "Count: %d", shortVarCount);
+}
+
+void CNTC_DELE(SubRecord &sr) {
+	byte deleted;
+	sr.displayName = "DELE (Delete)";
+	SPrintf(sr.displayValue, "%d", deleted);
+}
+
+void CNTC_XCHG(SubRecord &sr) {
+	short value;
+	sr.displayName = "XCHG (Change)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void CNTC_SLCS(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "SLCS (Class)";
+	sr.displayValue = id;
+}
+
+void CNTC_XSOL(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "XSOL (Soul)";
+	sr.displayValue = id;
+}
+
+void CNTC_XRNK(SubRecord &sr) {
+	short rank;
+	sr.displayName = "XRNK (Rank)";
+	SPrintf(sr.displayValue, "%d", rank);
+}
+
+void CNTC_NPCO(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NPCO (NPC Object)";
+	sr.displayValue = id;
+}
+
+void CNTC_XHLT(SubRecord &sr) {
+	int condition_lightTime;
+	sr.displayName = "XHLT (Condition/Light Time)";
+	SPrintf(sr.displayValue, "%d", condition_lightTime);
+}
+
+void CNTC_INDX(SubRecord &sr) {
+	uint cloneId;
+	sr.displayName = "INDX (Clone ID)";
+	SPrintf(sr.displayValue, "%d", cloneId);
+}
+
+void CNTC(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": CNTC_NAME(sr); break;
+		case "ONAM": CNTC_ONAM(sr); break;
+		case "CNTC": CNTC_CNTC(sr); break;
+		case "SCRI": CNTC_SCRI(sr); break;
+		case "SLLD": CNTC_SLLD(sr); break;
+		case "XNPC": CNTC_XNPC(sr); break;
+		case "XGLB": CNTC_XGLB(sr); break;
+		case "XFAC": CNTC_XFAC(sr); break;
+		case "SLFD": CNTC_SLFD(sr); break;
+		case "ACTI": CNTC_ACTI(sr); break;
+		case "SLSD": CNTC_SLSD(sr); break;
+		case "DELE": CNTC_DELE(sr); break;
+		case "XCHG": CNTC_XCHG(sr); break;
+		case "SLCS": CNTC_SLCS(sr); break;
+		case "XSOL": CNTC_XSOL(sr); break;
+		case "XRNK": CNTC_XRNK(sr); break;
+		case "NPCO": CNTC_NPCO(sr); break;
+		case "XHLT": CNTC_XHLT(sr); break;
+		case "XDIX": CNTC_INDX(sr); break;
+		case "INDX": CNTC_INDX(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- STLN (Stolen List) -- */
+
+void STLN_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Stolen from ID)";
+	sr.displayValue = id;
+}
+
+void STLN_ONAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "ONAM (NPC ID)";
+	sr.displayValue = id;
+}
+
+void STLN_FNAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "FNAM (Faction ID)";
+	sr.displayValue = id;
+}
+
+void STLN(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": STLN_NAME(sr); break;
+		case "ONAM": STLN_ONAM(sr); break;
+		case "FNAM": STLN_FNAM(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- JOUR (Journal) -- */
+
+void JOUR_NAME(SubRecord &sr) {
+	char text[sr.size];
+	sr.displayName = "NAME (Journal Text)";
+	sr.displayValue = text;
+}
+
+void JOUR(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": JOUR_NAME(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- QUES (Quest) -- */
+
+void QUES_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Quest ID)";
+	sr.displayValue = id;
+}
+
+void QUES_QUES(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "QUES (Quest ID)";
+	sr.displayValue = id;
+}
+
+void QUES_DATA(SubRecord &sr) {
+	int namePtr;
+	int dialoguesListPtr;
+	int activeInfosListPtr;
+	sr.displayName = "DATA (Quest Data)";
+	SPrintf(sr.displayValue, "Name: 0x%X, Dialogues: 0x%X, ActiveInfos: 0x%X", namePtr, dialoguesListPtr, activeInfosListPtr);
+}
+
+void QUES(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": QUES_NAME(sr); break;
+		case "QUES": QUES_QUES(sr); break;
+		case "DATA": QUES_DATA(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- KLST (Kill List) -- */
+
+void KLST_KNAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "KNAM (NPC ID)";
+	sr.displayValue = id;
+}
+
+void KLST_CNAM(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "CNAM (Creature ID)";
+	sr.displayValue = id;
+}
+
+void KLST_INTV(SubRecord &sr) {
+	int killCount;
+	sr.displayName = "INTV (Kill Count)";
+	SPrintf(sr.displayValue, "%d", killCount);
+}
+
+void KLST(SubRecord &sr) {
+	switch (sr.tag) {
+		case "KNAM": KLST_KNAM(sr); break;
+		case "CNAM": KLST_CNAM(sr); break;
+		case "INTV": KLST_INTV(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- FMAP (Footprint Map) -- */
+
+void FMAP_NAME(SubRecord &sr) {
+	char id[sr.size];
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void FMAP_MAPH(SubRecord &sr) {
+	int width;
+	int height;
+	sr.displayName = "MAPH (Map Header)";
+	SPrintf(sr.displayValue, "%d x %d", width, height);
+}
+
+void FMAP_MAPD(SubRecord &sr) {
+	byte data[sr.size];
+	sr.displayName = "MAPD (Map Data)";
+}
+
+void FMAP(SubRecord &sr) {
+	switch (sr.tag) {
+		case "NAME": FMAP_NAME(sr); break;
+		case "MAPH": FMAP_MAPH(sr); break;
+		case "MAPD": FMAP_MAPD(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- GAME (Game Setting - Save File) -- */
+
+void GAME_TSMG(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "TSMG (Header)";
+	sr.displayValue = id;
+}
+
+void GAME_VRTS(SubRecord &sr) {
+	char stringValue[sr.size];
+	/* -- Display -- */
+	sr.displayName = "VRTS (String Value)";
+	sr.displayValue = stringValue;
+}
+
+void GAME_VTLF(SubRecord &sr) {
+	float floatValue;
+	/* -- Display -- */
+	sr.displayName = "VTLF (Float Value)";
+	SPrintf(sr.displayValue, "%.4f", floatValue);
+}
+
+void GAME_VTNI(SubRecord &sr) {
+	int integerValue;
+	/* -- Display -- */
+	sr.displayName = "VTNI (Integer Value)";
+	SPrintf(sr.displayValue, "%d", integerValue);
+}
+
+void GAME_NAME(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Game Setting Name)";
+	sr.displayValue = id;
+}
+
+void GAME_GMDT(SubRecord &sr) {
+	byte saveGameData[124]; /* 0x7C bytes based on decomp */
+	/* -- Display -- */
+	sr.displayName = "GMDT (Save Game Data)";
+}
+
+void GAME(SubRecord &sr) {
+	switch (sr.tag) {
+		case "TSMG": GAME_TSMG(sr); break;
+		case "VRTS": GAME_VRTS(sr); break;
+		case "VTLF": GAME_VTLF(sr); break;
+		case "VTNI": GAME_VTNI(sr); break;
+		case "NAME": GAME_NAME(sr); break;
+		case "GMDT": GAME_GMDT(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
+}
+
+
+/* -- SPLM (Spell List - Save File) -- */
+
+void SPLM_MLPS(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "MLPS (Header)";
+	sr.displayValue = id;
+}
+
+void SPLM_EMAN(SubRecord &sr) {
+	uint serialNumber;
+	/* -- Display -- */
+	sr.displayName = "EMAN (Magic Source Instance)";
+	SPrintf(sr.displayValue, "Serial: %u", serialNumber);
+}
+
+void SPLM_0MAN(SubRecord &sr) {
+	char targetId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "NAM0 (ENAM - Effect Data)";
+	sr.displayValue = targetId;
+}
+
+void SPLM_FMAN(SubRecord &sr) {
+	char spellName[sr.size];
+	/* -- Display -- */
+	sr.displayName = "FNAM (Spell Name)";
+	sr.displayValue = spellName;
+}
+
+void SPLM_MANC(SubRecord &sr) {
+	char actorId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "CNAM (Effect Actor)";
+	sr.displayValue = actorId;
+}
+
+void SPLM_MANI(SubRecord &sr) {
+	char itemId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "INAM (Effect Item)";
+	sr.displayValue = itemId;
+}
+
+void SPLM_MANT(SubRecord &sr) {
+	char targetRefId[sr.size];
+	/* -- Display -- */
+	sr.displayName = "TNAM (Target Reference)";
+	sr.displayValue = targetRefId;
+}
+
+void SPLM_TDPS(SubRecord &sr) {
+	char magicID[32];
+	char targetRefId[32];
+	char castingItemID[32];
+	char castingItemIdAlso[32];
+	int sourceComboType;
+	int bypassResistances;
+	int overrideCastChance;
+	int spellState;
+	float timestampCastBegin;
+	int corprusHoursSinceLastWorsen;
+	float itemCharge;
+	int castingItemConditionIndex;
+	byte padding[12];
+	/* -- Display -- */
+	sr.displayName = "SPDT (Spell Data)";
+	SPrintf(sr.displayValue, "State: %d, Charge: %.1f", spellState, itemCharge);
+}
+
+void SPLM_TDPN(SubRecord &sr) {
+	byte data[sr.size];
+	/* -- Display -- */
+	sr.displayName = "NPDT (Effect Data)";
+}
+
+void SPLM_MANV(SubRecord &sr) {
+	byte value;
+	/* -- Display -- */
+	sr.displayName = "VNAM (Byte Value)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void SPLM_VNM0(SubRecord &sr) {
+	byte value;
+	/* -- Display -- */
+	sr.displayName = "0NMV (Byte Value)";
+	SPrintf(sr.displayValue, "%d", value);
+}
+
+void SPLM_NAME(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "NAME (Id)";
+	sr.displayValue = id;
+}
+
+void SPLM_XNAM(SubRecord &sr) {
+	char id[sr.size];
+	/* -- Display -- */
+	sr.displayName = "XNAM (Id)";
+	sr.displayValue = id;
+}
+
+void SPLM(SubRecord &sr) {
+	switch (sr.tag) {
+		case "MLPS": SPLM_MLPS(sr); break;
+		case "EMAN": SPLM_EMAN(sr); break;
+		case "NAM0": SPLM_0MAN(sr); break;
+		case "FNAM": SPLM_FMAN(sr); break;
+		case "CNAM": SPLM_MANC(sr); break;
+		case "INAM": SPLM_MANI(sr); break;
+		case "TNAM": SPLM_MANT(sr); break;
+		case "SPDT": SPLM_TDPS(sr); break;
+		case "NPDT": SPLM_TDPN(sr); break;
+		case "VNAM": SPLM_MANV(sr); break;
+		case "0NMV": SPLM_VNM0(sr); break;
+		case "NAME": SPLM_NAME(sr); break;
+		case "XNAM": SPLM_XNAM(sr); break;
+		default:
+			byte undefined[sr.size];
+			sr.displayName = sr.tag + " (?)";
+	}
 }
 
 
