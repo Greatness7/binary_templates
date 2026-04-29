@@ -6,7 +6,7 @@
 //   Version: in-dev
 //   Purpose: Providing aided binary reading of ESP, ESM, and ESS files for Morrowind.
 //  Category: Games
-// File Mask: *.esp; *.esm; *.omwaddon
+// File Mask: *.esp; *.esm; *.omwaddon; *.omwsave
 //  ID Bytes:
 //   History: https://github.com/Greatness7/binary_templates
 //------------------------------------------------
