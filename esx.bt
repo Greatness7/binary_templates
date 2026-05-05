@@ -5264,10 +5264,10 @@ void SPLM_EMAN(SubRecord &sr) {
 }
 
 void SPLM_0MAN(SubRecord &sr) {
-	char targetId[sr.size];
+	byte value;
 	/* -- Display -- */
-	sr.displayName = "NAM0 (ENAM - Effect Data)";
-	sr.displayValue = targetId;
+	sr.displayName = "NAM0 (Always Zero)";
+	SPrintf(sr.displayValue, "%d", value);
 }
 
 void SPLM_FMAN(SubRecord &sr) {
@@ -5299,28 +5299,37 @@ void SPLM_MANT(SubRecord &sr) {
 }
 
 void SPLM_TDPS(SubRecord &sr) {
-	char magicID[32];
-	char targetRefId[32];
-	char castingItemID[32];
-	char castingItemIdAlso[32];
 	int sourceComboType;
-	int bypassResistances;
-	int overrideCastChance;
-	int spellState;
+	char magicId[32];
+	float overrideCastChance;
+	float corprusHoursSinceLastWorsen;
 	float timestampCastBegin;
-	int corprusHoursSinceLastWorsen;
+	int spellState;
+	char casterRefId[32];
+	char castingItemId1[32];
 	float itemCharge;
-	int castingItemConditionIndex;
-	byte padding[12];
+	char castingItemConditionIndex;
+	byte padding1[3];
+	char castingItemId2[32];
+	char bypassResistances;
+	byte padding2[3];
 	/* -- Display -- */
 	sr.displayName = "SPDT (Spell Data)";
-	SPrintf(sr.displayValue, "State: %d, Charge: %.1f", spellState, itemCharge);
+	SPrintf(sr.displayValue, "Caster: %s, Magic: %s (%d), State: %d", casterRefId, magicId, sourceComboType, spellState);
 }
 
 void SPLM_TDPN(SubRecord &sr) {
-	byte data[sr.size];
+	char targetId[32];
+	char effectIndex;
+	byte padding[3];
+	float resistedPercent;
+	unsigned int magnitude;
+	float timeActive;
+	float cumulativeMagnitude;
+	int state;
 	/* -- Display -- */
-	sr.displayName = "NPDT (Effect Data)";
+	sr.displayName = "NPDT (Serialized Magic Effect Instance)";
+	SPrintf(sr.displayValue, "Target: %s, EffectIndex: %d, Magnitude: %d, State: %d", targetId, effectIndex, magnitude, state);
 }
 
 void SPLM_MANV(SubRecord &sr) {
@@ -5338,17 +5347,17 @@ void SPLM_VNM0(SubRecord &sr) {
 }
 
 void SPLM_NAME(SubRecord &sr) {
-	char id[sr.size];
+	uint serialNumber;
 	/* -- Display -- */
-	sr.displayName = "NAME (Id)";
-	sr.displayValue = id;
+	sr.displayName = "NAME (Magic Source Instance)";
+	SPrintf(sr.displayValue, "Serial: %u", serialNumber);
 }
 
 void SPLM_XNAM(SubRecord &sr) {
-	char id[sr.size];
+	byte value;
 	/* -- Display -- */
-	sr.displayName = "XNAM (Id)";
-	sr.displayValue = id;
+	sr.displayName = "XNAM (Always Zero)";
+	SPrintf(sr.displayValue, "%d", value);
 }
 
 void SPLM(SubRecord &sr) {
